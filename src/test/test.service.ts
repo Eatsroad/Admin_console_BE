@@ -4,6 +4,6 @@ import { Injectable } from '@nestjs/common';
 export class TestService {
 
   getTest(): any {
-    return {"message": "HI"}
+    return {"message": "UPDATED!!"}
   }
 }
