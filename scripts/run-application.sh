@@ -2,7 +2,6 @@
 
 kill -9 5906
 cd /home/ec2-user/eatsroad
-touch testFile
 rm -rf ~/log/eatsroad.log &&
 rm -rf ~/log/eatsroad-error.log &&
 yarn build &&
