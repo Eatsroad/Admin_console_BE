@@ -20,11 +20,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_S3_REGION }}
 
-      - name: Install packages
-        run: yarn install
+      # - name: Install packages
+      #   run: yarn install
       
-      - name: build
-        run: yarn build
+      # - name: build
+      #   run: yarn build
 
       - name: compress files for deploy
         run: zip -r eatsroad-backend.zip ./*
