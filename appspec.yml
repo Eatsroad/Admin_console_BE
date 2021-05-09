@@ -12,8 +12,6 @@ permissions:
 hooks:
   BeforeInstall:
     - location: scripts/delete-before-artifacts.sh
-  Install:
-    - location: scripts/install-packages.sh
   AfterInstall:
     - location: scripts/change-script-permissions.sh
   ApplicationStart:
