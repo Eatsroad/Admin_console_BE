@@ -25,9 +25,9 @@ jobs:
       
       - name: build
         run: yarn build
-        
+
       - name: compress files for deploy
-        run: zip -r eatsroad-backend.zip ./*
+        run: zip -r eatsroad-backend.zip ./dist/*
 
       - name: upload to s3
         run: aws s3 cp eatsroad-backend.zip s3://${{ secrets.AWS_S3_BUCKET }}
