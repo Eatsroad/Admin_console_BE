@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd /home/ec2-user/eatsroad
+cd /home/ec2-user/eatsroad &&
 yarn install
