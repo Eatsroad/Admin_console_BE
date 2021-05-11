@@ -19,6 +19,7 @@ export class UserService {
     user.setEmail = dto.email;
     user.setPhone_number = dto.phone_number;
     user.setPassword = dto.password;
+    user.setUserRole = dto.user_role;
     return user;
   }
 

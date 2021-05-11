@@ -4,7 +4,8 @@ export class UserInfoResponseDto {
   user_id: number;
   name: string;
   phone_number: string;
-  email: string
+  email: string;
+  
   constructor(user: User) {
     this.user_id = user.getUser_id;
     this.name = user.getName;
