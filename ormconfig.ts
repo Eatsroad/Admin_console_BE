@@ -1,8 +1,8 @@
 module.exports = {
   port: 3306,
-  host: process.env.DATASOURCE_URL,
-  username: process.env.DATASOURCE_USERNAME,
-  password: process.env.DATASOURCE_PASSWORD,
+  host: 'eatsroaddatabase.cverolzjl4v8.ap-northeast-2.rds.amazonaws.com',
+  username: 'eatsroad',
+  password: 'whtjdgus04!',
   database: 'eatsroad',
   logging: false,
   entities: ['dist/**/*.entity{.ts,.js}'],
