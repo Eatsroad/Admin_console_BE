@@ -1,6 +1,6 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { BasicMessageDto } from '../common/dtos/basic-massage.dto';
-import { createMemoryDB } from '../utils/create-memory-db';
+import { createMemoryDB } from '../utils/connections/create-memory-db';
 import { Connection, Repository } from 'typeorm';
 import { UserCreateDto } from './dtos/create-user.dto';
 import { UserUpdateDto } from './dtos/update-user.dto';
