@@ -1,0 +1,1 @@
+# Eatdroad server입니다.
