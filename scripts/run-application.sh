@@ -9,4 +9,4 @@ rm -rf ~/log/eatsroad.log
 rm -rf ~/log/eatsroad-error.log
 
 cd /home/ec2-user/eatsroad
-yarn start >> /home/ec2-user/log/eatsroad.log 2>> /home/ec2-user/log/eatsroad-error.log &
+nest start >> /home/ec2-user/log/eatsroad.log 2>> /home/ec2-user/log/eatsroad-error.log &
