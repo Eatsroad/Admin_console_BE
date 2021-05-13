@@ -1,1 +1,1 @@
-# Eatdroad server입니다.
+# Eatsroad server입니다.
