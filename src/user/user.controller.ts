@@ -49,7 +49,7 @@ export class UserController {
     return this.userService.removeUser(userId);
   }
 
-  @Post('/login')
+  @Post('/signin')
   login(@Body() dto: UserLoginRequestDto): Promise<UserLoginResponseDto> {
     return this.userService.login(dto);
   }
