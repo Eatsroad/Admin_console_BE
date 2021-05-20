@@ -12,6 +12,8 @@ import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
 import { UserCreateDto } from './dtos/create-user.dto';
 import { UserUpdateDto } from './dtos/update-user.dto';
 import { UserInfoResponseDto } from './dtos/user-info.dto';
+import { UserLoginRequestDto } from './dtos/user-login-request.dto';
+import { UserLoginResponseDto } from './dtos/user-login-response.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -47,10 +49,10 @@ export class UserController {
     return this.userService.removeUser(userId);
   }
 
-  // @Post('/login')
-  // login(@Body() dto: UserLoginRequestDto): Promise<UserLoginResponseDto> {
-  //   return this.userService.login(dto);
-  // }
+  @Post('/login')
+  login(@Body() dto: UserLoginRequestDto): Promise<UserLoginResponseDto> {
+    return this.userService.login(dto);
+  }
 
   // @Post('/board/:userId')
   // saveBoard(
