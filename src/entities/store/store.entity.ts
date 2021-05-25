@@ -55,4 +55,13 @@ export class Store {
     return this.deleted_at;
   }
 
-}
+  set setName(name: string) {
+    this.name = name;
+  }
+  set setAddress(address: string) {
+    this.address = address;
+  }
+  set setPhone_number(phone_number: string) {
+    this.phone_number = phone_number;
+  }
+}//
