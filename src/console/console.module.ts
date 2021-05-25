@@ -3,6 +3,7 @@ import { ConsoleService } from './console.service';
 import { ConsoleController } from './console.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Store } from 'src/entities/store/store.entity';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Store])],

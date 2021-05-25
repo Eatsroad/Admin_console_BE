@@ -3,7 +3,7 @@ import { ConsoleService } from './console.service';
 import { StoreCreateDto } from './dtos/create-store.dto';
 import { StoreInfoResponseDto } from './dtos/store-info.dto';
 
-@Controller('console')
+@Controller('/console')
 export class ConsoleController {
     constructor(
         private readonly consoleService: ConsoleService){}
