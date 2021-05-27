@@ -1,4 +1,4 @@
-import { IsString } from "class-validator";
+import { IsNumber, IsString } from "class-validator";
 
 export class StoreCreateDto{
     @IsString()
@@ -9,4 +9,7 @@ export class StoreCreateDto{
 
     @IsString()
     phone_number: string;
+
+    @IsNumber()
+    tables: number;
 }

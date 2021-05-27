@@ -21,6 +21,9 @@ export class Store {
   @Column({nullable: false})
   private phone_number: string;
 
+  @Column({nullable : false})
+  private tables: number;
+
   @CreateDateColumn()
   private created_at: Date;
 
@@ -54,6 +57,9 @@ export class Store {
   get getDeleted_at(): Date {
     return this.deleted_at;
   }
+  get getTables(): number{
+    return this.tables;
+  }
 
   set setName(name: string) {
     this.name = name;
@@ -63,5 +69,8 @@ export class Store {
   }
   set setPhone_number(phone_number: string) {
     this.phone_number = phone_number;
+  }
+  set setTables(tables: number){
+    this.tables = tables;
   }
 }//
