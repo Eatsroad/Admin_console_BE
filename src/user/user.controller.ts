@@ -23,14 +23,12 @@ export class UserController {
   ) {}
 
   @Post()
-  saveUser(@Body() dto: UserCreateDto): Promise<UserInfoResponseDto> {
+  saveUser(@Body() dto: UserCreateDto): Promise<UserInfoResponseDto> {//userCreatedto형 dto의 바디를 매개변수로 받는다.
     return this.userService.saveUser(dto);
   }
 
   @Get('/:userId')
-  getUserInfo(
-    @Param('userId', ParseIntPipe) userId: number,
-  ): Promise<UserInfoResponseDto> {
+  getUserInfo(@Param('userId', ParseIntPipe) userId: number,): Promise<UserInfoResponseDto> {//@Param=parameter받을것을 알림
     return this.userService.getUserInfo(userId);
   }
 

@@ -14,7 +14,7 @@ export enum UserRole {
   ADMIN = "ADMIN",
 }
 
-@Entity({name: "users"})
+@Entity({name: "users"})//name=실제테이블명 지정,테이블명은 users가 된다.
 export class User {
   @PrimaryGeneratedColumn()
   private user_id: number;
@@ -22,7 +22,7 @@ export class User {
   @Column({nullable: false})
   private name: string;
 
-  @Column({nullable: false, unique: true})
+  @Column({nullable: false, unique: true})//nullable(null값가질수있는지),unique(유니크제약가지는지)는 속성,
   private email: string;
 
   @Column({nullable: false})
@@ -34,8 +34,7 @@ export class User {
   @Column({nullable: false, 
     type: "enum",
     enum: UserRole,
-    default: UserRole.USER
-  })
+    default: UserRole.USER})
   private user_role: UserRole;
 
   @CreateDateColumn()
