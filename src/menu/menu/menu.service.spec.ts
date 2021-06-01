@@ -2,6 +2,7 @@ import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
 import { Menu } from 'src/entities/menu/menu.entity';
+import { UserUpdateDto } from 'src/user/dtos/update-user.dto';
 import { createMemoryDB } from 'src/utils/connections/create-memory-db';
 import { Connection, Repository } from 'typeorm';
 import { MenuCreateDto } from './dtos/create-menu.dto';
@@ -186,7 +187,8 @@ describe('MenuService', () => {
     expect(updatedUser.getEvent_group_id).toBe(updateDto.event_group_id);
     expect(updatedUser.getOption_group_id).toBe(updateDto.option_group_id);
   });
-  it("Should update menu info(name,price,desc,state)", async () => {
+
+  it("Should update menu info(All)", async () => {
     const savedMenu = await saveMenu();
 
     const updateDto = new MenuUpdateDto();
@@ -194,7 +196,9 @@ describe('MenuService', () => {
     updateDto.price = 6000;
     updateDto.desc = "NEW_DESC";
     updateDto.state = false;
-//updateDto.category_id=111;
+    updateDto.category_id=111;
+    updateDto.option_group_id = 222;
+    updateDto.event_group_id = 333;
 
     const response = await menuService.updateMenuInfo(
       savedMenu.getMenu_id,
@@ -203,67 +207,105 @@ describe('MenuService', () => {
     expect(response).toBeInstanceOf(BasicMessageDto);
 
     const updatedMenu = await menuRepository.findOne(savedMenu.getMenu_id);
-    expect(updatedMenu.getName).toBe("NEW_NAME");
+    expect(updatedMenu.getName).toBe(updateDto.name);
     expect(updatedMenu.getPrice).toBe(updateDto.price);
     expect(updatedMenu.getDesc).toBe(updateDto.desc);
     expect(updatedMenu.getState).toBe(updateDto.state);
-    
+    expect(updatedMenu.getCategory_id).toBe(updateDto.category_id);
+    expect(updatedMenu.getOption_group_id).toBe(updateDto.option_group_id);
+    expect(updatedMenu.getEvent_group_id).toBe(updateDto.event_group_id);
   });
-/*
+//개별update테스트 
   it("Should update menu info(category_id)", async () => {
-    const savedUser = await saveMenu();
+    const savedMenu = await saveMenu();
 
-    const updateDto = new UserUpdateDto();
-    updateDto.name = "NEW_NAME";
+    const updateDto = new MenuUpdateDto();
+    updateDto.category_id = 111;
+  
 
-    const response = await userService.updateUserInfo(
-      savedUser.getUser_id,
-      updateDto
+    const response = await menuService.updateCategory(
+      savedMenu.getMenu_id,
+      updateDto,
+      updateDto.category_id
     );
     expect(response).toBeInstanceOf(BasicMessageDto);
 
-    const updatedUser = await userRepository.findOne(savedUser.getUser_id);
-    expect(updatedUser.getName).toBe("NEW_NAME");
-    expect(updatedUser.getPassword).toBe(PASSWORD);
+    const updatedMenu = await menuRepository.findOne(savedMenu.getMenu_id);
+    expect(updatedMenu.getCategory_id).toBe(updateDto.category_id);
+    //update되는 속성외 다른 속성을 그대로유지해주는 코드필요한지???
   });
 
   it("Should update menu info(option_group_id)", async () => {
-    const savedUser = await saveUser();
+    const savedMenu = await saveMenu();
 
-    const updateDto = new UserUpdateDto();
-    updateDto.password = "NEW_PASSWORD";
+    const updateDto = new MenuUpdateDto();
+    updateDto.option_group_id = 333;
 
-    const response = await userService.updateUserInfo(
-      savedUser.getUser_id,
-      updateDto
+    const response = await menuService.updateOptionGroup(
+      savedMenu.getMenu_id,
+      updateDto,
+      updateDto.option_group_id
     );
     expect(response).toBeInstanceOf(BasicMessageDto);
 
-    const updatedUser = await userRepository.findOne(savedUser.getUser_id);
-    expect(updatedUser.getName).toBe(NAME);
-    expect(updatedUser.getPassword).toBe("NEW_PASSWORD");
+    const updatedMenu = await menuRepository.findOne(savedMenu.getMenu_id);
+    expect(updatedMenu.getOption_group_id).toBe(updateDto.option_group_id);
+    //update되는 속성외 다른 속성을 그대로유지해주는 코드필요한지???
   });
 
   it("Should update menu info(event_group_id)", async () => {
-    const savedUser = await saveUser();
+    const savedMenu = await saveMenu();
 
-    const updateDto = new UserUpdateDto();
-    updateDto.password = "NEW_PASSWORD";
+    const updateDto = new MenuUpdateDto();
+    updateDto.event_group_id = 333;
 
-    const response = await userService.updateUserInfo(
-      savedUser.getUser_id,
-      updateDto
+    const response = await menuService.updateEventGroup(
+      savedMenu.getMenu_id,
+      updateDto,
+      updateDto.event_group_id
     );
     expect(response).toBeInstanceOf(BasicMessageDto);
-    */
+    
 
-    const updatedUser = await userRepository.findOne(savedUser.getUser_id);
-    expect(updatedUser.getName).toBe(NAME);
-    expect(updatedUser.getPassword).toBe("NEW_PASSWORD");
+    const updatedMenu = await menuRepository.findOne(savedMenu.getMenu_id);
+    expect(updatedMenu.getEvent_group_id).toBe(updateDto.event_group_id);
+    //update되는 속성외 다른 속성을 그대로유지해주는 코드필요한지???
+  });
+  
+//제거 테스트 전체제거, 개별제거
+
+  it("Should remove menu(All)", async () => {
+    const savedUser = await saveMenu();
+
+    const response = await menuService.removeMenu(savedUser.getMenu_id);
+    expect(response).toBeInstanceOf(BasicMessageDto);
+
+    const menu = await menuRepository.findOne(savedUser.getMenu_id);
+    expect(menu).toBeUndefined();
+  });
+
+  it("Should remove menu(categoryId)", async () => {
+    const savedUser = await saveMenu();
+
+    const response = await menuService.removeMenu(savedUser.getMenu_id);
+    expect(response).toBeInstanceOf(BasicMessageDto);
+
+    const menu = await menuRepository.findOne(savedUser.getMenu_id);
+    expect(menu).toBeUndefined();
+  });
+  
+  it("Should remove menu(categoryId)", async () => {
+    const savedUser = await saveMenu();
+
+    const response = await menuService.removeMenu(savedUser.getMenu_id);
+    expect(response).toBeInstanceOf(BasicMessageDto);
+
+    const menu = await menuRepository.findOne(savedUser.getMenu_id);
+    expect(menu).toBeUndefined();
   });
 
 
-  it("Should remove menu", async () => {
+  it("Should remove menu(categoryId)", async () => {
     const savedUser = await saveMenu();
 
     const response = await menuService.removeMenu(savedUser.getMenu_id);
