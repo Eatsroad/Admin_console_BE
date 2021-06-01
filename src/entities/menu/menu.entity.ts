@@ -22,7 +22,7 @@ import { Store } from "../store/store.entity";
       @OneToMany(type => Category, category => category.getCategory_id)
       category_id: Category;
 
-      @ManyToMany(type => Optiongroup, optiongroup => optiongroup.getOptiongroup_id)
+      @ManyToMany(type => Optiongroup, optiongroup => optiongroup.getOptiongroup_id)//cascade하면안됌
       option_group_id : Optiongroup:
 
       @ManyToMany(type => Eventgroup, eventgroup => eventgroup.getEventgroup_id)

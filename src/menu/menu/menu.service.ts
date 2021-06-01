@@ -2,7 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
 import { Menu } from 'src/entities/menu/menu.entity';
-import { Repository } from 'typeorm';
+import { createConnection, Repository } from 'typeorm';
+import { resourceLimits } from 'worker_threads';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
@@ -57,30 +58,101 @@ export class MenuService {
         } else throw new NotFoundException();
       }
       
-      
-
       async removeMenu(menuId: number): Promise<BasicMessageDto> {
         const result = await this.menuRepository.delete(menuId);
         if (result.affected !== 0) {
           return new BasicMessageDto("Deleted Successfully.");
         } else throw new NotFoundException();
       }
-
-       async updateCategory(menuId: number,categoryId: number): Promise<MenuInfoResponseDto>{
-        const menu = this.getMenuInfo(menuId);
-        (await menu).category_id= categoryId;
-        return menu;
+  //update시 메세지뜨도록추가,2.에러처리추가,3.menurepository활용하도록해보자
+       async updateCategory(menuId: number,
+        dto: MenuUpdateDto, categoryId:number//update할 카테고리id
+      ): Promise<BasicMessageDto> {
+        const result = await this.menuRepository
+          .createQueryBuilder()
+          .update("menus", { ...dto })//update해라
+          .set({category_id: categoryId})
+          .where("menu_id = :menuId", { menuId })//menuId=menuId인 위치에서
+          .execute();
+        if (result.affected !== 0) {
+          return new BasicMessageDto("(Category) Updated Successfully.");
+        } else throw new NotFoundException();
+       
       }
 
-      async updateOptionGroup(menuId: number, optionId : number ): Promise<MenuInfoResponseDto> {
-        const menu = this.getMenuInfo(menuId);
-        (await menu).option_group_id = optionId;
-        return menu;
+      async updateOptionGroup(menuId: number,
+        dto: MenuUpdateDto, optiongroupId:number//update할 카테고리id
+      ): Promise<BasicMessageDto> {
+        const result = await this.menuRepository
+          .createQueryBuilder()
+          .update("menus", { ...dto })//update해라
+          .set({option_group_id: optiongroupId})
+          .where("menu_id = :menuId", { menuId })//menuId=menuId인 위치에서
+          .execute();
+        if (result.affected !== 0) {
+          return new BasicMessageDto("(OptionGroup) Updated Successfully.");
+        } else throw new NotFoundException();
+       
       }
-      async updateEventGroup(menuId: number, eventId : number) : Promise<MenuInfoResponseDto> {
-        const menu = this.getMenuInfo(menuId);
-        (await menu).event_group_id = eventId;
-        return menu;
+      async updateEventGroup(menuId: number,
+        dto: MenuUpdateDto, eventgroupId:number//update할 카테고리id
+      ): Promise<BasicMessageDto> {
+        const result = await this.menuRepository
+          .createQueryBuilder()
+          .update("menus", { ...dto })//update해라 menus=table명
+          .set({event_group_id: eventgroupId})
+          .where("menu_id = :menuId", { menuId })//menuId=menuId인 위치에서
+          .execute();
+        if (result.affected !== 0) {
+          return new BasicMessageDto("(EventGroup) Updated Successfully.");
+        } else throw new NotFoundException();
+       
       }
+  //categoryid를삭제해서 null로 만든다.or softdelete공부해서 이용
+    async removeCategory(/*categoryId: number*/ dto:MenuUpdateDto, menuId:number): Promise<BasicMessageDto> {
+      const result = await this.menuRepository
+      .createQueryBuilder()
+      .update("menus", { ...dto })
+      .set({category_id: null})
+      .where("menu_id = :menuId", { menuId })
+      .execute();
+      if (result.affected !== 0) {
+       return new BasicMessageDto("(Category) Deleted Successfully.");
+      } else throw new NotFoundException();
+    }
+ 
+    async removeOptionGroup(dto:MenuUpdateDto, menuId:number): Promise<BasicMessageDto> {
+      const result = await this.menuRepository
+      .createQueryBuilder()
+      .update("menus", { ...dto })
+      .set({option_group_id: null})
+      .where("menu_id = :menuId", { menuId })
+      .execute();
+      if (result.affected !== 0) {
+       return new BasicMessageDto("(Category) Deleted Successfully.");
+      } else throw new NotFoundException();
+    }
+   async removeEventGroup(dto:MenuUpdateDto, menuId:number): Promise<BasicMessageDto> {
+    const result = await this.menuRepository
+    .createQueryBuilder()
+    .update("menus", { ...dto })
+    .set({event_group_id: null})
+    .where("menu_id = :menuId", { menuId })
+    .execute();
+    if (result.affected !== 0) {
+     return new BasicMessageDto("(Category) Deleted Successfully.");
+    } else throw new NotFoundException();
+  }
 
+  async removeEventgroup2(dto:MenuUpdateDto, menuId:number) /*Promise<BasicMessageDto>*/{
+    createConnection().then(async connection => {
+      await connection
+      .getRepository(Menu)
+      .createQueryBuilder()
+      .softDelete()
+    }).catch(error => console.log(error));
+    
+  }
+  
+  
 }

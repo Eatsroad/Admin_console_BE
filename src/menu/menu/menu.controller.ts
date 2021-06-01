@@ -38,7 +38,7 @@ export class MenuController {
     @Patch('/:menuId/option')
     updateOptiongroup(
       @Param('menuId') id: string,
-      @Body('option') option: ,
+      @Body('option') 
     ){
       return 
     }
