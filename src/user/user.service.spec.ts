@@ -104,6 +104,7 @@ describe('UserService', () => {
     expect(response.email).toBe(savedUser.getEmail);
     expect(response.name).toBe(savedUser.getName);
   });
+  
   it("Should throw NotFoundException if user_id is invalid", async () => {
     expect.assertions(1);
     try {
