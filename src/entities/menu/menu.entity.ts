@@ -9,6 +9,7 @@ import {
     PrimaryGeneratedColumn, 
     UpdateDateColumn 
   } from "typeorm";
+import { Category } from "../category/category.entity";
 import { Store } from "../store/store.entity";
 //테이블생성,get함수set함수생성
   @Entity({name: "menus"})
@@ -17,16 +18,16 @@ import { Store } from "../store/store.entity";
       private menu_id: number;
 
       @OneToMany(type => Store, store => store.getStore_id)
-      store_id: Store;
+      store_id: number;
 
       @OneToMany(type => Category, category => category.getCategory_id)
-      category_id: Category;
+      category_id: number;
 
-      @ManyToMany(type => Optiongroup, optiongroup => optiongroup.getOptiongroup_id)//cascade하면안됌
-      option_group_id : Optiongroup:
+      // @ManyToMany(type => Optiongroup, optiongroup => optiongroup.getOptiongroup_id)//cascade하면안됌
+      // option_group_id : Optiongroup:
 
-      @ManyToMany(type => Eventgroup, eventgroup => eventgroup.getEventgroup_id)//cascade하면안됌
-      event_group_id : Eventgroup;
+      // @ManyToMany(type => Eventgroup, eventgroup => eventgroup.getEventgroup_id)//cascade하면안됌
+      // event_group_id : Eventgroup;
 
       @Column({nullable : false})
       private name : string;
@@ -55,15 +56,15 @@ import { Store } from "../store/store.entity";
       get getState(): boolean {
         return this.state;
       }
-      get getCategory_id():number {
+      get getCategory_id(): number {
         return this.category_id;
       }
-      get getOption_group_id():number{
-        return this.option_group_id;
-      }
-      get getEvent_group_id():number{
-        return this.event_group_id;
-      }
+      // get getOption_group_id():number{
+      //   return this.option_group_id;
+      // }
+      // get getEvent_group_id():number{
+      //   return this.event_group_id;
+      // }
       set setMenu_id(menu_id:number) {
         this.menu_id = menu_id;
       }
@@ -79,13 +80,13 @@ import { Store } from "../store/store.entity";
       set setState(state: boolean) {
        this.state = state;
       }
-      set setCategory_id(category_id:number) {
+      set setCategory_id(category_id : number) {
         this.category_id= category_id;
       }
-      set setOption_group_id(option_group_id:number){
-        this.option_group_id = option_group_id;
-      }
-      set setEvent_group_id(event_group_id : number){
-        this.event_group_id=event_group_id;
-      }
+      // set setOption_group_id(option_group_id:number){
+      //   this.option_group_id = option_group_id;
+      // }
+      // set setEvent_group_id(event_group_id : number){
+      //   this.event_group_id=event_group_id;
+      // }
     }

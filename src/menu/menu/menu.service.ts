@@ -22,8 +22,8 @@ export class MenuService {
         menu.setDesc = dto.desc;
         menu.setState = dto.state;
         menu.setCategory_id=dto.category_id;
-        menu.setEvent_group_id=dto.event_group_id;
-        menu.setOption_group_id=dto.option_group_id;
+        // menu.setEvent_group_id=dto.event_group_id;
+        // menu.setOption_group_id=dto.option_group_id;
         return menu;
       }
     
