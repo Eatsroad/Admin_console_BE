@@ -67,7 +67,7 @@ export class MenuController {
       @Body('menu') menu:MenuUpdateDto,
       @Param('optiongroupId') optiongroupId:number  
     ){
-      return this.menuService.updateOptionGroup(menuId, menu, optiongroupId)
+      return this.menuService.updateOptionGroup(menuId, menu, optiongroupId);
     }
     @Patch('/:menuId/category/categoryId')
     updateCategory(
@@ -75,7 +75,7 @@ export class MenuController {
       @Body('menu') menu:MenuUpdateDto,
       @Param('categoryId') categoryId:number  
     ){
-      return this.menuService.updateOptionGroup(menuId, menu,categoryId )
+      return this.menuService.updateOptionGroup(menuId, menu,categoryId );
     }
     @Patch('/:menuId/eventgroup/eventgroupId')
     updateEventgroup(
@@ -83,7 +83,7 @@ export class MenuController {
       @Body('menu') menu:MenuUpdateDto,
       @Param('eventgroupId') eventgroupId:number  
     ){
-      return this.menuService.updateOptionGroup(menuId, menu, eventgroupId)
+      return this.menuService.updateOptionGroup(menuId, menu, eventgroupId);
     }
 
 }

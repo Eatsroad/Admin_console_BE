@@ -64,7 +64,7 @@ export class MenuService {
           return new BasicMessageDto("Deleted Successfully.");
         } else throw new NotFoundException();
       }
-  //update시 메세지뜨도록추가,2.에러처리추가,3.menurepository활용하도록해보자
+  
        async updateCategory(menuId: number,
         dto: MenuUpdateDto, categoryId:number//update할 카테고리id
       ): Promise<BasicMessageDto> {
@@ -106,10 +106,9 @@ export class MenuService {
         if (result.affected !== 0) {
           return new BasicMessageDto("(EventGroup) Updated Successfully.");
         } else throw new NotFoundException();
-       
       }
-  //categoryid를삭제해서 null로 만든다.or softdelete공부해서 이용
-    async removeCategory(/*categoryId: number*/ dto:MenuUpdateDto, menuId:number): Promise<BasicMessageDto> {
+  //categoryid를삭제해서 null로 만든다. or 1.<<softdelete공부해서 이용>>
+    async removeCategory(dto:MenuUpdateDto, menuId:number): Promise<BasicMessageDto> {
       const result = await this.menuRepository
       .createQueryBuilder()
       .update("menus", { ...dto })
@@ -143,16 +142,16 @@ export class MenuService {
      return new BasicMessageDto("(Category) Deleted Successfully.");
     } else throw new NotFoundException();
   }
-
-  async removeEventgroup2(dto:MenuUpdateDto, menuId:number) /*Promise<BasicMessageDto>*/{
-    createConnection().then(async connection => {
-      await connection
-      .getRepository(Menu)
-      .createQueryBuilder()
-      .softDelete()
-    }).catch(error => console.log(error));
+//2.작동되는지 확인하기 3.createconnection에 대해서 알아보기
+  // async removeEventgroup2(dto:MenuUpdateDto, menuId:number) /*Promise<BasicMessageDto>*/{
+  //   createConnection().then(async connection => {
+  //     await connection
+  //     .getRepository(Menu)
+  //     .createQueryBuilder()
+  //     .softDelete()
+  //   }).catch(error => console.log(error));
     
-  }
+  // }
   
   
 }

@@ -269,7 +269,7 @@ describe('MenuService', () => {
 
     const updatedMenu = await menuRepository.findOne(savedMenu.getMenu_id);
     expect(updatedMenu.getEvent_group_id).toBe(updateDto.event_group_id);
-    //update되는 속성외 다른 속성을 그대로유지해주는 코드필요한지???
+    //update되는 속성외 다른 속성을 그대로유지해주는 코드필요한지???ex.user.service.spec.ts의 Onlynameupdate.
   });
   
 //제거 테스트 전체제거, 개별제거
@@ -283,35 +283,41 @@ describe('MenuService', () => {
     const menu = await menuRepository.findOne(savedUser.getMenu_id);
     expect(menu).toBeUndefined();
   });
-
+//
   it("Should remove menu(categoryId)", async () => {
-    const savedUser = await saveMenu();
+    const savedMenu = await saveMenu();
+    const updateDto = new MenuUpdateDto();
+    updateDto.category_id=111;
 
-    const response = await menuService.removeMenu(savedUser.getMenu_id);
+    const response = await menuService.removeCategory(updateDto,savedMenu.getMenu_id);
     expect(response).toBeInstanceOf(BasicMessageDto);
 
-    const menu = await menuRepository.findOne(savedUser.getMenu_id);
+    const menu = await menuRepository.findOne(savedMenu.getMenu_id);
     expect(menu).toBeUndefined();
   });
   
-  it("Should remove menu(categoryId)", async () => {
-    const savedUser = await saveMenu();
+  it("Should remove menu(optiongroupId)", async () => {
+    const savedMenu = await saveMenu();
+    const updateDto = new MenuUpdateDto();
+    updateDto.option_group_id=222;
 
-    const response = await menuService.removeMenu(savedUser.getMenu_id);
+    const response = await menuService.removeOptionGroup(updateDto, savedMenu.getMenu_id);
     expect(response).toBeInstanceOf(BasicMessageDto);
 
-    const menu = await menuRepository.findOne(savedUser.getMenu_id);
+    const menu = await menuRepository.findOne(savedMenu.getMenu_id);
     expect(menu).toBeUndefined();
   });
 
 
-  it("Should remove menu(categoryId)", async () => {
-    const savedUser = await saveMenu();
+  it("Should remove menu(eventgroupId)", async () => {
+    const savedMenu = await saveMenu();
+    const updateDto = new MenuUpdateDto();
+    updateDto.event_group_id=333;
 
-    const response = await menuService.removeMenu(savedUser.getMenu_id);
+    const response = await menuService.removeEventGroup(updateDto,savedMenu.getMenu_id);
     expect(response).toBeInstanceOf(BasicMessageDto);
 
-    const menu = await menuRepository.findOne(savedUser.getMenu_id);
+    const menu = await menuRepository.findOne(savedMenu.getMenu_id);
     expect(menu).toBeUndefined();
   });
 });

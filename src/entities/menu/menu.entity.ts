@@ -25,7 +25,7 @@ import { Store } from "../store/store.entity";
       @ManyToMany(type => Optiongroup, optiongroup => optiongroup.getOptiongroup_id)//cascade하면안됌
       option_group_id : Optiongroup:
 
-      @ManyToMany(type => Eventgroup, eventgroup => eventgroup.getEventgroup_id)
+      @ManyToMany(type => Eventgroup, eventgroup => eventgroup.getEventgroup_id)//cascade하면안됌
       event_group_id : Eventgroup;
 
       @Column({nullable : false})
