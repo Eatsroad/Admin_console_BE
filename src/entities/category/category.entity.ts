@@ -1,15 +1,8 @@
 import { 
     Column, 
-    CreateDateColumn, 
-    DeleteDateColumn, 
-    Entity,
-    ManyToMany,
-    ManyToOne,
-    OneToMany,
+    Entity, 
     PrimaryGeneratedColumn, 
-    UpdateDateColumn 
   } from "typeorm";
-import { Store } from "../store/store.entity";
 //테이블생성,get함수set함수생성
 
 export enum CategoryRole {
@@ -54,8 +47,6 @@ export enum CategoryRole {
       get getState(): boolean {
         return this.state;
       }
-      
-      
       set setCategory_id(category_id:number) {
         this.category_id = category_id;
       }

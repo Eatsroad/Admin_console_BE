@@ -37,20 +37,20 @@ export class MenuController {
       )  : Promise<BasicMessageDto>{
         return this.menuService.removeCategory(dto, menuId);
       }
-      @Delete('/:menuId/optiongroup/optiongroupId')
-    removeOptiongroup(
-        @Param('menuId', ParseIntPipe) menuId: number,
-        @Body() dto:MenuUpdateDto,
-      ) : Promise<BasicMessageDto> {
-        return this.menuService.removeOptionGroup(dto , menuId);
-      }
-      @Delete('/:menuId/eventgroup/eventgroupId')
-    removeEventgroup(
-        @Param('menuId', ParseIntPipe) menuId: number,
-        @Body() dto:MenuUpdateDto,
-      ) : Promise<BasicMessageDto> {
-        return this.menuService.removeEventGroup(dto, menuId);
-      }
+    //   @Delete('/:menuId/optiongroup/optiongroupId')
+    // removeOptiongroup(
+    //     @Param('menuId', ParseIntPipe) menuId: number,
+    //     @Body() dto:MenuUpdateDto,
+    //   ) : Promise<BasicMessageDto> {
+    //     return this.menuService.removeOptionGroup(dto , menuId);
+    //   }
+    //   @Delete('/:menuId/eventgroup/eventgroupId')
+    // removeEventgroup(
+    //     @Param('menuId', ParseIntPipe) menuId: number,
+    //     @Body() dto:MenuUpdateDto,
+    //   ) : Promise<BasicMessageDto> {
+    //     return this.menuService.removeEventGroup(dto, menuId);
+    //   }
 
 
       //전체업데이트, 개별업데이트
@@ -61,29 +61,29 @@ export class MenuController {
       ): Promise<BasicMessageDto> {
         return this.menuService.updateMenuInfo(menuId, dto);
       }  
-    @Patch('/:menuId/optiongroup/optiongroupId')
-    updateOptiongroup(
-      @Param('menuId') menuId: number,
-      @Body('menu') menu:MenuUpdateDto,
-      @Param('optiongroupId') optiongroupId:number  
-    ){
-      return this.menuService.updateOptionGroup(menuId, menu, optiongroupId);
-    }
+    // @Patch('/:menuId/optiongroup/optiongroupId')
+    // updateOptiongroup(
+    //   @Param('menuId') menuId: number,
+    //   @Body('menu') menu:MenuUpdateDto,
+    //   @Param('optiongroupId') optiongroupId:number  
+    // ){
+    //   return this.menuService.updateOptionGroup(menuId, menu, optiongroupId);
+    // }
     @Patch('/:menuId/category/categoryId')
     updateCategory(
       @Param('menuId') menuId: number,
       @Body('menu') menu:MenuUpdateDto,
       @Param('categoryId') categoryId:number  
     ){
-      return this.menuService.updateOptionGroup(menuId, menu,categoryId );
+      return this.menuService.updateCategory(menuId, menu,categoryId );
     }
-    @Patch('/:menuId/eventgroup/eventgroupId')
-    updateEventgroup(
-      @Param('menuId') menuId: number,
-      @Body('menu') menu:MenuUpdateDto,
-      @Param('eventgroupId') eventgroupId:number  
-    ){
-      return this.menuService.updateOptionGroup(menuId, menu, eventgroupId);
-    }
+    // @Patch('/:menuId/eventgroup/eventgroupId')
+    // updateEventgroup(
+    //   @Param('menuId') menuId: number,
+    //   @Body('menu') menu:MenuUpdateDto,
+    //   @Param('eventgroupId') eventgroupId:number  
+    // ){
+    //   return this.menuService.updateOptionGroup(menuId, menu, eventgroupId);
+    // }
 
 }

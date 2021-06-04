@@ -32,7 +32,7 @@ export class CategoryService {
         
       }
     
-      async getCategorynfo(categoryId: number): Promise<CategoryInfoResponseDto> {
+      async getCategoryInfo(categoryId: number): Promise<CategoryInfoResponseDto> {
         const category = await this.categoryRepository.findOne(categoryId);
         if (!!category) {
           return new CategoryInfoResponseDto(category);
@@ -55,7 +55,7 @@ export class CategoryService {
         } else throw new NotFoundException();
       }
       
-      async removeMenu(categoryId: number): Promise<BasicMessageDto> {
+      async removeCategory(categoryId: number): Promise<BasicMessageDto> {
         const result = await this.categoryRepository.delete(categoryId);
         if (result.affected !== 0) {
           return new BasicMessageDto("Deleted Successfully.");

@@ -23,10 +23,7 @@ import { Store } from "../store/store.entity";
       @OneToMany(type => Category, category => category.getCategory_id)
       category_id: number;
 
-      // @ManyToMany(type => Optiongroup, optiongroup => optiongroup.getOptiongroup_id)//cascade하면안됌
-      // option_group_id : Optiongroup:
-
-      // @ManyToMany(type => Eventgroup, eventgroup => eventgroup.getEventgroup_id)//cascade하면안됌
+      // @OneToMany(type => Eventgroup, eventgroup => eventgroup.getEventgroup_id)//cascade하면안됌
       // event_group_id : Eventgroup;
 
       @Column({nullable : false})
@@ -39,8 +36,14 @@ import { Store } from "../store/store.entity";
       private desc : string;
 
       @Column({nullable : false})
-      private state : boolean; 
+      private state : string; 
 
+      @Column({nullable : false})
+      private enable_time : number; 
+
+      get getStore_id() : number{
+        return this.store_id;
+      }
       get getMenu_id(): number {
         return this.menu_id;
       }
@@ -53,18 +56,22 @@ import { Store } from "../store/store.entity";
       get getDesc(): string {
         return this.desc;
       }
-      get getState(): boolean {
+      get getState(): string {
         return this.state;
       }
       get getCategory_id(): number {
         return this.category_id;
       }
-      // get getOption_group_id():number{
-      //   return this.option_group_id;
-      // }
+      get getEnable_time() : number{
+        return this.enable_time;
+      }
+      
       // get getEvent_group_id():number{
       //   return this.event_group_id;
       // }
+      set setStore_id (store_id : number){
+        this.store_id= store_id;
+      }
       set setMenu_id(menu_id:number) {
         this.menu_id = menu_id;
       }
@@ -77,15 +84,16 @@ import { Store } from "../store/store.entity";
       set setDesc(desc: string) {
         this.desc = desc;
       }
-      set setState(state: boolean) {
+      set setState(state: string) {
        this.state = state;
       }
+      set setEnable_time(enable_time: number) {
+        this.enable_time = enable_time;
+       }
       set setCategory_id(category_id : number) {
-        this.category_id= category_id;
+        this.category_id = category_id;
       }
-      // set setOption_group_id(option_group_id:number){
-      //   this.option_group_id = option_group_id;
-      // }
+      
       // set setEvent_group_id(event_group_id : number){
       //   this.event_group_id=event_group_id;
       // }
