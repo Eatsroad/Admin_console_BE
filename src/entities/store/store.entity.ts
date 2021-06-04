@@ -3,8 +3,10 @@ import {
   CreateDateColumn, 
   Entity, 
   ManyToOne, 
+  OneToMany, 
   PrimaryGeneratedColumn 
 } from "typeorm";
+import { Menu } from "../menu/menu.entity";
 import { User } from "../user/user.entity";
 
 @Entity({name: "stores"})
@@ -29,9 +31,18 @@ export class Store {
 
   @CreateDateColumn()
   private deleted_at: Date;
+
+  @Column({nullable : false})
+  private tables: number;
+
+  @Column({default: false})
+  private is_approved: boolean;
   
   @ManyToOne(type => User, user => user.getUser_id)
   user_id: User;
+
+  @OneToMany(() => Menu, menu => menu.getMenuId)
+  menu_id: Menu[];
   
   get getStore_id(): number {
     return this.store_id;
@@ -45,6 +56,9 @@ export class Store {
   get getPhone_number(): string {
     return this.phone_number;
   }
+  get getTables(): number{
+    return this.tables;
+  }
   get getCreated_at():Date {
     return this.created_at;
   }
@@ -54,5 +68,29 @@ export class Store {
   get getDeleted_at(): Date {
     return this.deleted_at;
   }
+  get getIsApproved(): boolean {
+    return this.is_approved;
+  }
 
+  set setName(name: string) {
+    this.name = name;
+  }
+  set setAddress(address: string) {
+    this.address = address;
+  }
+  set setPhone_number(phone_number: string) {
+    this.phone_number = phone_number;
+  }
+  set setTables(tables: number){
+    this.tables = tables;
+  }
+  set setDeletedAt(deleted_at: Date) {
+    this.deleted_at = deleted_at;
+  }
+  set setUpdatedAt(updated_at: Date) {
+    this.updated_at = updated_at;
+  }
+  set setIsApproved(is_approved: boolean) {
+    this.is_approved = is_approved;
+  }
 }

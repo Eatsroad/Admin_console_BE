@@ -20,7 +20,7 @@ export class UserModule {
           method: RequestMethod.POST,
         },
         {
-          path: "user/login",
+          path: "user/signin",
           method: RequestMethod.POST,
         }
       )
