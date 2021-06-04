@@ -22,11 +22,9 @@ describe('MenuService', () => {
   const PRICE = 5000;
   const DESC= 'vlvmdlvmrkm';
   const STATE= "true";
-  const CATEGORY_ID= 333;
   const ENABLE_TIME = 444;
   const STORE_ID = 555;
-  // const OPTION_GROUP_ID=222;
-  // const EVENT_GROUP_ID=111;
+  
 
   const saveMenu = async (): Promise<Menu> => {
     const savedMenu = new Menu();
@@ -75,12 +73,12 @@ describe('MenuService', () => {
 
   it("Should Save Menu", async() => {
     const dto = new MenuCreateDto();
-    dto.store_id=STORE_ID;
+    dto.storeId=STORE_ID;
     dto.name = NAME;
     dto.price = PRICE;
-    dto.desc = DESC;
+    dto.description = DESC;
     dto.state = STATE;
-    dto.category_id=CATEGORY_ID;
+    dto.categories=CATEGORY_ID;
     dto.enable_time=ENABLE_TIME;
     // dto.event_group_id=EVENT_GROUP_ID;
     // dto.option_group_id=OPTION_GROUP_ID;

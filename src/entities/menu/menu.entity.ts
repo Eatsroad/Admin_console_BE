@@ -7,7 +7,7 @@ import {
   OneToOne, 
   PrimaryGeneratedColumn 
 } from "typeorm";
-import { Category } from "../category/categoy.entity";
+import { Category } from "../category/category.entity";
 import { OptionGroup } from "../option/optionGroup.entity";
 import { Store } from "../store/store.entity";
 import { EnableTime } from "./enableTime.entity";
@@ -43,9 +43,11 @@ export class Menu {
   @JoinTable()
   optionGroups: OptionGroup[];
 
+
   get getMenuId(): number {
     return this.menu_id;
   }
+ 
   get getMenuName(): string {
     return this.name;
   }
@@ -59,6 +61,12 @@ export class Menu {
     return this.state;
   }
 
+  set setMenuId(menu_id: number){
+    this.menu_id=menu_id;  
+  }
+  set setStoreId(store_id:Store){
+    this.store_id = store_id;
+  }
   set setMenuName(name: string) {
     this.name = name;
   }
@@ -70,6 +78,15 @@ export class Menu {
   }
   set setMenuState(state: string) {
     this.state = state;
+  }
+  set setCategories(categories:Category[]){
+    this.categories = categories;
+  }
+  set setOptionGroups(optionGroups:OptionGroup[]){
+    this.optionGroups=optionGroups;
+  }
+  set setEnableTime(enable_time:EnableTime){
+    this.enable_time=enable_time;
   }
 }
 
