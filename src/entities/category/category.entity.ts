@@ -3,12 +3,11 @@ import {
     Entity, 
     PrimaryGeneratedColumn, 
   } from "typeorm";
-//테이블생성,get함수set함수생성
 
 export enum CategoryRole {
-    SET_1 = "SET_1",
-    SET_2 = "SET_2",
-    SET_3 = "SET_3",
+    BIG = "BIG",
+    SMALL = "SMALL",
+    ETC = "ETC",
   }
 
   @Entity({name: "categories"})
@@ -25,7 +24,7 @@ export enum CategoryRole {
       @Column({nullable: false, 
         type: "enum",
         enum: CategoryRole,
-        default: CategoryRole.SET_1,
+        default: CategoryRole.BIG,
         })
         private role: string;
 
