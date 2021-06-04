@@ -3,11 +3,11 @@ import {
   CreateDateColumn, 
   DeleteDateColumn, 
   Entity,
-  // OneToMany, 
+  OneToMany,
   PrimaryGeneratedColumn, 
   UpdateDateColumn 
 } from "typeorm";
-// import { Store } from "../store/store.entity";
+import { Store } from "../store/store.entity";
 
 export enum UserRole {
   USER = "USER",
@@ -47,8 +47,8 @@ export class User {
   @DeleteDateColumn()
   private deleted_at: Date;
 
-  // @OneToMany(type => Store, store => store.getStore_id)
-  // store_id: Store[];
+  @OneToMany(type => Store, store => store.getStore_id)
+  store_id: Store[];
 
   get getUser_id(): number {
     return this.user_id;
@@ -92,5 +92,11 @@ export class User {
   }
   set setUserRole(user_role: UserRole) {
    this.user_role = user_role;
+  }
+  set setDeletedAt(deleted_at: Date) {
+    this.deleted_at = deleted_at;
+  }
+  set setUpdatedAt(updated_at: Date) {
+    this.updated_at = updated_at;
   }
 }
