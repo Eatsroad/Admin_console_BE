@@ -9,7 +9,7 @@ import {
   OneToOne, 
   PrimaryGeneratedColumn 
 } from "typeorm";
-import { Category } from "../category/category.entity";
+import { Category } from "../category/categoy.entity";
 import { OptionGroup } from "../option/optionGroup.entity";
 import { Store } from "../store/store.entity";
 import { EnableTime } from "./enableTime.entity";
