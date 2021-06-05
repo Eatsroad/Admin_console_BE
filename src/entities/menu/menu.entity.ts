@@ -29,7 +29,7 @@ export class Menu {
   private description: string;
 
   @Column({default: true})
-  private state: boolean;
+  private state: string;
 
   @ManyToOne(() => Store, store => store.getStore_id)
   store_id: Store;
@@ -57,10 +57,19 @@ export class Menu {
   get getMenuDesc(): string {
     return this.description;
   }
-  get getMenuState(): boolean {
+  get getMenuState(): string {
     return this.state;
   }
+  get getCategories(): Category[] {
+    return this.categories;
+  }
 
+  set setMenuId(menu_id: number) {
+    this.menu_id=menu_id;
+  }
+  set setStoreId(store_id:Store){
+    this.store_id=store_id;
+  }
   set setMenuName(name: string) {
     this.name = name;
   }
@@ -70,7 +79,16 @@ export class Menu {
   set setMenuDesc(description: string) {
     this.description = description;
   }
-  set setMenuState(state: boolean) {
+  set setMenuState(state: string) {
     this.state = state;
+  }
+  set setEnableTime(enable_time:EnableTime){
+    this.enable_time = enable_time;
+  }
+  set setCategories(categories: Category[]){
+    this.categories = categories;
+  }
+  set setOptionGroups(optionGroups: OptionGroup[]){
+    this.optionGroups = optionGroups;
   }
 }

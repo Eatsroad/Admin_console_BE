@@ -1,6 +1,8 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put } from '@nestjs/common';
 import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
+import { Category } from 'src/entities/category/category.entity';
 import { Menu } from 'src/entities/menu/menu.entity';
+import { OptionGroup } from 'src/entities/option/optionGroup.entity';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
@@ -30,6 +32,7 @@ export class MenuController {
       ) {
         return this.menuService.removeMenu(menuId);
       }
+
       @Delete('/:menuId/category/categoryId')
     removeCategory(
         @Param('menuId', ParseIntPipe) menuId: number,
@@ -37,13 +40,15 @@ export class MenuController {
       )  : Promise<BasicMessageDto>{
         return this.menuService.removeCategory(dto, menuId);
       }
-    //   @Delete('/:menuId/optiongroup/optiongroupId')
-    // removeOptiongroup(
-    //     @Param('menuId', ParseIntPipe) menuId: number,
-    //     @Body() dto:MenuUpdateDto,
-    //   ) : Promise<BasicMessageDto> {
-    //     return this.menuService.removeOptionGroup(dto , menuId);
-    //   }
+    
+      @Delete('/:menuId/optiongroup/optiongroupId')
+    removeOptiongroup(
+        @Param('menuId', ParseIntPipe) menuId: number,
+        @Body() dto:MenuUpdateDto,
+      ) : Promise<BasicMessageDto> {
+        return this.menuService.removeOptionGroup(dto , menuId);
+      }
+
     //   @Delete('/:menuId/eventgroup/eventgroupId')
     // removeEventgroup(
     //     @Param('menuId', ParseIntPipe) menuId: number,
@@ -61,22 +66,25 @@ export class MenuController {
       ): Promise<BasicMessageDto> {
         return this.menuService.updateMenuInfo(menuId, dto);
       }  
-    // @Patch('/:menuId/optiongroup/optiongroupId')
-    // updateOptiongroup(
-    //   @Param('menuId') menuId: number,
-    //   @Body('menu') menu:MenuUpdateDto,
-    //   @Param('optiongroupId') optiongroupId:number  
-    // ){
-    //   return this.menuService.updateOptionGroup(menuId, menu, optiongroupId);
-    // }
+
+    @Patch('/:menuId/optiongroup/optiongroupId')
+    updateOptiongroup(
+      @Param('menuId') menuId: number,
+      @Body('menu') menu:MenuUpdateDto,
+      @Param('optiongroupId') optiongroupId:OptionGroup[]  
+    ){
+      return this.menuService.updateOptionGroup(menuId, menu, optiongroupId);
+    }
+
     @Patch('/:menuId/category/categoryId')
     updateCategory(
       @Param('menuId') menuId: number,
       @Body('menu') menu:MenuUpdateDto,
-      @Param('categoryId') categoryId:number  
+      @Param('categoryId') categoryId:Category[]  
     ){
-      return this.menuService.updateCategory(menuId, menu,categoryId );
+      return this.menuService.updateCategory(menuId, menu, categoryId );
     }
+    
     // @Patch('/:menuId/eventgroup/eventgroupId')
     // updateEventgroup(
     //   @Param('menuId') menuId: number,
