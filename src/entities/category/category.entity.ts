@@ -1,65 +1,46 @@
 import { 
-    Column, 
-    Entity, 
-    PrimaryGeneratedColumn, 
-  } from "typeorm";
+  Column,
+  Entity, 
+  JoinTable, 
+  ManyToMany, 
+  PrimaryGeneratedColumn 
+} from "typeorm";
+import { Menu } from "../menu/menu.entity";
 
-export enum CategoryRole {
-    BIG = "BIG",
-    SMALL = "SMALL",
-    ETC = "ETC",
+@Entity({name: "categories"})
+export class Category {
+  @PrimaryGeneratedColumn()
+  private category_id: number;
+
+  @Column({nullable: false})
+  private name: string;
+
+  @Column({nullable: true})
+  private description: string;
+
+  @Column({default: true})
+  private state: boolean;
+
+  get getCategoryId(): number {
+    return this.category_id;
+  }
+  get getCategoryName(): string {
+    return this.name;
+  }
+  get getCategoryDesc(): string {
+    return this.description;
+  }
+  get getCategoryState(): boolean {
+    return this.state;
   }
 
-  @Entity({name: "categories"})
-  export class Category{
-      @PrimaryGeneratedColumn()
-      private category_id: number;
-
-      @Column({nullable : false})
-      private name : string;
-
-      @Column({nullable : false})
-      private desc : string;
-
-      @Column({nullable: false, 
-        type: "enum",
-        enum: CategoryRole,
-        default: CategoryRole.BIG,
-        })
-        private role: string;
-
-      @Column({nullable : false})
-      private state : boolean; 
-
-      get getCategory_id(): number {
-        return this.category_id;
-      }
-      get getName(): string {
-        return this.name;
-      }
-      get getDesc(): string {
-        return this.desc;
-      }
-      get getRole(): string {
-        return this.role;
-      }
-      get getState(): boolean {
-        return this.state;
-      }
-      set setCategory_id(category_id:number) {
-        this.category_id = category_id;
-      }
-      set setName(name: string) {
-        this.name = name;
-      }
-      set setDesc(desc: string) {
-        this.desc = desc;
-      }
-      set setRole(role: CategoryRole){
-        this.role = role;
-      }
-      set setState(state: boolean) {
-       this.state = state;
-      }
-      
-    }
+  set setCategoryName(name: string) {
+    this.name = name;
+  }
+  set setCategoryDesc(description: string) {
+    this.description = description;
+  }
+  set setCategoryState(state: boolean) {
+    this.state = state;
+  }
+}

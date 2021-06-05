@@ -1,3 +1,5 @@
+import { ShutdownSignal } from "@nestjs/common";
+import { isHexColor } from "class-validator";
 import { 
   Column,
   Entity, 
@@ -27,7 +29,7 @@ export class Menu {
   private description: string;
 
   @Column({default: true})
-  private state: string;
+  private state: boolean;
 
   @ManyToOne(() => Store, store => store.getStore_id)
   store_id: Store;
@@ -43,11 +45,9 @@ export class Menu {
   @JoinTable()
   optionGroups: OptionGroup[];
 
-
   get getMenuId(): number {
     return this.menu_id;
   }
- 
   get getMenuName(): string {
     return this.name;
   }
@@ -57,16 +57,10 @@ export class Menu {
   get getMenuDesc(): string {
     return this.description;
   }
-  get getMenuState(): string {
+  get getMenuState(): boolean {
     return this.state;
   }
 
-  set setMenuId(menu_id: number){
-    this.menu_id=menu_id;  
-  }
-  set setStoreId(store_id:Store){
-    this.store_id = store_id;
-  }
   set setMenuName(name: string) {
     this.name = name;
   }
@@ -76,17 +70,7 @@ export class Menu {
   set setMenuDesc(description: string) {
     this.description = description;
   }
-  set setMenuState(state: string) {
+  set setMenuState(state: boolean) {
     this.state = state;
   }
-  set setCategories(categories:Category[]){
-    this.categories = categories;
-  }
-  set setOptionGroups(optionGroups:OptionGroup[]){
-    this.optionGroups=optionGroups;
-  }
-  set setEnableTime(enable_time:EnableTime){
-    this.enable_time=enable_time;
-  }
 }
-

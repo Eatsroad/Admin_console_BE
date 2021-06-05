@@ -13,7 +13,7 @@ import { generateAccessToken } from 'src/utils/auth/jwt-token-util';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>//이제userrepository를 통해 users테이블에 대해 crud작업을 수행할수있다.
+    @InjectRepository(User) private readonly userRepository: Repository<User>
   ) {}
 
   private userCreateDtoToEntity = (dto: UserCreateDto): User => {
