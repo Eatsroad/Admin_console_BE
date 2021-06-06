@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.67% </span>
+                <span class="strong">63.89% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>20/30</span>
+                <span class='fraction'>23/36</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">31.58% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/15</span>
+                <span class='fraction'>6/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.29% </span>
+                <span class="strong">63.64% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/28</span>
+                <span class='fraction'>21/33</span>
             </div>
         
             
@@ -151,7 +151,14 @@
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
 <a name='L94'></a><a href='#L94'>94</a>
-<a name='L95'></a><a href='#L95'>95</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -160,7 +167,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -188,8 +195,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -200,7 +205,10 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -241,6 +249,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -250,18 +264,18 @@
   CreateDateColumn, 
   DeleteDateColumn, 
   Entity,
-  // OneToMany, 
+  OneToMany,
   PrimaryGeneratedColumn, 
   UpdateDateColumn 
 } from "typeorm";
-// import { Store } from "../store/store.entity";
+import { Store } from "../store/store.entity";
 &nbsp;
 export enum UserRole {
   USER = "USER",
   ADMIN = "ADMIN",
 }
 &nbsp;
-@Entity({name: "users"})//name=실제테이블명 지정,테이블명은 users가 된다.
+@Entity({name: "users"})
 export class User {
   @PrimaryGeneratedColumn()
   private user_id: number;
@@ -269,7 +283,7 @@ export class User {
   @Column({nullable: false})
   private name: string;
 &nbsp;
-  @Column({nullable: false, unique: true})//nullable(null값가질수있는지),unique(유니크제약가지는지)는 속성,
+  @Column({nullable: false, unique: true})
   private email: string;
 &nbsp;
   @Column({nullable: false})
@@ -281,7 +295,8 @@ export class User {
   @Column({nullable: false, 
     type: "enum",
     enum: UserRole,
-    default: UserRole.USER})
+    default: UserRole.USER
+  })
   private user_role: UserRole;
 &nbsp;
   @CreateDateColumn()
@@ -293,8 +308,8 @@ export class User {
   @DeleteDateColumn()
   private deleted_at: Date;
 &nbsp;
-  // @OneToMany(type =&gt; Store, store =&gt; store.getStore_id)
-  // store_id: Store[];
+  @OneToMany(type =&gt; Store, <span class="fstat-no" title="function not covered" >store </span>=&gt; <span class="cstat-no" title="statement not covered" >store.getStore_id)</span>
+  store_id: Store[];
 &nbsp;
 <span class="fstat-no" title="function not covered" >  get g</span>etUser_id(): number {
 <span class="cstat-no" title="statement not covered" >    return this.user_id;</span>
@@ -339,6 +354,12 @@ export class User {
 <span class="fstat-no" title="function not covered" >  set s</span>etUserRole(user_role: UserRole) {
 <span class="cstat-no" title="statement not covered" >   this.user_role = user_role;</span>
   }
+<span class="fstat-no" title="function not covered" >  set s</span>etDeletedAt(deleted_at: Date) {
+<span class="cstat-no" title="statement not covered" >    this.deleted_at = deleted_at;</span>
+  }
+<span class="fstat-no" title="function not covered" >  set s</span>etUpdatedAt(updated_at: Date) {
+<span class="cstat-no" title="statement not covered" >    this.updated_at = updated_at;</span>
+  }
 }</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -346,7 +367,7 @@ export class User {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Jun 04 2021 17:04:04 GMT+0900 (대한민국 표준시)
+                at Sun Jun 06 2021 19:13:01 GMT+0900 (대한민국 표준시)
             </div>
         </div>
         <script src="../../../prettify.js"></script>

@@ -1,10 +1,11 @@
+import { InMemoryDBEntity } from "@nestjs-addons/in-memory-db";
 import { Category } from "src/entities/category/category.entity";
 import { EnableTime } from "src/entities/menu/enableTime.entity";
 import { Menu } from "src/entities/menu/menu.entity";
 import { OptionGroup } from "src/entities/option/optionGroup.entity";
 import { Store } from "src/entities/store/store.entity";
 
-export class MenuInfoResponseDto{
+export class MenuInfoResponseDto {
     constructor(menu : Menu){
         this.menu_id = menu.getMenuId;
         this.store_id = menu.store_id;
@@ -27,3 +28,4 @@ export class MenuInfoResponseDto{
     categories : Category[];
     enable_time:EnableTime;
 }
+

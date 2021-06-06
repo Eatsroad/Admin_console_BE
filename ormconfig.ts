@@ -8,4 +8,5 @@ module.exports = {
   entities: [ 'dist/**/*.entity{.ts,.js}'],
   synchronize: false,
   type: 'mariadb',
+  module: 
 };

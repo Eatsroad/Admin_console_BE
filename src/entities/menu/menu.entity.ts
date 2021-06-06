@@ -13,6 +13,7 @@ import { Category } from "../category/category.entity";
 import { OptionGroup } from "../option/optionGroup.entity";
 import { Store } from "../store/store.entity";
 import { EnableTime } from "./enableTime.entity";
+import { InMemoryDBEntity, InMemoryDBModule } from '@nestjs-addons/in-memory-db';
 
 @Entity({name: "menus"})
 export class Menu {
@@ -62,6 +63,9 @@ export class Menu {
   }
   get getCategories(): Category[] {
     return this.categories;
+  }
+  get getOptionGroup() : OptionGroup[]{
+    return this.optionGroups;
   }
 
   set setMenuId(menu_id: number) {

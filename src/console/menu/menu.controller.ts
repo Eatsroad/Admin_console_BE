@@ -1,17 +1,23 @@
+import { InjectInMemoryDBService, InMemoryDBEntityController, InMemoryDBService } from '@nestjs-addons/in-memory-db';
+import { InMemoryDBModule } from '@nestjs-addons/in-memory-db/src/interfaces/in-memory-db-entity';
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put } from '@nestjs/common';
 import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
 import { Category } from 'src/entities/category/category.entity';
 import { Menu } from 'src/entities/menu/menu.entity';
+import { MenuEntity } from 'src/entities/menu/unittest.menu.entity';
 import { OptionGroup } from 'src/entities/option/optionGroup.entity';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
 import { MenuService } from './menu.service';
 
+
 @Controller('menu')
 export class MenuController {
     constructor(
-        private readonly menuService: MenuService,
+        @InjectInMemoryDBService('menu') private menuService: MenuService,
+        
+        //private readonly menuService: MenuService, 
     ) {}
 
     @Post()
@@ -33,7 +39,7 @@ export class MenuController {
         return this.menuService.removeMenu(menuId);
       }
 
-      @Delete('/:menuId/category/categoryId')
+    @Delete('/:menuId/category/categoryId')
     removeCategory(
         @Param('menuId', ParseIntPipe) menuId: number,
         @Body() dto:MenuUpdateDto,
@@ -41,7 +47,7 @@ export class MenuController {
         return this.menuService.removeCategory(dto, menuId);
       }
     
-      @Delete('/:menuId/optiongroup/optiongroupId')
+    @Delete('/:menuId/optiongroup/optiongroupId')
     removeOptiongroup(
         @Param('menuId', ParseIntPipe) menuId: number,
         @Body() dto:MenuUpdateDto,
@@ -49,13 +55,7 @@ export class MenuController {
         return this.menuService.removeOptionGroup(dto , menuId);
       }
 
-    //   @Delete('/:menuId/eventgroup/eventgroupId')
-    // removeEventgroup(
-    //     @Param('menuId', ParseIntPipe) menuId: number,
-    //     @Body() dto:MenuUpdateDto,
-    //   ) : Promise<BasicMessageDto> {
-    //     return this.menuService.removeEventGroup(dto, menuId);
-    //   }
+    
 
 
       //전체업데이트, 개별업데이트
@@ -84,14 +84,9 @@ export class MenuController {
     ){
       return this.menuService.updateCategory(menuId, menu, categoryId );
     }
+
     
-    // @Patch('/:menuId/eventgroup/eventgroupId')
-    // updateEventgroup(
-    //   @Param('menuId') menuId: number,
-    //   @Body('menu') menu:MenuUpdateDto,
-    //   @Param('eventgroupId') eventgroupId:number  
-    // ){
-    //   return this.menuService.updateOptionGroup(menuId, menu, eventgroupId);
-    // }
 
 }
+
+

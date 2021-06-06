@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">56.52% </span>
+                <span class="strong">53.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/23</span>
+                <span class='fraction'>8/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">9.09% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/11</span>
+                <span class='fraction'>0/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.38% </span>
+                <span class="strong">46.15% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/21</span>
+                <span class='fraction'>6/13</span>
             </div>
         
             
@@ -103,36 +103,13 @@
 <a name='L44'></a><a href='#L44'>44</a>
 <a name='L45'></a><a href='#L45'>45</a>
 <a name='L46'></a><a href='#L46'>46</a>
-<a name='L47'></a><a href='#L47'>47</a>
-<a name='L48'></a><a href='#L48'>48</a>
-<a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a>
-<a name='L53'></a><a href='#L53'>53</a>
-<a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a>
-<a name='L66'></a><a href='#L66'>66</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L47'></a><a href='#L47'>47</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -142,13 +119,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -168,14 +138,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -188,78 +150,59 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { 
-    Column, 
-    Entity, 
-    PrimaryGeneratedColumn, 
-  } from "typeorm";
-//테이블생성,get함수set함수생성
+  Column,
+  Entity, 
+  JoinTable, 
+  ManyToMany, 
+  PrimaryGeneratedColumn 
+} from "typeorm";
+import { Menu } from "../menu/menu.entity";
 &nbsp;
-export enum CategoryRole {
-    SET_1 = "SET_1",
-    SET_2 = "SET_2",
-    SET_3 = "SET_3",
+@Entity({name: "categories"})
+export class Category {
+  @PrimaryGeneratedColumn()
+  private category_id: number;
+&nbsp;
+  @Column({nullable: false})
+  private name: string;
+&nbsp;
+  @Column({nullable: true})
+  private description: string;
+&nbsp;
+  @Column({default: true})
+  private state: string;
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get g</span>etCategoryId(): number {
+<span class="cstat-no" title="statement not covered" >    return this.category_id;</span>
+  }
+<span class="fstat-no" title="function not covered" >  get g</span>etCategoryName(): string {
+<span class="cstat-no" title="statement not covered" >    return this.name;</span>
+  }
+<span class="fstat-no" title="function not covered" >  get g</span>etCategoryDesc(): string {
+<span class="cstat-no" title="statement not covered" >    return this.description;</span>
+  }
+<span class="fstat-no" title="function not covered" >  get g</span>etCategoryState(): string {
+<span class="cstat-no" title="statement not covered" >    return this.state;</span>
   }
 &nbsp;
-  @Entity({name: "categories"})
-  export class Category{
-      @PrimaryGeneratedColumn()
-      private category_id: number;
-&nbsp;
-      @Column({nullable : false})
-      private name : string;
-&nbsp;
-      @Column({nullable : false})
-      private desc : string;
-&nbsp;
-      @Column({nullable: false, 
-        type: "enum",
-        enum: CategoryRole,
-        default: CategoryRole.SET_1,
-        })
-        private role: string;
-&nbsp;
-      @Column({nullable : false})
-      private state : boolean; 
-&nbsp;
-<span class="fstat-no" title="function not covered" >      get g</span>etCategory_id(): number {
-<span class="cstat-no" title="statement not covered" >        return this.category_id;</span>
-      }
-<span class="fstat-no" title="function not covered" >      get g</span>etName(): string {
-<span class="cstat-no" title="statement not covered" >        return this.name;</span>
-      }
-<span class="fstat-no" title="function not covered" >      get g</span>etDesc(): string {
-<span class="cstat-no" title="statement not covered" >        return this.desc;</span>
-      }
-<span class="fstat-no" title="function not covered" >      get g</span>etRole(): string {
-<span class="cstat-no" title="statement not covered" >        return this.role;</span>
-      }
-<span class="fstat-no" title="function not covered" >      get g</span>etState(): boolean {
-<span class="cstat-no" title="statement not covered" >        return this.state;</span>
-      }
-<span class="fstat-no" title="function not covered" >      set s</span>etCategory_id(category_id:number) {
-<span class="cstat-no" title="statement not covered" >        this.category_id = category_id;</span>
-      }
-<span class="fstat-no" title="function not covered" >      set s</span>etName(name: string) {
-<span class="cstat-no" title="statement not covered" >        this.name = name;</span>
-      }
-<span class="fstat-no" title="function not covered" >      set s</span>etDesc(desc: string) {
-<span class="cstat-no" title="statement not covered" >        this.desc = desc;</span>
-      }
-<span class="fstat-no" title="function not covered" >      set s</span>etRole(role: CategoryRole){
-<span class="cstat-no" title="statement not covered" >        this.role = role;</span>
-      }
-<span class="fstat-no" title="function not covered" >      set s</span>etState(state: boolean) {
-<span class="cstat-no" title="statement not covered" >       this.state = state;</span>
-      }
-      
-    }</pre></td></tr></table></pre>
+<span class="fstat-no" title="function not covered" >  set s</span>etCategoryName(name: string) {
+<span class="cstat-no" title="statement not covered" >    this.name = name;</span>
+  }
+<span class="fstat-no" title="function not covered" >  set s</span>etCategoryDesc(description: string) {
+<span class="cstat-no" title="statement not covered" >    this.description = description;</span>
+  }
+<span class="fstat-no" title="function not covered" >  set s</span>etCategoryState(state: string) {
+<span class="cstat-no" title="statement not covered" >    this.state = state;</span>
+  }
+}
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Jun 04 2021 17:04:04 GMT+0900 (대한민국 표준시)
+                at Sun Jun 06 2021 19:13:01 GMT+0900 (대한민국 표준시)
             </div>
         </div>
         <script src="../../../prettify.js"></script>

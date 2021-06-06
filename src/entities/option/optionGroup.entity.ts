@@ -13,7 +13,7 @@ export class OptionGroup {
   private description: string;
 
   @Column({default: true})
-  private state: boolean;
+  private state: string;
 
   @OneToMany(() => Option, option => option.getOptionId)
   option_id: Option[];
@@ -27,7 +27,7 @@ export class OptionGroup {
   get getOptionGroupDesc(): string {
     return this.description;
   }
-  get getOptionGroupState(): boolean {
+  get getOptionGroupState(): string {
     return this.state;
   }
 
@@ -37,7 +37,7 @@ export class OptionGroup {
   set setOptionGroupDesc(description: string) {
     this.description = description;
   }
-  set setOptionGroupState(state: boolean) {
+  set setOptionGroupState(state: string) {
     this.state = state;
   }
 }
