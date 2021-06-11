@@ -1,5 +1,3 @@
-import { ShutdownSignal } from "@nestjs/common";
-import { isHexColor } from "class-validator";
 import { 
   Column,
   Entity, 
@@ -29,7 +27,7 @@ export class Menu {
   private description: string;
 
   @Column({default: true})
-  private state: boolean;
+  private state: string;
 
   @ManyToOne(() => Store, store => store.getStore_id)
   store_id: Store;
@@ -57,7 +55,7 @@ export class Menu {
   get getMenuDesc(): string {
     return this.description;
   }
-  get getMenuState(): boolean {
+  get getMenuState(): string {
     return this.state;
   }
 
@@ -70,7 +68,7 @@ export class Menu {
   set setMenuDesc(description: string) {
     this.description = description;
   }
-  set setMenuState(state: boolean) {
+  set setMenuState(state: string) {
     this.state = state;
   }
 }
