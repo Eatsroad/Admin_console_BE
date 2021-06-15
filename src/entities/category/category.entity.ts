@@ -30,6 +30,7 @@ export class Category {
   get getCategoryDesc(): string {
     return this.description;
   }
+  
   get getCategoryState(): string {
     return this.state;
   }
@@ -40,6 +41,7 @@ export class Category {
   set setCategoryDesc(description: string) {
     this.description = description;
   }
+  
   set setCategoryState(state: string) {
     this.state = state;
   }

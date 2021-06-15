@@ -5,7 +5,7 @@ import { ConsoleModule } from './console/console.module';
 import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(), InMemoryDBModule.forRoot({}), UserModule, ConsoleModule],
+  imports: [TypeOrmModule.forRoot(), UserModule, ConsoleModule],
   controllers: [],
   providers: [],
 })
