@@ -13,7 +13,6 @@ import { Category } from "../category/category.entity";
 import { OptionGroup } from "../option/optionGroup.entity";
 import { Store } from "../store/store.entity";
 import { EnableTime } from "./enableTime.entity";
-import { InMemoryDBEntity, InMemoryDBModule } from '@nestjs-addons/in-memory-db';
 
 @Entity({name: "menus"})
 export class Menu {

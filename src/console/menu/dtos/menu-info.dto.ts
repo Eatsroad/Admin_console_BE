@@ -1,4 +1,4 @@
-import { InMemoryDBEntity } from "@nestjs-addons/in-memory-db";
+
 import { Category } from "src/entities/category/category.entity";
 import { EnableTime } from "src/entities/menu/enableTime.entity";
 import { Menu } from "src/entities/menu/menu.entity";
