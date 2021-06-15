@@ -24,13 +24,13 @@ export class StoreService {
 
             )
     }
-    private isPhoneNumberUsed = async(phoneNumber : string): Promise<boolean>=>{
+    private isPhoneNumberUsed = async(phone_number : string): Promise<boolean>=>{
         return(
             (await this.storeRepository
                 .createQueryBuilder()
                 .select("s.store_id")
                 .from(Store, "s")
-                .where("s.phone_number = :phone_number", {phoneNumber})
+                .where("s.phone_number = :phone_number", {phone_number})
                 .getOne()) !==undefined
 
             )

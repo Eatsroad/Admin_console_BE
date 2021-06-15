@@ -38,11 +38,11 @@ export class Store {
   @Column({default: false})
   private is_approved: boolean;
   
-  @ManyToOne(type => User, user => user.getUser_id)
-  user_id: User;
+  //@ManyToOne(type => User, user => user.getUser_id)
+  //user_id: User;
 
-  @OneToMany(() => Menu, menu => menu.getMenuId)
-  menu_id: Menu[];
+  //@OneToMany(() => Menu, menu => menu.getMenuId)
+  //menu_id: Menu[];
   
   get getStore_id(): number {
     return this.store_id;
