@@ -7,12 +7,12 @@ import { Store } from "src/entities/store/store.entity";
 export class MenuCreateDto{
     @IsNumber()
     menu_id: number;
-    @IsNumber()
-    store_id:Store;
-    @IsNumber()
-    categories: Category[];
-    @IsNumber()
-    optionGroups:OptionGroup[];
+    // @IsNumber()
+    // store_id:Store;
+    // @IsNumber()
+    // categories: Category[];
+    // @IsNumber()
+    // optionGroups:OptionGroup[];
     @IsString()
     name: string;
     @IsNumber()
@@ -21,6 +21,6 @@ export class MenuCreateDto{
     description: string;
     @IsString()
     state: string;
-    @IsNumber()
-    enable_time:EnableTime;
+    // @IsNumber()
+    // enable_time:EnableTime;
 }

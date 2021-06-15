@@ -8,15 +8,15 @@ import { Store } from "src/entities/store/store.entity";
 export class MenuInfoResponseDto {
     constructor(menu : Menu){
         this.menu_id = menu.getMenuId;
-        this.store_id = menu.store_id;
+        //this.store_id = menu.store_id;
         this.name = menu.getMenuName;
         this.price = menu.getMenuPrice;
         this.description = menu.getMenuDesc;
         this.state= menu.getMenuState;
-        this.categories = menu.categories;
-        this.enable_time = menu.enable_time;
-        this.optionGroups = menu.optionGroups;
-        // this.event_group_id=menu.getEvent_group_id;
+        // this.categories = menu.categories;
+        //this.enable_time = menu.enable_time;
+        // this.optionGroups = menu.optionGroups;
+        
     }
     menu_id: number;
     store_id:Store;
@@ -24,8 +24,8 @@ export class MenuInfoResponseDto {
     price: number;
     description: string;
     state: string;
-    optionGroups:OptionGroup[];
-    categories : Category[];
+    // optionGroups:OptionGroup[];
+    // categories : Category[];
     enable_time:EnableTime;
 }
 

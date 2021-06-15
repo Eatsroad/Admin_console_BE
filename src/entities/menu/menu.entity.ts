@@ -32,19 +32,19 @@ export class Menu {
   @Column({default: true})
   private state: string;
 
-  @ManyToOne(() => Store, store => store.getStore_id)
-  store_id: Store;
+  // @ManyToOne(() => Store, store => store.getStore_id)
+  // store_id: Store;
 
-  @OneToOne(() => EnableTime, enableTime => enableTime.getEnableTimeId)
-  enable_time: EnableTime;
+  // @OneToOne(() => EnableTime, enableTime => enableTime.getEnableTimeId)
+  // enable_time: EnableTime;
 
-  @ManyToMany(() => Category)
-  @JoinTable()
-  categories: Category[];
+  // @ManyToMany(() => Category)
+  // @JoinTable()
+  // categories: Category[];
   
-  @ManyToMany(() => OptionGroup)
-  @JoinTable()
-  optionGroups: OptionGroup[];
+  // @ManyToMany(() => OptionGroup)
+  // @JoinTable()
+  // optionGroups: OptionGroup[];
 
   get getMenuId(): number {
     return this.menu_id;
@@ -61,19 +61,19 @@ export class Menu {
   get getMenuState(): string {
     return this.state;
   }
-  get getCategories(): Category[] {
-    return this.categories;
-  }
-  get getOptionGroup() : OptionGroup[]{
-    return this.optionGroups;
-  }
+  // get getCategories(): Category[] {
+  //   return this.categories;
+  // }
+  // get getOptionGroup() : OptionGroup[]{
+  //   return this.optionGroups;
+  // }
 
   set setMenuId(menu_id: number) {
     this.menu_id=menu_id;
   }
-  set setStoreId(store_id:Store){
-    this.store_id=store_id;
-  }
+  // set setStoreId(store_id:Store){
+  //   this.store_id=store_id;
+  // }
   set setMenuName(name: string) {
     this.name = name;
   }
@@ -86,13 +86,13 @@ export class Menu {
   set setMenuState(state: string) {
     this.state = state;
   }
-  set setEnableTime(enable_time:EnableTime){
-    this.enable_time = enable_time;
-  }
-  set setCategories(categories: Category[]){
-    this.categories = categories;
-  }
-  set setOptionGroups(optionGroups: OptionGroup[]){
-    this.optionGroups = optionGroups;
-  }
+  // set setEnableTime(enable_time:EnableTime){
+  //   this.enable_time = enable_time;
+  // }
+  // set setCategories(categories: Category[]){
+  //   this.categories = categories;
+  // }
+  // set setOptionGroups(optionGroups: OptionGroup[]){
+  //   this.optionGroups = optionGroups;
+  // }
 }

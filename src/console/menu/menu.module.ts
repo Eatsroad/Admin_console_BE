@@ -6,7 +6,7 @@ import { MenuService } from './menu.service';
 import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
 
 @Module({
-    imports:[TypeOrmModule.forFeature([Menu]),InMemoryDBModule.forFeature('menu',{}) ],
+    imports:[TypeOrmModule.forFeature([Menu])],
     controllers: [MenuController],
     providers: [MenuService],
 })
