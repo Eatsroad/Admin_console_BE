@@ -34,10 +34,6 @@ export class Menu {
 
   @OneToOne(() => EnableTime, enableTime => enableTime.getEnableTimeId)
   enable_time: EnableTime;
-
-  @ManyToMany(() => Category)
-  @JoinTable()
-  categories: Category[];
   
   @ManyToMany(() => OptionGroup)
   @JoinTable()

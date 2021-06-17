@@ -3,6 +3,7 @@ import {
   CreateDateColumn, 
   DeleteDateColumn, 
   Entity,
+  JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn, 
   UpdateDateColumn 
@@ -32,11 +33,11 @@ export class User {
   private password: string;
 
   @Column({nullable: false, 
-    type: "enum",
-    enum: UserRole,
-    default: UserRole.USER
+    // type: "enum",
+    // enum: UserRole,
+    // default: UserRole.USER
   })
-  private user_role: UserRole;
+  private user_role: string;
 
   @CreateDateColumn()
   private created_at: Date;
@@ -47,8 +48,8 @@ export class User {
   @DeleteDateColumn()
   private deleted_at: Date;
 
-  @OneToMany(type => Store, store => store.getStore_id)
-  store_id: Store[];
+  @OneToMany(() => Store, store => store.user)
+  stores: Store[];
 
   get getUser_id(): number {
     return this.user_id;
@@ -90,7 +91,7 @@ export class User {
   set setPassword(password: string) {
     this.password = password;
   }
-  set setUserRole(user_role: UserRole) {
+  set setUserRole(user_role: string) {
    this.user_role = user_role;
   }
   set setDeletedAt(deleted_at: Date) {

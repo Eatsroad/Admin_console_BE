@@ -2,11 +2,11 @@ import {
   Column, 
   CreateDateColumn, 
   Entity, 
+  JoinColumn, 
   ManyToOne, 
   OneToMany, 
   PrimaryGeneratedColumn 
 } from "typeorm";
-import { Menu } from "../menu/menu.entity";
 import { User } from "../user/user.entity";
 
 @Entity({name: "stores"})
@@ -29,7 +29,7 @@ export class Store {
   @CreateDateColumn()
   private updated_at: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn()v
   private deleted_at: Date;
 
   @Column({nullable : false})
@@ -38,11 +38,8 @@ export class Store {
   @Column({default: false})
   private is_approved: boolean;
   
-  @ManyToOne(type => User, user => user.getUser_id)
-  user_id: User;
-
-  @OneToMany(() => Menu, menu => menu.getMenuId)
-  menu_id: Menu[];
+  @ManyToOne(() => User, user => user.stores)
+  user: User;
   
   get getStore_id(): number {
     return this.store_id;

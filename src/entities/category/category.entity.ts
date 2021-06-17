@@ -1,6 +1,7 @@
 import { 
   Column,
   Entity, 
+  JoinColumn, 
   JoinTable, 
   ManyToMany, 
   PrimaryGeneratedColumn 
@@ -20,6 +21,10 @@ export class Category {
 
   @Column({default: true})
   private state: boolean;
+
+  @ManyToMany(() => Menu)
+  @JoinTable()
+  menus: Menu[];
 
   get getCategoryId(): number {
     return this.category_id;
