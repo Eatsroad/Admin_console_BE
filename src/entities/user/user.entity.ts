@@ -47,8 +47,8 @@ export class User {
   @DeleteDateColumn()
   private deleted_at: Date;
 
-  // @OneToMany(type => Store, store => store.getStore_id)
-  // store_id: Store[];
+  @OneToMany(type => Store, store => store.getStore_id)
+  store_id: Store[];
 
   get getUser_id(): number {
     return this.user_id;

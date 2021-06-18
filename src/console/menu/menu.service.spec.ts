@@ -2,7 +2,13 @@ import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
+import { Category } from 'src/entities/category/category.entity';
+import { EnableTime } from 'src/entities/menu/enableTime.entity';
 import { Menu } from 'src/entities/menu/menu.entity';
+import { Option } from 'src/entities/option/option.entity';
+import { OptionGroup } from 'src/entities/option/optionGroup.entity';
+import { Store } from 'src/entities/store/store.entity';
+import { User } from 'src/entities/user/user.entity';
 import { createMemoryDB } from 'src/utils/connections/create-memory-db';
 import { Connection, Repository } from 'typeorm';
 import { MenuCreateDto } from './dtos/create-menu.dto';
@@ -29,7 +35,6 @@ describe('MenuService', () => {
 
   const saveMenu = async (): Promise<Menu> => {
     const savedMenu = new Menu();
-    
     savedMenu.setMenuName = NAME;
     savedMenu.setMenuPrice = PRICE;
     savedMenu.setMenuDesc = DESC;
@@ -38,7 +43,7 @@ describe('MenuService', () => {
   };
   
   beforeAll(async () => {
-    connection = await createMemoryDB([Menu]);
+    connection = await createMemoryDB([Menu,Store,User,Option,OptionGroup,Category,EnableTime]);
     menuRepository = await connection.getRepository(Menu);
     menuService = new MenuService(menuRepository);
   });

@@ -8,7 +8,7 @@ import { Store } from "src/entities/store/store.entity";
 export class MenuInfoResponseDto {
     constructor(menu : Menu){
         this.menu_id = menu.getMenuId;
-        //this.store_id = menu.store_id;
+        this.store_id= menu.getStoreId;
         this.name = menu.getMenuName;
         this.price = menu.getMenuPrice;
         this.description = menu.getMenuDesc;
@@ -16,16 +16,16 @@ export class MenuInfoResponseDto {
         // this.categories = menu.categories;
         //this.enable_time = menu.enable_time;
         // this.optionGroups = menu.optionGroups;
-        
     }
     menu_id: number;
-    store_id:Store;
+    store_id: Store;
     name: string;
     price: number;
     description: string;
     state: string;
+    
     // optionGroups:OptionGroup[];
     // categories : Category[];
-    enable_time:EnableTime;
+    // enable_time:EnableTime;
 }
 

@@ -18,8 +18,7 @@ export class MenuService {
 
     private menuCreateDtoToEntity = (dto: MenuCreateDto): Menu => {
         const menu = new Menu();
-        menu.setMenuId = dto.menu_id;
-        //menu.setStoreId = dto.store_id;
+        menu.setStoreId = dto.store_id;
         menu.setMenuName = dto.name;
         menu.setMenuPrice = dto.price;
         menu.setMenuDesc = dto.description;
