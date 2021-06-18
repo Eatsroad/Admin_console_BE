@@ -4,8 +4,10 @@ import { Category } from '../../entities/category/category.entity';
 import { getRepository, Repository } from 'typeorm';
 import { CategoryCreateDto } from './dto/create-categoty.dto';
 import { CategoryInfoResponseDto } from './dto/category-info.dto';
-import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
+import { BasicMessageDto } from '../../common/dtos/basic-massage.dto';
 import { CategoryUpdatedto } from './dto/update-category.dto';
+import { Menu } from '../../entities/menu/menu.entity';
+
 
 @Injectable()
 export class CategoryService {
@@ -13,31 +15,41 @@ export class CategoryService {
     @InjectRepository(Category) private readonly categoryRepository: Repository<Category>
   ) {}
   
-  private categoryCreateDtoToEntity = (dto: CategoryCreateDto): Category => {
-    const categoy = new Category();
-    categoy.setCategoryName = dto.name;
-    categoy.setCategoryDesc = dto.description;
-    return categoy;
+  private convertMenuId2MenuObj = async (menuIdArr: number[]): Promise<Menu[]> => {
+    const menu = getRepository(Menu);
+    return await menu.findByIds(menuIdArr);
+  }
+
+  private categoryCreateDtoToEntity = async (dto: CategoryCreateDto): Promise<Category> => {
+    const category = new Category();
+    
+    category.setCategoryName = dto.name;
+    category.setCategoryDesc = dto.description;
+    category.setCategoryState = dto.state;
+    category.menus = await this.convertMenuId2MenuObj(dto.menus);
+
+    return category;
   }
 
   private isCategoryNameUnique = async (name: string): Promise<boolean> => {
     return (
       (await this.categoryRepository
         .createQueryBuilder()
-        .select("category.category_id")
-        .from(Category, "category")
-        .where("category.name = :name", {name})
+        .select("categories")
+        .from(Category, "categories")
+        .where("categories.name = :name", {name})
         .getOne()) !== undefined
     );
   } 
   
   async saveCategory(dto: CategoryCreateDto): Promise<CategoryInfoResponseDto> {
     if (await this.isCategoryNameUnique(dto.name)) {
-      throw new ConflictException("Name is already in use!");
+      throw new ConflictException("Category is already in use!");
     } else {
       const category = await this.categoryRepository.save(
-        this.categoryCreateDtoToEntity(dto)
+        await this.categoryCreateDtoToEntity(dto)
       );
+      
       return new CategoryInfoResponseDto(category);
     }
   }

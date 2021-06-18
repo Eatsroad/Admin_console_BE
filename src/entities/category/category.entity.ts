@@ -48,4 +48,5 @@ export class Category {
   set setCategoryState(state: boolean) {
     this.state = state;
   }
+
 }

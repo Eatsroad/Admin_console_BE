@@ -15,14 +15,24 @@ import { UserInfoResponseDto } from './dtos/user-info.dto';
 import { UserLoginRequestDto } from './dtos/user-login-request.dto';
 import { UserLoginResponseDto } from './dtos/user-login-response.dto';
 import { UserService } from './user.service';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('user')
+@ApiTags('user API')
 export class UserController {
   constructor(
     private readonly userService: UserService,
   ) {}
 
   @Post()
+  @ApiOperation({
+    summary: '유저 생성 API',
+    description: '유저를 생성합니다.'
+  })
+  @ApiResponse({
+    description: '유저를 생성합니다.',
+    type: UserInfoResponseDto
+  })
   saveUser(@Body() dto: UserCreateDto): Promise<UserInfoResponseDto> {
     return this.userService.saveUser(dto);
   }

@@ -32,12 +32,12 @@ export class Menu {
   @ManyToOne(() => Store, store => store.getStore_id)
   store_id: Store;
 
-  @OneToOne(() => EnableTime, enableTime => enableTime.getEnableTimeId)
-  enable_time: EnableTime;
+  // @OneToOne(() => EnableTime, enableTime => enableTime.getEnableTimeId)
+  // enable_time: EnableTime;
   
-  @ManyToMany(() => OptionGroup)
-  @JoinTable()
-  optionGroups: OptionGroup[];
+  // @ManyToMany(() => OptionGroup)
+  // @JoinTable()
+  // optionGroups: OptionGroup[];
 
   get getMenuId(): number {
     return this.menu_id;
