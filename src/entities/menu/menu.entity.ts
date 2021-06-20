@@ -31,6 +31,9 @@ export class Menu {
 
   @ManyToOne(() => Store, store => store.getStore_id)
   store_id: Store;
+  
+  @ManyToMany(() => Category, categories => categories.menus)
+  categories: Category[];
 
   // @OneToOne(() => EnableTime, enableTime => enableTime.getEnableTimeId)
   // enable_time: EnableTime;

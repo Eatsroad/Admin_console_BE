@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../../entities/category/category.entity';
-import { getRepository, Repository } from 'typeorm';
+import { Connection, getRepository, Repository } from 'typeorm';
 import { CategoryCreateDto } from './dto/create-categoty.dto';
 import { CategoryInfoResponseDto } from './dto/category-info.dto';
 import { BasicMessageDto } from '../../common/dtos/basic-massage.dto';
@@ -14,7 +14,9 @@ export class CategoryService {
   constructor(
     @InjectRepository(Category) private readonly categoryRepository: Repository<Category>
   ) {}
-  
+  private getMenusInCategory = async (categoryId) => {
+    return 
+  }
   private convertMenuId2MenuObj = async (menuIdArr: number[]): Promise<Menu[]> => {
     const menu = getRepository(Menu);
     return await menu.findByIds(menuIdArr);
@@ -57,6 +59,7 @@ export class CategoryService {
   async getCategoryInfo(categoryId: number): Promise<CategoryInfoResponseDto> {
     const category = await this.categoryRepository.findOne(categoryId);
     if (!!category) {
+
       return new CategoryInfoResponseDto(category);
     } else {
       throw new NotFoundException();
