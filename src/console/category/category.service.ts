@@ -1,13 +1,12 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../../entities/category/category.entity';
-import { Connection, getRepository, Repository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 import { CategoryCreateDto } from './dto/create-categoty.dto';
 import { CategoryInfoResponseDto } from './dto/category-info.dto';
 import { BasicMessageDto } from '../../common/dtos/basic-massage.dto';
 import { CategoryUpdatedto } from './dto/update-category.dto';
 import { Menu } from '../../entities/menu/menu.entity';
-import { throws } from 'assert';
 
 
 @Injectable()
@@ -68,15 +67,25 @@ export class CategoryService {
     categoryId: number,
     dto: CategoryUpdatedto
   ): Promise<BasicMessageDto> {
+
+    if (dto.menus !== undefined) {
+      console.log(dto.menus);
+      const menus = await this.convertMenuId2MenuObj(dto.menus);
+      await this.categoryRepository.update(categoryId, {menus: menus});
+    };
+    dto
     const result = await this.categoryRepository
       .createQueryBuilder()
-      .update("categories", {...dto})
-      .where("category_id = :categoryId", {categoryId})
+      .update("categories", { ...dto })
+      .where("category_id = :categoryId", { categoryId })
       .execute();
+
+    
+
     if (result.affected !== 0) {
       return new BasicMessageDto("Updated Successfully.");
     } else throw new NotFoundException();
-  }
+  };
 
   async removeCategory(categoryId: number): Promise<BasicMessageDto> {
     const result = await this.categoryRepository.delete(categoryId);

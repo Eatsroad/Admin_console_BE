@@ -157,7 +157,7 @@ describe('CategoryService', () => {
     }
   });
   
-  it("Should Update Category Name, Description", async () => {
+  it("Should Update Category Name, Description, Menus", async () => {
     const menu1 = new Menu();
     menu1.setMenuName = "menu1";
     menu1.setMenuPrice = 5000;
@@ -181,6 +181,7 @@ describe('CategoryService', () => {
     const updateDto = new CategoryUpdatedto();
     updateDto.name = "updated Name";
     updateDto.description = "updated Desc";
+    updateDto.menus = [2, ];
 
     const response = await categoryService.updateCategoryInfo(
       savedCategory.getCategoryId,
