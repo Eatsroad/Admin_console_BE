@@ -9,10 +9,10 @@ import {
 } from "typeorm";
 import { Store } from "../store/store.entity";
 
-export enum UserRole {
-  USER = "USER",
-  ADMIN = "ADMIN",
-}
+// export enum UserRole {
+//   USER = "USER",
+//   ADMIN = "ADMIN",
+// }
 
 @Entity({name: "users"})
 export class User {
@@ -31,12 +31,12 @@ export class User {
   @Column({nullable: false})
   private password: string;
 
-  @Column({nullable: false, 
-    type: "enum",
-    enum: UserRole,
-    default: UserRole.USER
-  })
-  private user_role: UserRole;
+  // @Column({nullable: false, 
+  //   type: "enum",
+  //   enum: UserRole,
+  //   default: UserRole.USER
+  // })
+  // private user_role: UserRole;
 
   @CreateDateColumn()
   private created_at: Date;
@@ -65,9 +65,9 @@ export class User {
   get getPhone_number(): string {
     return this.phone_number;
   }
-  get getUser_role(): string {
-    return this.user_role;
-  }
+  // get getUser_role(): string {
+  //   return this.user_role;
+  // }
   get getCreated_at():Date {
     return this.created_at;
   }
@@ -90,9 +90,9 @@ export class User {
   set setPassword(password: string) {
     this.password = password;
   }
-  set setUserRole(user_role: UserRole) {
-   this.user_role = user_role;
-  }
+  // set setUserRole(user_role: UserRole) {
+  //  this.user_role = user_role;
+  // }
   set setDeletedAt(deleted_at: Date) {
     this.deleted_at = deleted_at;
   }

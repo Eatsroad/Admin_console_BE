@@ -1,8 +1,8 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { async } from 'rxjs';
-import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
-import { Store } from 'src/entities/store/store.entity';
+import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
+import { Store } from '../../../src/entities/store/store.entity';
 import { Repository } from 'typeorm';
 import { StoreCreateDto } from './dtos/create-store.dto';
 import { StoreInfoResponseDto } from './dtos/store-info-dto';
