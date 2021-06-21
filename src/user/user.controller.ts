@@ -15,7 +15,11 @@ import { UserInfoResponseDto } from './dtos/user-info.dto';
 import { UserLoginRequestDto } from './dtos/user-login-request.dto';
 import { UserLoginResponseDto } from './dtos/user-login-response.dto';
 import { UserService } from './user.service';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { 
+  ApiTags, 
+  ApiOperation, 
+  ApiResponse 
+} from '@nestjs/swagger';
 
 @Controller('user')
 @ApiTags('user API')

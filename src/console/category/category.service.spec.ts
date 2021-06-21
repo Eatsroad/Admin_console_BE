@@ -6,8 +6,10 @@ import { CategoryService } from './category.service';
 import { Store } from '../../entities/store/store.entity';
 import { User } from '../../entities/user/user.entity';
 import { CategoryCreateDto } from './dto/create-categoty.dto';
-import { domainToASCII } from 'url';
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
+import { CategoryUpdatedto } from './dto/update-category.dto';
+import { BasicMessageDto } from '../../common/dtos/basic-massage.dto';
+import { exception } from 'console';
 
 describe('CategoryService', () => {
   let categoryService: CategoryService;
@@ -50,7 +52,7 @@ describe('CategoryService', () => {
     expect(categoryService).toBeDefined();
   });
 
-  it("Should Save category", async () => {
+  it("Should Save category with empty menus", async () => {
     const dto = new CategoryCreateDto();
 
     dto.description = CategoryDesc;
@@ -65,7 +67,36 @@ describe('CategoryService', () => {
     expect(typeof responseDto.category_id).toBe("number");
     expect(responseDto.menus).toStrictEqual(ResMenu);
     expect(responseDto.state).toBe(true);   
-  })
+  });
+
+  it("Should Save category with not empty menus", async () => {
+    const menu1 = new Menu();
+    menu1.setMenuName = "menu1";
+    menu1.setMenuPrice = 5000;
+    await connection.manager.save(menu1);
+
+    const menu2 = new Menu();
+    menu2.setMenuName = "menu2"
+    menu2.setMenuPrice = 4000;
+    await connection.manager.save(menu2);
+
+    const MenuList = [menu1, menu2];
+
+    const dto = new CategoryCreateDto();
+
+    dto.description = CategoryDesc;
+    dto.name = CategoryName;
+    dto.state = CategoryDefaultState;
+    dto.menus = [1, 2];
+
+    const responseDto = await categoryService.saveCategory(dto);
+
+    expect(responseDto.name).toBe(CategoryName);
+    expect(responseDto.description).toBe(CategoryDesc);
+    expect(typeof responseDto.category_id).toBe("number");
+    expect(responseDto.menus).toStrictEqual(MenuList);
+    expect(responseDto.state).toBe(true);   
+  });
 
   it("Should not Save category and throw ConfilctExeception", async () => {
     expect.assertions(1);
@@ -109,7 +140,6 @@ describe('CategoryService', () => {
     savedCategory.menus = MenuList;
 
     await categoryRepoditory.save(savedCategory);
-    console.log(savedCategory);
 
     const response = await categoryService.getCategoryInfo(savedCategory.getCategoryId);
     expect(response.category_id).toBe(savedCategory.getCategoryId);
@@ -117,4 +147,51 @@ describe('CategoryService', () => {
     expect(response.name).toBe(savedCategory.getCategoryName);
     expect(response.menus).toStrictEqual(savedCategory.menus);
   });
+
+  it("Should throw NotFoundException if category_id is invalid", async () => {
+    expect.assertions(1);
+    try {
+      await categoryService.getCategoryInfo(-1);
+    } catch (exception) {
+      expect(exception).toBeInstanceOf(NotFoundException);
+    }
+  });
+  
+  it("Should Update Category Name, Description", async () => {
+    const menu1 = new Menu();
+    menu1.setMenuName = "menu1";
+    menu1.setMenuPrice = 5000;
+    await connection.manager.save(menu1);
+
+    const menu2 = new Menu();
+    menu2.setMenuName = "menu2"
+    menu2.setMenuPrice = 4000;
+    await connection.manager.save(menu2);
+
+    const MenuList = [menu1, menu2];
+
+    const savedCategory = new Category();
+    savedCategory.setCategoryName = CategoryName;
+    savedCategory.setCategoryDesc = CategoryDesc;
+    savedCategory.setCategoryState = CategoryDefaultState;
+    savedCategory.menus = MenuList;
+
+    await categoryRepoditory.save(savedCategory);
+
+    const updateDto = new CategoryUpdatedto();
+    updateDto.name = "updated Name";
+    updateDto.description = "updated Desc";
+
+    const response = await categoryService.updateCategoryInfo(
+      savedCategory.getCategoryId,
+      updateDto,
+    );
+
+    expect(response).toBeInstanceOf(BasicMessageDto);
+
+    const updatedCateogry = await categoryService.getCategoryInfo(savedCategory.getCategoryId);
+    expect(updatedCateogry.name).toBe("updated Name");
+    expect(updatedCateogry.description).toBe("updated Desc");
+  });
+
 });

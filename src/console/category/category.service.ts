@@ -7,6 +7,7 @@ import { CategoryInfoResponseDto } from './dto/category-info.dto';
 import { BasicMessageDto } from '../../common/dtos/basic-massage.dto';
 import { CategoryUpdatedto } from './dto/update-category.dto';
 import { Menu } from '../../entities/menu/menu.entity';
+import { throws } from 'assert';
 
 
 @Injectable()
@@ -14,9 +15,7 @@ export class CategoryService {
   constructor(
     @InjectRepository(Category) private readonly categoryRepository: Repository<Category>
   ) {}
-  private getMenusInCategory = async (categoryId) => {
-    return 
-  }
+
   private convertMenuId2MenuObj = async (menuIdArr: number[]): Promise<Menu[]> => {
     const menu = getRepository(Menu);
     return await menu.findByIds(menuIdArr);
@@ -57,9 +56,8 @@ export class CategoryService {
   }
 
   async getCategoryInfo(categoryId: number): Promise<CategoryInfoResponseDto> {
-    const category = await this.categoryRepository.findOne(categoryId);
+    const category = await this.categoryRepository.findOne(categoryId, {relations: ["menus"]});
     if (!!category) {
-
       return new CategoryInfoResponseDto(category);
     } else {
       throw new NotFoundException();
