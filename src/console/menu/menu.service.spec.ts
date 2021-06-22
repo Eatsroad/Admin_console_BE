@@ -69,7 +69,7 @@ describe('MenuService', () => {
   });
 
   it("Should not save menu and throw ConflictException", async () => {
-    expect.assertions(0);
+    expect.assertions(1);
 
     const savedMenu = new Menu();
     savedMenu.setMenuName = NAME;
