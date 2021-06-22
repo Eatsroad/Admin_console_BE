@@ -13,9 +13,6 @@ export class MenuInfoResponseDto {
         this.price = menu.getMenuPrice;
         this.description = menu.getMenuDesc;
         this.state= menu.getMenuState;
-        // this.categories = menu.categories;
-        //this.enable_time = menu.enable_time;
-        // this.optionGroups = menu.optionGroups;
     }
     menu_id: number;
     store_id: Store;
@@ -23,9 +20,5 @@ export class MenuInfoResponseDto {
     price: number;
     description: string;
     state: string;
-    
-    // optionGroups:OptionGroup[];
-    // categories : Category[];
-    // enable_time:EnableTime;
 }
 

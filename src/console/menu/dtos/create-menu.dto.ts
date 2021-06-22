@@ -7,12 +7,16 @@ import { Store } from "src/entities/store/store.entity";
 export class MenuCreateDto{
     @IsString()
     name: string;
+
     @IsNumber()
     store_id:Store;
+
     @IsNumber()
     price: number;
+
     @IsString()
     description: string;
+    
     @IsString()
     state: string;
 }
