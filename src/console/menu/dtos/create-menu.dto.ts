@@ -9,9 +9,6 @@ export class MenuCreateDto{
     name: string;
 
     @IsNumber()
-    store_id:Store;
-
-    @IsNumber()
     price: number;
 
     @IsString()
