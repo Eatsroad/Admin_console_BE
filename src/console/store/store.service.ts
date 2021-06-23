@@ -46,7 +46,7 @@ export class StoreService {
 
             )
     }
-    //이부분모르겠다아 -> 알게된듯
+
     private storeCreateDtoToEntity = (dto:StoreCreateDto): Store=>{
         const store = new Store();
         store.setName = dto.name;
