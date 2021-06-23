@@ -13,7 +13,9 @@ export class MenuController {
   ) {}
 
   @Post()
-  saveMenu(@Body() dto: MenuCreateDto): Promise<MenuInfoResponseDto>{
+  saveMenu(
+    @Body() dto: MenuCreateDto,
+  ): Promise<MenuInfoResponseDto>{
     return this.menuService.saveMenu(dto);
   }
 

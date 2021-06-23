@@ -93,4 +93,7 @@ export class Menu {
     this.state = state;
   }
 
+  set setStoreId( store_id: Store){
+    this.store_id = store_id;
+  }
 }

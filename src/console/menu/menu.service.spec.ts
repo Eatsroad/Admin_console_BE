@@ -1,6 +1,4 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
 import { Category } from 'src/entities/category/category.entity';
 import { EnableTime } from 'src/entities/menu/enableTime.entity';
@@ -48,13 +46,13 @@ describe('MenuService', () => {
     expect(menuService).toBeDefined();
   });
 
-  it("Should Save Menu", async() => {
+  it("Should Save Menu", async () => {
     const dto = new MenuCreateDto();
     dto.name = NAME;
     dto.price = PRICE;
     dto.description = DESC;
     dto.state = STATE;
-
+  
     const responseDto = await menuService.saveMenu(dto);
     expect(responseDto.name).toBe(NAME);
     expect(responseDto.price).toBe(PRICE);
