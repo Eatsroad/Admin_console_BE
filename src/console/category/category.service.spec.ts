@@ -22,7 +22,6 @@ describe('CategoryService', () => {
   const ResMenu: Menu[] = [];
   const CategoryDefaultState = true;
 
-  
   const saveCategory = async (): Promise<Category> => {
     const savedCategory = new Category();
 

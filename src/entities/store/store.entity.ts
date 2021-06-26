@@ -29,7 +29,7 @@ export class Store {
   @CreateDateColumn()
   private updated_at: Date;
 
-  @CreateDateColumn()v
+  @CreateDateColumn()
   private deleted_at: Date;
 
   @Column({nullable : false})
