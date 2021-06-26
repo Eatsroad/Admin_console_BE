@@ -4,7 +4,6 @@ import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
 import { MenuService } from './menu.service' 
-import { AuthGuard } from '@nestjs/passport';
 
 @Controller('menu')
 export class MenuController {

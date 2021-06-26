@@ -14,12 +14,6 @@ export class MenuModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(UserAuthMiddleware)
-      .exclude(
-        {
-          path: "menu/:menuId",
-          method: RequestMethod.GET,
-        }
-      )
       .forRoutes(MenuController);
   }
 }
