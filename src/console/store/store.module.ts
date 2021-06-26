@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Store } from 'src/entities/store/store.entity';
-import { UserModule } from 'src/user/user.module';
+import { StoreAuthMiddleware } from 'src/middlewares/store-auth.middleware';
 import { StoreController } from './store.controller';
 import { StoreService } from './store.service';
 
@@ -11,4 +11,10 @@ import { StoreService } from './store.service';
   controllers: [StoreController]
 })
 
-export class StoreModule {}
+export class StoreModule {
+  configure(consumer : MiddlewareConsumer){
+    consumer
+    .apply(StoreAuthMiddleware)
+    .forRoutes(StoreController);
+  }
+}

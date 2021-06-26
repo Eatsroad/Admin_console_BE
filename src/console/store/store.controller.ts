@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Request } from '@nestjs/common';
+import { request } from 'express';
 import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
 import { StoreCreateDto } from './dtos/create-store.dto';
 import { StoreInfoResponseDto } from './dtos/store-info-dto';
@@ -11,8 +12,8 @@ export class StoreController {
         private readonly StoreService: StoreService){}
 
 @Post()
-saveStore(@Body() dto: StoreCreateDto): Promise<StoreInfoResponseDto>{
-  return this.StoreService.saveStore(dto);
+saveStore(@Body() dto: StoreCreateDto, @Request() req): Promise<StoreInfoResponseDto>{
+  return this.StoreService.saveStore(dto, req);
   }
 
 
@@ -37,5 +38,4 @@ removeStore(
 ) {
   return this.StoreService.removeStore(storeId);
 }
-
 }

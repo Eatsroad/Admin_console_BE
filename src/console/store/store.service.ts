@@ -8,6 +8,8 @@ import { StoreCreateDto } from './dtos/create-store.dto';
 import { StoreInfoResponseDto } from './dtos/store-info-dto';
 import { StoreUpdateDto } from './dtos/update-store.dto';
 
+
+
 @Injectable()
 export class StoreService {
     constructor(
@@ -47,17 +49,18 @@ export class StoreService {
             )
     }
 
-    private storeCreateDtoToEntity = (dto:StoreCreateDto): Store=>{
+    private storeCreateDtoToEntity = (dto:StoreCreateDto, userid:string): Store=>{
         const store = new Store();
         store.setName = dto.name;
         store.setAddress = dto.address;
         store.setPhone_number = dto.phone_number;
         store.setTables = dto.tables;
+        store.setUserId = userid;
         return store;
     }
 
 
-    async saveStore(dto: StoreCreateDto): Promise<StoreInfoResponseDto>{
+    async saveStore(dto: StoreCreateDto, req): Promise<StoreInfoResponseDto>{
         if(await this.isStoreNameUsed(dto.name)){
                 throw new ConflictException("Store name is already in use!");        
         }   else if(await this.isAddressUsed(dto.address)){ 
@@ -66,7 +69,7 @@ export class StoreService {
                 throw new ConflictException("Store phone_number is already in use!"); 
         }else{
             const store = await this.storeRepository.save(
-                this.storeCreateDtoToEntity(dto)
+                this.storeCreateDtoToEntity(dto, req.user_id)
             );
             return new StoreInfoResponseDto(store);
         }
@@ -97,7 +100,7 @@ export class StoreService {
     }
 
     async removeStore(storeId: number): Promise<BasicMessageDto> {
-        const result = await this.storeRepository.delete(storeId);
+        const result = await this.storeRepository.softDelete(storeId);
         if (result.affected !== 0) {
           return new BasicMessageDto("Deleted Successfully.");
         } else throw new NotFoundException();

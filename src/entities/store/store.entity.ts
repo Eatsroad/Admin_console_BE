@@ -1,10 +1,12 @@
 import { 
   Column, 
   CreateDateColumn, 
+  DeleteDateColumn, 
   Entity, 
   ManyToOne, 
   OneToMany, 
-  PrimaryGeneratedColumn 
+  PrimaryGeneratedColumn, 
+  UpdateDateColumn
 } from "typeorm";
 import { Menu } from "../menu/menu.entity";
 import { User } from "../user/user.entity";
@@ -23,13 +25,16 @@ export class Store {
   @Column({nullable: false})
   private phone_number: string;
 
+  @Column({nullable : false})
+  private user_id : string;
+
   @CreateDateColumn()
   private created_at: Date;
 
-  @CreateDateColumn()
+  @UpdateDateColumn()
   private updated_at: Date;
 
-  @CreateDateColumn()
+  @DeleteDateColumn()
   private deleted_at: Date;
 
   @Column({nullable : false})
@@ -43,7 +48,10 @@ export class Store {
 
   //@OneToMany(() => Menu, menu => menu.getMenuId)
   //menu_id: Menu[];
-  
+  get getUser_id():string{
+    return this.user_id
+  }
+
   get getStore_id(): number {
     return this.store_id;
   }
@@ -70,6 +78,10 @@ export class Store {
   }
   get getIsApproved(): boolean {
     return this.is_approved;
+  }
+  
+  set setUserId(user_id : string){
+    this.user_id = user_id;
   }
 
   set setName(name: string) {

@@ -8,6 +8,7 @@ import { StoreCreateDto } from './dtos/create-store.dto';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { StoreUpdateDto } from './dtos/update-store.dto';
+import { stringify } from 'querystring';
 
 describe('StoreService', () => {
   let storeService: StoreService;
@@ -18,6 +19,7 @@ describe('StoreService', () => {
   const ADDRESS = 'ADDRESS';
   const PHONE_NUMBER = '01012345667';
   const TABLES = 45;
+  const USERID = 1234;
 
   const saveStore = async () : Promise<Store>=>{
     const savedStore = new Store();
@@ -52,8 +54,9 @@ describe('StoreService', () => {
     dto.address = ADDRESS;
     dto.phone_number = PHONE_NUMBER;
     dto.tables = TABLES;
+    const userid = USERID;
 
-    const responseDto = await storeService.saveStore(dto);
+    const responseDto = await storeService.saveStore(dto, userid);
 
     expect(responseDto.name).toBe(NAME);
     expect(responseDto.address).toBe(ADDRESS);
@@ -85,7 +88,7 @@ describe('StoreService', () => {
     dto.phone_number = PHONE_NUMBER;
 
     try {
-      await storeService.saveStore(dto);
+      await storeService.saveStore(dto, 1234);
     } catch (exception) {
       expect(exception).toBeInstanceOf(ConflictException);
     }
