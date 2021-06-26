@@ -7,6 +7,7 @@ import { CategoryInfoResponseDto } from './dto/category-info.dto';
 import { BasicMessageDto } from '../../common/dtos/basic-massage.dto';
 import { CategoryUpdatedto } from './dto/update-category.dto';
 import { Menu } from '../../entities/menu/menu.entity';
+import { CategoryMenuUpdateDto } from './dto/update-category-menus.dto';
 
 
 @Injectable()
@@ -62,25 +63,26 @@ export class CategoryService {
       throw new NotFoundException();
     }
   }
+  async updateMenuInCategory(
+    categoryId: number,
+    dto: CategoryMenuUpdateDto
+  ): Promise<BasicMessageDto> {
+    const category = await this.categoryRepository.findOne(categoryId);
+    category.menus = await this.convertMenuId2MenuObj(dto.menus);
 
+    await this.categoryRepository.save(category);
+
+    return new BasicMessageDto("Update menus");
+  }
   async updateCategoryInfo(
     categoryId: number,
     dto: CategoryUpdatedto
   ): Promise<BasicMessageDto> {
-
-    if (dto.menus !== undefined) {
-      console.log(dto.menus);
-      const menus = await this.convertMenuId2MenuObj(dto.menus);
-      await this.categoryRepository.update(categoryId, {menus: menus});
-    };
-    dto
     const result = await this.categoryRepository
       .createQueryBuilder()
       .update("categories", { ...dto })
       .where("category_id = :categoryId", { categoryId })
       .execute();
-
-    
 
     if (result.affected !== 0) {
       return new BasicMessageDto("Updated Successfully.");

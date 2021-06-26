@@ -9,7 +9,7 @@ import { CategoryCreateDto } from './dto/create-categoty.dto';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { CategoryUpdatedto } from './dto/update-category.dto';
 import { BasicMessageDto } from '../../common/dtos/basic-massage.dto';
-import { exception } from 'console';
+import { CategoryMenuUpdateDto } from './dto/update-category-menus.dto';
 
 describe('CategoryService', () => {
   let categoryService: CategoryService;
@@ -157,7 +157,74 @@ describe('CategoryService', () => {
     }
   });
   
-  it("Should Update Category Name, Description, Menus", async () => {
+  it("Should Update Category Name, Description", async () => {
+    const savedCategory = new Category();
+    savedCategory.setCategoryName = CategoryName;
+    savedCategory.setCategoryDesc = CategoryDesc;
+    savedCategory.setCategoryState = CategoryDefaultState;
+
+    await categoryRepoditory.save(savedCategory);
+
+    const updateDto = new CategoryUpdatedto();
+    updateDto.name = "updated Name";
+    updateDto.description = "updated Desc";
+
+    const response = await categoryService.updateCategoryInfo(
+      savedCategory.getCategoryId,
+      updateDto,
+    );
+
+    expect(response).toBeInstanceOf(BasicMessageDto);
+
+    const updatedCateogry = await categoryService.getCategoryInfo(savedCategory.getCategoryId);
+    expect(updatedCateogry.name).toBe("updated Name");
+    expect(updatedCateogry.description).toBe("updated Desc");
+  });
+  it("Should Update Category Only Name", async () => {
+    const savedCategory = new Category();
+    savedCategory.setCategoryName = CategoryName;
+    savedCategory.setCategoryDesc = CategoryDesc;
+    savedCategory.setCategoryState = CategoryDefaultState;
+
+    await categoryRepoditory.save(savedCategory);
+
+    const updateDto = new CategoryUpdatedto();
+    updateDto.name = "updated Name";
+
+    const response = await categoryService.updateCategoryInfo(
+      savedCategory.getCategoryId,
+      updateDto,
+    );
+
+    expect(response).toBeInstanceOf(BasicMessageDto);
+
+    const updatedCateogry = await categoryService.getCategoryInfo(savedCategory.getCategoryId);
+    expect(updatedCateogry.name).toBe("updated Name");
+  });
+
+  it("Should Update Category Only Description", async () => {
+    const savedCategory = new Category();
+    savedCategory.setCategoryName = CategoryName;
+    savedCategory.setCategoryDesc = CategoryDesc;
+    savedCategory.setCategoryState = CategoryDefaultState;
+
+    await categoryRepoditory.save(savedCategory);
+
+    const updateDto = new CategoryUpdatedto();
+    updateDto.description = "updated Desc";
+
+    const response = await categoryService.updateCategoryInfo(
+      savedCategory.getCategoryId,
+      updateDto,
+    );
+
+    expect(response).toBeInstanceOf(BasicMessageDto);
+
+    const updatedCateogry = await categoryService.getCategoryInfo(savedCategory.getCategoryId);
+    expect(updatedCateogry.description).toBe("updated Desc");
+  });
+
+  it("Should Update menus in Category", async () => {
     const menu1 = new Menu();
     menu1.setMenuName = "menu1";
     menu1.setMenuPrice = 5000;
@@ -178,12 +245,10 @@ describe('CategoryService', () => {
 
     await categoryRepoditory.save(savedCategory);
 
-    const updateDto = new CategoryUpdatedto();
-    updateDto.name = "updated Name";
-    updateDto.description = "updated Desc";
-    updateDto.menus = [2, ];
+    const updateDto = new CategoryMenuUpdateDto();
+    updateDto.menus = [5,]; 
 
-    const response = await categoryService.updateCategoryInfo(
+    const response = await categoryService.updateMenuInCategory(
       savedCategory.getCategoryId,
       updateDto,
     );
@@ -191,8 +256,63 @@ describe('CategoryService', () => {
     expect(response).toBeInstanceOf(BasicMessageDto);
 
     const updatedCateogry = await categoryService.getCategoryInfo(savedCategory.getCategoryId);
-    expect(updatedCateogry.name).toBe("updated Name");
-    expect(updatedCateogry.description).toBe("updated Desc");
+    expect(updatedCateogry.menus).toStrictEqual([menu1]);
   });
 
+  it("Should Update All", async () => {
+    const menu1 = new Menu();
+    menu1.setMenuName = "menu1";
+    menu1.setMenuPrice = 5000;
+    await connection.manager.save(menu1);
+
+    const menu2 = new Menu();
+    menu2.setMenuName = "menu2"
+    menu2.setMenuPrice = 4000;
+    await connection.manager.save(menu2);
+
+    const MenuList = [menu1, menu2];
+
+    const savedCategory = new Category();
+    savedCategory.setCategoryName = CategoryName;
+    savedCategory.setCategoryDesc = CategoryDesc;
+    savedCategory.setCategoryState = CategoryDefaultState;
+    savedCategory.menus = MenuList;
+
+    await categoryRepoditory.save(savedCategory);
+
+    const updateDtoInfo = new CategoryUpdatedto();
+    updateDtoInfo.name = "updated Name";
+    updateDtoInfo.description = "updated Desc";
+
+    const responseInfo = await categoryService.updateCategoryInfo(
+      savedCategory.getCategoryId,
+      updateDtoInfo,
+    );
+
+    const updateDto = new CategoryMenuUpdateDto();
+    updateDto.menus = [7,]; 
+
+    const response = await categoryService.updateMenuInCategory(
+      savedCategory.getCategoryId,
+      updateDto,
+    );
+
+    expect(response).toBeInstanceOf(BasicMessageDto);
+    expect(responseInfo).toBeInstanceOf(BasicMessageDto);
+
+    const updatedCateogry = await categoryService.getCategoryInfo(savedCategory.getCategoryId);
+    expect(updatedCateogry.name).toBe("updated Name");
+    expect(updatedCateogry.description).toBe("updated Desc");
+    expect(updatedCateogry.menus).toStrictEqual([menu1]); 
+  });
+
+  it("Should remove Category", async () => {
+    const savedCategory = await saveCategory();
+
+    const response = await categoryService.removeCategory(savedCategory.getCategoryId);
+    expect(response).toBeInstanceOf(BasicMessageDto);
+
+    const category = await categoryRepoditory.findOne(savedCategory.getCategoryId);
+    expect(category).toBeUndefined();
+  });
 });
