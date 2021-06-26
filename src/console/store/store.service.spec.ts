@@ -19,7 +19,7 @@ describe('StoreService', () => {
   const ADDRESS = 'ADDRESS';
   const PHONE_NUMBER = '01012345667';
   const TABLES = 45;
-  const USERID = 1234;
+  const USERID = "1234";
 
   const saveStore = async () : Promise<Store>=>{
     const savedStore = new Store();
@@ -27,6 +27,7 @@ describe('StoreService', () => {
     savedStore.setAddress = ADDRESS;
     savedStore.setPhone_number = PHONE_NUMBER;
     savedStore.setTables = TABLES;
+    savedStore.setUserId = USERID;
     return await storeRepository.save(savedStore)
   };
 

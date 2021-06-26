@@ -6,7 +6,7 @@ import { UserCreateDto } from './dtos/create-user.dto';
 import { UserUpdateDto } from './dtos/update-user.dto';
 import { UserService } from './user.service';
 import { User } from '../entities/user/user.entity';
-import { Store } from 'src/entities/store/store.entity';
+import { Store } from '../../src/entities/store/store.entity';
 
 describe('UserService', () => {
   let userService: UserService;
