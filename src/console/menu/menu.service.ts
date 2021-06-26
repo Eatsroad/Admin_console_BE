@@ -2,7 +2,7 @@ import { ConflictException, Injectable, Next, NotFoundException } from '@nestjs/
 import { InjectRepository } from '@nestjs/typeorm';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { Menu } from '../../../src/entities/menu/menu.entity';
-import { Connection, Repository } from 'typeorm';
+import { Connection, getRepository, Repository } from 'typeorm';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
@@ -12,20 +12,20 @@ import { Store } from 'src/entities/store/store.entity';
 @Injectable()
 export class MenuService {
     constructor(
-      @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>
+      @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
       ) {}
 
-    private menuCreateDtoToEntity = (dto: MenuCreateDto): Menu => {
+    private menuCreateDtoToEntity = async (dto: MenuCreateDto): Promise<Menu> => {
         const menu = new Menu();
         menu.setMenuName = dto.name;
         menu.setMenuPrice = dto.price;
         menu.setMenuDesc = dto.description;
         menu.setMenuState = dto.state;
-        // menu.setStoreId = store_id;
+        menu.store_id = dto.store_id;
         return menu;
     }
 
-    private MenuExist = async (name:string, price: number, description: string, state:string):Promise<boolean> => {
+    private MenuExist = async (name:string, price: number, description: string, state:string): Promise<boolean> => {
       return (
         (await this.menuRepository
           .createQueryBuilder()
@@ -39,25 +39,15 @@ export class MenuService {
       );
     };
     
-    // private extractStoreId = async (user_id:number) : Promise<Store> => { 
-    //   const store_id = await this.menuRepository
-    //   .createQueryBuilder("store")
-    //   .leftJoinAndSelect("store.store_id","m")
-    //   .select(['store.store_id'])
-    //   .where("m.user_id = :user_id", { user_id })
-    //   .getRawOne()
-    //   console.log(store_id);
-    //   return store_id;
-    // }
+    
 
 
     async saveMenu(dto: MenuCreateDto): Promise<MenuInfoResponseDto> {
       if( await this.MenuExist(dto.name, dto.price, dto.description, dto.state )) {
         throw new ConflictException("Menu is already in use!");
       } else {
-        // const store_id = this.extractStoreId(req.user_id);
         const menu = await this.menuRepository.save(
-          this.menuCreateDtoToEntity(dto)
+          await this.menuCreateDtoToEntity(dto)
         );
         return new MenuInfoResponseDto(menu);
       }

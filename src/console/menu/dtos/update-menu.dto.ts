@@ -8,12 +8,6 @@ import { MenuCreateDto } from "./create-menu.dto";
 
 export class MenuUpdateDto extends PartialType(MenuCreateDto) {
     @IsOptional()
-    categories: Category[];
-    
-    @IsOptional()
-    optionGroups:OptionGroup[];
-
-    @IsOptional()
     @IsNumber()
     enable_time:EnableTime;
 }

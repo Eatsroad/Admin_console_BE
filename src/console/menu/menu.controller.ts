@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
-import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
+import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
-import { MenuService } from './menu.service';
-
+import { MenuService } from './menu.service' 
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('menu')
 export class MenuController {
@@ -38,6 +38,7 @@ export class MenuController {
   ): Promise<BasicMessageDto> {
     return this.menuService.updateMenuInfo(menuId, dto);
   }  
+
 }
 
 

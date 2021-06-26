@@ -1,15 +1,13 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
-import { Category } from 'src/entities/category/category.entity';
-import { EnableTime } from 'src/entities/menu/enableTime.entity';
-import { Menu } from 'src/entities/menu/menu.entity';
-import { Option } from 'src/entities/option/option.entity';
-import { OptionGroup } from 'src/entities/option/optionGroup.entity';
-import { Store } from 'src/entities/store/store.entity';
-import { User } from 'src/entities/user/user.entity';
-import { createMemoryDB } from 'src/utils/connections/create-memory-db';
+import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
+import { Category } from '../../../src/entities/category/category.entity';
+import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
+import { Menu } from '../../../src/entities/menu/menu.entity';
+import { Option } from '../../../src/entities/option/option.entity';
+import { OptionGroup } from '../../../src/entities/option/optionGroup.entity';
+import { Store } from '../../../src/entities/store/store.entity';
+import { User } from '../../../src/entities/user/user.entity';
+import { createMemoryDB } from '../../../src/utils/connections/create-memory-db';
 import { Connection, Repository } from 'typeorm';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
@@ -25,7 +23,15 @@ describe('MenuService', () => {
   const PRICE = 5000;
   const DESC= 'vlvmdlvmrkm';
   const STATE= "true";
-  
+  const store1= new Store();
+  store1.setName = "STORENAME";
+  store1.setPhone_number = "01000000000";
+  store1.setAddress = "STOREADDRESS";
+  store1.setIsApproved = true;
+  store1.setTables = 4;
+  store1.setUpdatedAt = null;
+  store1.setDeletedAt = null;
+  const STOREID = store1;
 
   const saveMenu = async (): Promise<Menu> => {
     const savedMenu = new Menu();
@@ -33,6 +39,7 @@ describe('MenuService', () => {
     savedMenu.setMenuPrice = PRICE;
     savedMenu.setMenuDesc = DESC;
     savedMenu.setMenuState = STATE;
+    savedMenu.store_id = STOREID;
     return await menuRepository.save(savedMenu);
   };
   
@@ -56,18 +63,21 @@ describe('MenuService', () => {
     dto.price = PRICE;
     dto.description = DESC;
     dto.state = STATE;
-  
+    dto.store_id = STOREID;
+
     const responseDto = await menuService.saveMenu(dto);
     expect(responseDto.name).toBe(NAME);
     expect(responseDto.price).toBe(PRICE);
     expect(responseDto.description).toBe(DESC);
     expect(responseDto.state).toBe(STATE);
+    expect(responseDto.store_id).toBe(STOREID);
 
     const savedMenu = await menuRepository.findOne(responseDto.menu_id);
     expect(savedMenu.getMenuName).toBe(responseDto.name);
     expect(savedMenu.getMenuPrice).toBe(responseDto.price);
     expect(savedMenu.getMenuDesc).toBe(responseDto.description);
     expect(savedMenu.getMenuState).toBe(responseDto.state);
+    expect(savedMenu.store_id).toBe(responseDto.store_id);
   });
 
   it("Should not save menu and throw ConflictException", async () => {
@@ -78,6 +88,7 @@ describe('MenuService', () => {
     savedMenu.setMenuPrice = PRICE;
     savedMenu.setMenuDesc = DESC;
     savedMenu.setMenuState = STATE;
+    savedMenu.setStoreId = STOREID;
     await menuRepository.save(savedMenu);
 
     const dto = new MenuCreateDto();
@@ -85,6 +96,7 @@ describe('MenuService', () => {
     dto.price = PRICE;
     dto.description = DESC;
     dto.state = STATE;
+    dto.store_id = STOREID;
     try {
       await menuService.saveMenu(dto);
     } catch (exception) {
@@ -98,6 +110,7 @@ describe('MenuService', () => {
     savedMenu.setMenuPrice = PRICE;
     savedMenu.setMenuDesc = DESC;
     savedMenu.setMenuState = STATE;
+    savedMenu.store_id = STOREID;
     savedMenu = await menuRepository.save(savedMenu);
   
     const response = await menuService.getMenuInfo(savedMenu.getMenuId);
@@ -105,6 +118,7 @@ describe('MenuService', () => {
     expect(response.price).toBe(savedMenu.getMenuPrice);
     expect(response.description).toBe(savedMenu.getMenuDesc);
     expect(response.state).toBe(savedMenu.getMenuState);
+    expect(response.store_id).toBe(savedMenu.store_id);
   });
 
   it("Should throw NotFoundException if menu_id is invalid", async () => {
@@ -123,6 +137,15 @@ describe('MenuService', () => {
     updateDto.price = 6000;
     updateDto.description = "NEW_DESC";
     updateDto.state = "false";
+    const store2 = new Store();
+    store1.setName = "STORENAME2";
+    store1.setPhone_number = "01000000002";
+    store1.setAddress = "STOREADDRESS2";
+    store1.setIsApproved = false;
+    store1.setTables = 5;
+    store1.setUpdatedAt = null;
+    store1.setDeletedAt = null;
+    updateDto.store_id = store2;
     
     const response = await menuService.updateMenuInfo(
       savedMenu.getMenuId,
@@ -135,6 +158,7 @@ describe('MenuService', () => {
     expect(updatedMenu.getMenuPrice).toBe(updateDto.price);
     expect(updatedMenu.getMenuDesc).toBe(updateDto.description);
     expect(updatedMenu.getMenuState).toBe(updateDto.state);
+    expect(updatedMenu.store_id).toBe(updateDto.store_id);
     
   });
 
@@ -205,48 +229,31 @@ describe('MenuService', () => {
     const updatedMenu = await menuRepository.findOne(savedMenu.getMenuId);
     expect(updatedMenu.getMenuDesc).toBe("NEW_DESCRIPTION");
   });
+  
+  it("Should update menu info(StoreId)", async () => {
+    const savedMenu = await saveMenu();
 
-
-  // it("Should update menu info(category_id)", async () => {
-  //   const savedMenu = await saveMenu();
-
-  //   const updateDto = new MenuUpdateDto();
-  //   const category1 = new Category();
-  //   category1.setCategoryName ="CATEGORYID";
-  //   category1.setCategoryDesc = "CATEGORYDESC";
-  //   category1.setCategoryState = "CATEGORYSTATE";
-  //   updateDto.categories = [category1];
+    const updateDto = new MenuUpdateDto();
+    const store3 = new Store();
+    store1.setName = "STORENAME3";
+    store1.setPhone_number = "01000000003";
+    store1.setAddress = "STOREADDRESS3";
+    store1.setIsApproved = false;
+    store1.setTables = 6;
+    store1.setUpdatedAt = null;
+    store1.setDeletedAt = null;
+    updateDto.store_id = store3;
   
 
-  //   const response = await menuService.updateMenuInfo(
-  //     savedMenu.getMenuId,
-  //     updateDto
-  //   );
-  //   expect(response).toBeInstanceOf(BasicMessageDto);
+    const response = await menuService.updateMenuInfo(
+      savedMenu.getMenuId,
+      updateDto
+    );
+    expect(response).toBeInstanceOf(BasicMessageDto);
 
-  //   const updatedMenu = await menuRepository.findOne(savedMenu.getMenuId);
-  //   expect(updatedMenu.getCategories).toBe([category1]);
-  // });
-
-  // it("Should update menu info(option_group_id)", async () => {
-  //   const savedMenu = await saveMenu();
-
-  //   const updateDto = new MenuUpdateDto();
-  //   const optiongroup1 = new OptionGroup();
-  //   optiongroup1.setOptionGroupName = "OPTIONGROUPNAME";
-  //   optiongroup1.setOptionGroupState = "OPTIONGROUPSTATE";
-  //   optiongroup1.setOptionGroupDesc = "OPTIONGROUPDESC";
-  //   updateDto.optionGroups = [optiongroup1];
-
-  //   const response = await menuService.updateMenuInfo(
-  //     savedMenu.getMenuId,
-  //     updateDto
-  //   );
-  //   expect(response).toBeInstanceOf(BasicMessageDto);
-
-  //   const updatedMenu = await menuRepository.findOne(savedMenu.getMenuId);
-  //   expect(updatedMenu.getOptionGroup).toBe([optiongroup1]);
-  // });
+    const updatedMenu = await menuRepository.findOne(savedMenu.getMenuId);
+    expect(updatedMenu.store_id).toBe(store3);
+  });
 
   it("Should remove menu(All)", async () => {
     const savedUser = await saveMenu();
@@ -257,30 +264,6 @@ describe('MenuService', () => {
     const menu = await menuRepository.findOne(savedUser.getMenuId);
     expect(menu).toBeUndefined();
   });
-
-  // it("Should remove menu(categoryId)", async () => {
-  //   const savedMenu = await saveMenu();
-  //   const updateDto = new MenuUpdateDto();
-  //   updateDto.categories=null;
-
-  //   const response = await menuService.removeCategory(updateDto,savedMenu.getMenuId);
-  //   expect(response).toBeInstanceOf(BasicMessageDto);
-
-  //   const menu = await menuRepository.findOne(savedMenu.getMenuId);
-  //   expect(menu.categories).toBe(null);
-  // });
-  
-  // it("Should remove menu(optiongroupId)", async () => {
-  //   const savedMenu = await saveMenu();
-  //   const updateDto = new MenuUpdateDto();
-  //   updateDto.optionGroups=null;
-
-  //   const response = await menuService.removeOptionGroup(updateDto, savedMenu.getMenuId);
-  //   expect(response).toBeInstanceOf(BasicMessageDto);
-
-  //   const menu = await menuRepository.findOne(savedMenu.getMenuId);
-  //   expect(menu.optionGroups).toBe(null);
-  // });
 
   it("Should remove menu(MenuDesc)", async () => {
     const savedMenu = await saveMenu();
@@ -305,4 +288,5 @@ describe('MenuService', () => {
     const menu = await menuRepository.findOne(savedMenu.getMenuId);
     expect(menu.getMenuState).toBe(null);
   });
+
 });

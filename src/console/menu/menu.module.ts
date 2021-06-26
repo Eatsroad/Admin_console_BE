@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Menu } from 'src/entities/menu/menu.entity';
+import { Menu } from '../../../src/entities/menu/menu.entity';
+import { UserAuthMiddleware } from '../../../src/middlewares/user-auth.middleare';
 import { MenuController } from './menu.controller';
 import { MenuService } from './menu.service';
 
@@ -10,5 +11,15 @@ import { MenuService } from './menu.service';
     providers: [MenuService],
 })
 export class MenuModule {
-    
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(UserAuthMiddleware)
+      .exclude(
+        {
+          path: "menu/:menuId",
+          method: RequestMethod.GET,
+        }
+      )
+      .forRoutes(MenuController);
+  }
 }
