@@ -1,7 +1,6 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { Category } from '../../../src/entities/category/category.entity';
-import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
 import { Menu } from '../../../src/entities/menu/menu.entity';
 import { Option } from '../../../src/entities/option/option.entity';
 import { OptionGroup } from '../../../src/entities/option/optionGroup.entity';
@@ -12,6 +11,7 @@ import { Connection, Repository } from 'typeorm';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
 import { MenuService } from './menu.service';
+import { EnableTime } from 'src/entities/menu/enableTime.entity';
 
 
 describe('MenuService', () => {
