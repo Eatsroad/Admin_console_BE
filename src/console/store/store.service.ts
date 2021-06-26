@@ -3,10 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { async } from 'rxjs';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { Store } from '../../../src/entities/store/store.entity';
-import { Repository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 import { StoreCreateDto } from './dtos/create-store.dto';
 import { StoreInfoResponseDto } from './dtos/store-info-dto';
 import { StoreUpdateDto } from './dtos/update-store.dto';
+import { User } from 'src/entities/user/user.entity';
 
 
 
@@ -49,13 +50,17 @@ export class StoreService {
             )
     }
 
-    private storeCreateDtoToEntity = (dto:StoreCreateDto, userid:string): Store=>{
+    private storeCreateDtoToEntity = async (dto:StoreCreateDto, userid:string): Promise<Store> => {
         const store = new Store();
         store.setName = dto.name;
         store.setAddress = dto.address;
         store.setPhone_number = dto.phone_number;
         store.setTables = dto.tables;
-        store.setUserId = userid;
+
+        const someuser = getRepository(User);
+        const someuser_id = await someuser.findOne(userid)
+        store.user_id = someuser_id;
+
         return store;
     }
 
@@ -69,7 +74,7 @@ export class StoreService {
                 throw new ConflictException("Store phone_number is already in use!"); 
         }else{
             const store = await this.storeRepository.save(
-                this.storeCreateDtoToEntity(dto, req.user_id)
+                await this.storeCreateDtoToEntity(dto, req.user_id)
             );
             return new StoreInfoResponseDto(store);
         }
