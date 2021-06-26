@@ -29,7 +29,7 @@ export class Menu {
   @Column({nullable: true})
   private description: string;
 
-  @Column({default: true})
+  @Column({nullable: true})
   private state: string;
 
   @ManyToOne(() => Store, store => store.getStore_id)

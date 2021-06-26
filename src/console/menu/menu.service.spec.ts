@@ -11,7 +11,7 @@ import { Connection, Repository } from 'typeorm';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
 import { MenuService } from './menu.service';
-import { EnableTime } from 'src/entities/menu/enableTime.entity';
+import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
 
 
 describe('MenuService', () => {
@@ -29,8 +29,6 @@ describe('MenuService', () => {
   store1.setAddress = "STOREADDRESS";
   store1.setIsApproved = true;
   store1.setTables = 4;
-  store1.setUpdatedAt = null;
-  store1.setDeletedAt = null;
   const STOREID = store1;
 
   const saveMenu = async (): Promise<Menu> => {
@@ -230,30 +228,30 @@ describe('MenuService', () => {
     expect(updatedMenu.getMenuDesc).toBe("NEW_DESCRIPTION");
   });
   
-  it("Should update menu info(StoreId)", async () => {
-    const savedMenu = await saveMenu();
+  // it("Should update menu info(StoreId)", async () => {
+  //   const savedMenu = await saveMenu();
 
-    const updateDto = new MenuUpdateDto();
-    const store3 = new Store();
-    store1.setName = "STORENAME3";
-    store1.setPhone_number = "01000000003";
-    store1.setAddress = "STOREADDRESS3";
-    store1.setIsApproved = false;
-    store1.setTables = 6;
-    store1.setUpdatedAt = null;
-    store1.setDeletedAt = null;
-    updateDto.store_id = store3;
+  //   const updateDto = new MenuUpdateDto();
+  //   // const store3 = new Store();
+  //   // store1.setName = "STORENAME3";
+  //   // store1.setPhone_number = "01000000003";
+  //   // store1.setAddress = "STOREADDRESS3";
+  //   // store1.setIsApproved = false;
+  //   // store1.setTables = 6;
+  //   // store1.setUpdatedAt = null;
+  //   // store1.setDeletedAt = null;
+  //   // updateDto.store_id = store3;
   
 
-    const response = await menuService.updateMenuInfo(
-      savedMenu.getMenuId,
-      updateDto
-    );
-    expect(response).toBeInstanceOf(BasicMessageDto);
+  //   const response = await menuService.updateMenuInfo(
+  //     savedMenu.getMenuId,
+  //     updateDto
+  //   );
+  //   expect(response).toBeInstanceOf(BasicMessageDto);
 
-    const updatedMenu = await menuRepository.findOne(savedMenu.getMenuId);
-    expect(updatedMenu.store_id).toBe(store3);
-  });
+  //   const updatedMenu = await menuRepository.findOne(savedMenu.getMenuId);
+  //   expect(updatedMenu.store_id).toBe(store3);
+  // });
 
   it("Should remove menu(All)", async () => {
     const savedUser = await saveMenu();
