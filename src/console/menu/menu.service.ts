@@ -89,26 +89,26 @@ export class MenuService {
     return new BasicMessageDto("StoreId is Updated Successfully")
   }
 
-//   async updateCategoryInMenu(menuId : number,
-//     dto: MenuUpdateDto
-//     ): Promise<BasicMessageDto> {
-//       const menu = await this.menuRepository.findOne(menuId);
-//       menu.categories = dto.categories;
+  async updateCategoryInMenu(menuId : number,
+    dto: MenuUpdateDto
+    ): Promise<BasicMessageDto> {
+      const menu = await this.menuRepository.findOne(menuId);
+      menu.categories = dto.categories;
 
-//       await this.menuRepository.save(menu);
-//       return new BasicMessageDto("Category Updated successfully!");
-//     }
+      await this.menuRepository.save(menu);
+      return new BasicMessageDto("Category Updated successfully!");
+    }
 
-//   async updateOptionGroupInMenu(menuId: number,
-//     dto: MenuUpdateDto
-//    ): Promise<BasicMessageDto> {
-//     const menu = await this.menuRepository.findOne(menuId);
-//     menu.optionGroups = dto.optionGroups;
+  async updateOptionGroupInMenu(menuId: number,
+    dto: MenuUpdateDto
+   ): Promise<BasicMessageDto> {
+    const menu = await this.menuRepository.findOne(menuId);
+    menu.optionGroups = dto.optionGroups;
    
-//     await this.menuRepository.save(menu);
-//     return new BasicMessageDto("OptionGroup Deleted Successfully.");
+    await this.menuRepository.save(menu);
+    return new BasicMessageDto("OptionGroup Deleted Successfully.");
   
-//  }
+ }
   async removeMenu(menuId : number): Promise<BasicMessageDto> {
     const result = await this.menuRepository.delete(menuId);
     if (result.affected !== 0) {
@@ -116,23 +116,23 @@ export class MenuService {
     } else throw new NotFoundException();
   }
 
-//   async removeCategoryInMenu(menuId : number,
-//     ): Promise<BasicMessageDto> {
-//       const menu = await this.menuRepository.findOne(menuId);
-//       menu.categories = null;
+  async removeCategoryInMenu(menuId : number,
+    ): Promise<BasicMessageDto> {
+      const menu = await this.menuRepository.findOne(menuId);
+      menu.categories = null;
 
-//       await this.menuRepository.save(menu);
-//       return new BasicMessageDto("Category Deleted successfully!");
-//     }
+      await this.menuRepository.save(menu);
+      return new BasicMessageDto("Category Deleted successfully!");
+    }
 
-//   async removeOptionGroupInMenu(menuId: number,
-//    ): Promise<BasicMessageDto> {
-//     const menu = await this.menuRepository.findOne(menuId);
-//     menu.optionGroups = null;
+  async removeOptionGroupInMenu(menuId: number,
+   ): Promise<BasicMessageDto> {
+    const menu = await this.menuRepository.findOne(menuId);
+    menu.optionGroups = null;
    
-//     await this.menuRepository.save(menu);
-//     return new BasicMessageDto("OptionGroup Deleted Successfully.");
+    await this.menuRepository.save(menu);
+    return new BasicMessageDto("OptionGroup Deleted Successfully.");
   
-//  }
+ }
 
 }

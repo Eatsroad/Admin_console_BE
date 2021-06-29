@@ -71,6 +71,12 @@ describe('MenuService', () => {
     expect(responseDto.state).toBe(STATE);
     expect(responseDto.store_id).toStrictEqual(store1);
 
+    const savedMenu = await menuService.getMenuInfo(responseDto.menu_id);
+    expect(savedMenu.name).toBe(responseDto.name);
+    expect(savedMenu.price).toBe(responseDto.price);
+    expect(savedMenu.description).toBe(responseDto.description);
+    expect(savedMenu.state).toBe(responseDto.state);
+    expect(savedMenu.store_id).toStrictEqual(responseDto.store_id);
   });
 
   it("Should not save menu and throw ConflictException", async () => {
