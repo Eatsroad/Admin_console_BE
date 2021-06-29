@@ -27,7 +27,7 @@ getStoreInfo(
 @Put('/:storeId')
 updateStoreInfo(
   @Param('storeId', ParseIntPipe) storeId: number,
-  @Body() dto: StoreUpdateDto,//
+  @Body() dto: StoreUpdateDto,
 ): Promise<BasicMessageDto> {
   return this.StoreService.updateStoreInfo(storeId, dto);
 }  
