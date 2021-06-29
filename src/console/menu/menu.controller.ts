@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
@@ -38,6 +38,21 @@ export class MenuController {
     return this.menuService.updateMenuInfo(menuId, dto);
   }  
 
+  // @Patch('/:menuId/optiongroup')
+  // updateOptiongroup(
+  //   @Param('menuId') menuId: number,
+  //   @Body('menu') menu:MenuUpdateDto,  
+  // ){
+  //   return this.menuService.updateOptionGroupInMenu(menuId, menu);
+  // }
+
+  // @Patch('/:menuId/category')
+  // updateCategory(
+  //   @Param('menuId') menuId: number,
+  //   @Body('menu') menu:MenuUpdateDto, 
+  // ){
+  //   return this.menuService.updateCategoryInMenu(menuId, menu);
+  // }
 }
 
 

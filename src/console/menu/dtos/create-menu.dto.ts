@@ -1,4 +1,4 @@
-import { isBoolean, IsBoolean, IsNumber, IsObject, IsString } from "class-validator";
+import { isBoolean, IsBoolean, IsNumber, IsObject, IsOptional, IsString } from "class-validator";
 import { Category } from "src/entities/category/category.entity";
 import { EnableTime } from "src/entities/menu/enableTime.entity";
 import { OptionGroup } from "src/entities/option/optionGroup.entity";
@@ -18,5 +18,9 @@ export class MenuCreateDto{
     state: string;
 
     @IsNumber()
-    store_id:Store;
+    store_id: number;
+
+    // @IsOptional()
+    // @IsNumber()
+    // enable_time:number;
 }

@@ -26,13 +26,13 @@ export class Store {
   @CreateDateColumn()
   private created_at: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({default : null})
   private updated_at: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({default : null})
   private deleted_at: Date;
 
-  @Column({nullable : false})
+  @Column({nullable : true})
   private tables: number;
 
   @Column({default: false})

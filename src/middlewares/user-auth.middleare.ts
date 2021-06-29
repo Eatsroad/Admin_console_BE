@@ -21,7 +21,6 @@ export class UserAuthMiddleware implements NestMiddleware {
   }
   use(req: IUserRequest, res: Response, next: NextFunction) {
     const authorizationHeader = req.headers["authorization"];
-    console.log(authorizationHeader);
     if (!!authorizationHeader) {
       const token = this.checkSchemaAndReturnToken(authorizationHeader);
       req.accessToken = token;

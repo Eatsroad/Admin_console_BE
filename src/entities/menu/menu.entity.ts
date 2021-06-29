@@ -69,14 +69,6 @@ export class Menu {
     return this.state;
   }
 
-  get getStoreId() : Store{
-    return this.store_id;
-  }
-
-  set setMenuId(menu_id: number) {
-    this.menu_id=menu_id;
-  }
-
   set setMenuName(name: string) {
     this.name = name;
   }
@@ -93,7 +85,5 @@ export class Menu {
     this.state = state;
   }
 
-  set setStoreId( store_id: Store){
-    this.store_id = store_id;
-  }
+  
 }

@@ -7,7 +7,7 @@ import { Store } from "../../../../src/entities/store/store.entity";
 export class MenuInfoResponseDto {
     constructor(menu : Menu){
         this.menu_id = menu.getMenuId;
-        this.store_id= menu.getStoreId;
+        this.store_id= menu.store_id;
         this.name = menu.getMenuName;
         this.price = menu.getMenuPrice;
         this.description = menu.getMenuDesc;
