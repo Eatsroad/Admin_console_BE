@@ -38,21 +38,21 @@ export class MenuController {
     return this.menuService.updateMenuInfo(menuId, dto);
   }  
 
-  // @Patch('/:menuId/optiongroup')
-  // updateOptiongroup(
-  //   @Param('menuId') menuId: number,
-  //   @Body('menu') menu:MenuUpdateDto,  
-  // ){
-  //   return this.menuService.updateOptionGroupInMenu(menuId, menu);
-  // }
+  @Patch('/:menuId/optiongroup')
+  updateOptiongroup(
+    @Param('menuId') menuId: number,
+    @Body('menu') menu:MenuUpdateDto,  
+  ){
+    return this.menuService.updateOptionGroupInMenu(menuId, menu);
+  }
 
-  // @Patch('/:menuId/category')
-  // updateCategory(
-  //   @Param('menuId') menuId: number,
-  //   @Body('menu') menu:MenuUpdateDto, 
-  // ){
-  //   return this.menuService.updateCategoryInMenu(menuId, menu);
-  // }
+  @Patch('/:menuId/category')
+  updateCategory(
+    @Param('menuId') menuId: number,
+    @Body('menu') menu:MenuUpdateDto, 
+  ){
+    return this.menuService.updateCategoryInMenu(menuId, menu);
+  }
 }
 
 
