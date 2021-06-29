@@ -2,6 +2,7 @@ import {
   Column, 
   CreateDateColumn, 
   Entity, 
+  JoinColumn, 
   ManyToOne, 
   OneToMany, 
   PrimaryGeneratedColumn 
@@ -39,6 +40,7 @@ export class Store {
   private is_approved: boolean;
   
   @ManyToOne(type => User, user => user.getUser_id)
+  @JoinColumn({name : "user_id"})
   user_id: User;
 
   @OneToMany(() => Menu, menu => menu.getMenuId)
