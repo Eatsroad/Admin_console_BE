@@ -3,6 +3,7 @@ import {
   CreateDateColumn, 
   DeleteDateColumn, 
   Entity, 
+  JoinColumn, 
   ManyToOne, 
   OneToMany, 
   PrimaryGeneratedColumn, 
@@ -25,9 +26,6 @@ export class Store {
   @Column({nullable: false})
   private phone_number: string;
 
-  @Column({nullable : false})
-  private user_id : string;
-
   @CreateDateColumn()
   private created_at: Date;
 
@@ -43,12 +41,14 @@ export class Store {
   @Column({default: false})
   private is_approved: boolean;
   
-  //@ManyToOne(type => User, user => user.getUser_id)
-  //user_id: User;
+  @ManyToOne(type => User, user => user.getUser_id)
+  @JoinColumn({name: "user_id"})
+  user_id: User;
 
-  //@OneToMany(() => Menu, menu => menu.getMenuId)
-  //menu_id: Menu[];
-  get getUser_id():string{
+  @OneToMany(() => Menu, menu => menu.getMenuId)
+  menu_id: Menu[];
+
+  get getUser_id(): User{
     return this.user_id
   }
 
@@ -78,10 +78,6 @@ export class Store {
   }
   get getIsApproved(): boolean {
     return this.is_approved;
-  }
-  
-  set setUserId(user_id : string){
-    this.user_id = user_id;
   }
 
   set setName(name: string) {
