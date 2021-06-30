@@ -20,7 +20,7 @@ describe('CategoryService', () => {
   const CategoryDesc = "";
   const MenuIdsInCategory: number[] = [];
   const ResMenu: Menu[] = [];
-  const CategoryDefaultState = true;
+  const CategoryDefaultState = "true";
 
   const saveCategory = async (): Promise<Category> => {
     const savedCategory = new Category();
@@ -28,7 +28,7 @@ describe('CategoryService', () => {
     savedCategory.setCategoryName = CategoryName;
     savedCategory.setCategoryDesc = CategoryDesc;
     savedCategory.menus = ResMenu;
-    savedCategory.setCategoryState = true;
+    savedCategory.setCategoryState = "true";
     
     return await categoryRepoditory.save(savedCategory);
   }

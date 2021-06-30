@@ -13,7 +13,7 @@ export class CategoryInfoResponseDto {
   name: string;
   menus: Menu[];
   description: string;
-  state: boolean
+  state: string;
   category_id: number;
   role: string;
 

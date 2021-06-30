@@ -8,7 +8,7 @@ export class CategoryCreateDto {
   description: string;
 
   @IsBoolean()
-  state: boolean;
+  state: string;
 
   @IsArray()
   menus: number[];
