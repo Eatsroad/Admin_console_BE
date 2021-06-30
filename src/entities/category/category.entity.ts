@@ -22,7 +22,17 @@ export class Category {
   private state: boolean;
 
   @ManyToMany(() => Menu)
-  @JoinTable()
+  @JoinTable({
+    name: "menus_and_categories",
+    joinColumn: {
+      name: "category_id",
+      referencedColumnName: "category_id"
+    },
+    inverseJoinColumn: {
+      name: "menu_id",
+      referencedColumnName: "menu_id"
+    }
+  })
   menus: Menu[];
   
   get getCategoryId(): number {
