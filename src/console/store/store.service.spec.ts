@@ -9,6 +9,11 @@ import { ConflictException, NotFoundException } from '@nestjs/common';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { StoreUpdateDto } from './dtos/update-store.dto';
 import { stringify } from 'querystring';
+import { Menu } from 'src/entities/menu/menu.entity';
+import { Category } from 'src/entities/category/category.entity';
+import { OptionService } from '../option/option.service';
+import { OptionGroup } from 'src/entities/option/optionGroup.entity';
+import { EnableTime } from 'src/entities/menu/enableTime.entity';
 
 describe('StoreService', () => {
   let storeService: StoreService;
@@ -27,12 +32,11 @@ describe('StoreService', () => {
     savedStore.setAddress = ADDRESS;
     savedStore.setPhone_number = PHONE_NUMBER;
     savedStore.setTables = TABLES;
-    savedStore.setUserId = USERID;
     return await storeRepository.save(savedStore)
   };
 
   beforeAll(async () => {
-    connection = await createMemoryDB([User,Store]);
+    connection = await createMemoryDB([User,Store,Menu,Category,Option,OptionGroup, EnableTime]);
     storeRepository = await connection.getRepository(Store);
     storeService = new StoreService(storeRepository)
   });
