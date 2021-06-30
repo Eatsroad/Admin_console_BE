@@ -8,9 +8,10 @@ import { UserUpdateDto } from './dtos/update-user.dto';
 import { UserInfoResponseDto } from './dtos/user-info.dto';
 import { UserLoginRequestDto } from './dtos/user-login-request.dto';
 import { UserLoginResponseDto } from './dtos/user-login-response.dto';
-import { generateAccessToken } from '../../src/utils/auth/jwt-token-util';
+import { generateAccessToken } from '../utils/auth/jwt-token-util';
 
-@Injectable()
+
+@Injectable() 
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>
@@ -22,7 +23,7 @@ export class UserService {
     user.setEmail = dto.email;
     user.setPhone_number = dto.phone_number;
     user.setPassword = dto.password;
-    user.setUserRole = dto.user_role;
+    // user.setUserRole = dto.user_role;
     return user;
   }
 

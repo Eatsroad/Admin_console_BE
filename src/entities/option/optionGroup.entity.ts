@@ -4,7 +4,7 @@ import { Option } from "./option.entity";
 @Entity({name:"option_groups"})
 export class OptionGroup {
   @PrimaryGeneratedColumn()
-  private option_groups_id: number;
+  private option_group_id: number;
 
   @Column({nullable: false})
   private name: string;
@@ -13,13 +13,13 @@ export class OptionGroup {
   private description: string;
 
   @Column({default: true})
-  private state: boolean;
+  private state: string;
 
   @OneToMany(() => Option, option => option.getOptionId)
   option_id: Option[];
 
   get getOptionGroupId(): number {
-    return this.option_groups_id;
+    return this.option_group_id;
   }
   get getOptionGroupName(): string {
     return this.name;
@@ -27,7 +27,7 @@ export class OptionGroup {
   get getOptionGroupDesc(): string {
     return this.description;
   }
-  get getOptionGroupState(): boolean {
+  get getOptionGroupState(): string {
     return this.state;
   }
 
@@ -37,7 +37,7 @@ export class OptionGroup {
   set setOptionGroupDesc(description: string) {
     this.description = description;
   }
-  set setOptionGroupState(state: boolean) {
+  set setOptionGroupState(state: string) {
     this.state = state;
   }
 }

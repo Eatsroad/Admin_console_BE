@@ -7,20 +7,47 @@ import {
 } from "typeorm";
 import { Menu } from "../menu/menu.entity";
 
+export enum CategoryRole {
+  BiG = "big",
+  SMALL = "small",
+  ETC = "etc"
+};
+
 @Entity({name: "categories"})
 export class Category {
   @PrimaryGeneratedColumn()
   private category_id: number;
 
-  @Column({nullable: false})
+  @Column({nullable: true})
   private name: string;
 
   @Column({nullable: true})
   private description: string;
 
-  @Column({default: true})
-  private state: boolean;
+  @Column({
+    type: "enum",
+    enum: CategoryRole,
+    default: CategoryRole.ETC
+  })
+  private role: CategoryRole;
 
+  @Column({default: true})
+  private state: string;
+
+  @ManyToMany(() => Menu)
+  @JoinTable({
+    name: "menus_and_categories",
+    joinColumn: {
+      name: "category_id",
+      referencedColumnName: "category_id"
+    },
+    inverseJoinColumn: {
+      name: "menu_id",
+      referencedColumnName: "menu_id"
+    }
+  })
+  menus: Menu[];
+  
   get getCategoryId(): number {
     return this.category_id;
   }
@@ -30,8 +57,12 @@ export class Category {
   get getCategoryDesc(): string {
     return this.description;
   }
-  get getCategoryState(): boolean {
+  
+  get getCategoryState(): string {
     return this.state;
+  }
+  get getCategoryRole(): CategoryRole {
+    return this.role;
   }
 
   set setCategoryName(name: string) {
@@ -40,7 +71,12 @@ export class Category {
   set setCategoryDesc(description: string) {
     this.description = description;
   }
-  set setCategoryState(state: boolean) {
+  
+  set setCategoryState(state: string) {
     this.state = state;
   }
+  set setCategoryRole(role: CategoryRole) {
+    this.role = role;
+  }
+
 }
