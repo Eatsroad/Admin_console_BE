@@ -12,14 +12,14 @@ export class Category {
   @PrimaryGeneratedColumn()
   private category_id: number;
 
-  @Column({nullable: false})
+  @Column({nullable: true})
   private name: string;
 
   @Column({nullable: true})
   private description: string;
 
   @Column({default: true})
-  private state: boolean;
+  private state: string;
 
   get getCategoryId(): number {
     return this.category_id;
@@ -30,7 +30,8 @@ export class Category {
   get getCategoryDesc(): string {
     return this.description;
   }
-  get getCategoryState(): boolean {
+  
+  get getCategoryState(): string {
     return this.state;
   }
 
@@ -40,7 +41,8 @@ export class Category {
   set setCategoryDesc(description: string) {
     this.description = description;
   }
-  set setCategoryState(state: boolean) {
+  
+  set setCategoryState(state: string) {
     this.state = state;
   }
 }

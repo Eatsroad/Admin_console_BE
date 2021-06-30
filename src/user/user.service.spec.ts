@@ -3,10 +3,17 @@ import { BasicMessageDto } from '../common/dtos/basic-massage.dto';
 import { createMemoryDB } from '../utils/connections/create-memory-db';
 import { Connection, Repository } from 'typeorm';
 import { UserCreateDto } from './dtos/create-user.dto';
-import { UserUpdateDto } from './dtos/update-user.dto';
 import { UserService } from './user.service';
 import { User } from '../entities/user/user.entity';
 import { Store } from '../../src/entities/store/store.entity';
+import { Menu } from '../../src/entities/menu/menu.entity';
+import { Option } from '../../src/entities/option/option.entity';
+import { OptionGroup } from '../../src/entities/option/optionGroup.entity';
+import { Category } from '../../src/entities/category/category.entity';
+import { EnableTime } from '../../src/entities/menu/enableTime.entity';
+import { UserUpdateDto } from './dtos/update-user.dto';
+
+
 
 describe('UserService', () => {
   let userService: UserService;
@@ -29,7 +36,7 @@ describe('UserService', () => {
   };
 
   beforeAll(async () => {
-    connection = await createMemoryDB([User,Store]);
+    connection = await createMemoryDB([User, Store, Menu, Option, OptionGroup, Category, EnableTime]);
     userRepository = await connection.getRepository(User);
     userService = new UserService(userRepository);
   });

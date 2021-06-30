@@ -6,10 +6,10 @@ export class EnableTime {
   @PrimaryGeneratedColumn()
   private id: number;
   
-  @CreateDateColumn()
+  @CreateDateColumn({default:null})
   private start_time: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({default:null})
   private end_time: Date;
 
   @Column({nullable: true})
