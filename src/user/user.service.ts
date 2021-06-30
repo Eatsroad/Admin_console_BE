@@ -8,7 +8,7 @@ import { UserUpdateDto } from './dtos/update-user.dto';
 import { UserInfoResponseDto } from './dtos/user-info.dto';
 import { UserLoginRequestDto } from './dtos/user-login-request.dto';
 import { UserLoginResponseDto } from './dtos/user-login-response.dto';
-import { generateAccessToken } from 'src/utils/auth/jwt-token-util';
+import { generateAccessToken } from '../../src/utils/auth/jwt-token-util';
 
 @Injectable()
 export class UserService {

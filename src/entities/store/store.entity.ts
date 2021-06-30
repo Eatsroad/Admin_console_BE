@@ -1,10 +1,13 @@
 import { 
   Column, 
   CreateDateColumn, 
+  DeleteDateColumn, 
   Entity, 
+  JoinColumn, 
   ManyToOne, 
   OneToMany, 
-  PrimaryGeneratedColumn 
+  PrimaryGeneratedColumn, 
+  UpdateDateColumn
 } from "typeorm";
 import { Menu } from "../menu/menu.entity";
 import { User } from "../user/user.entity";
@@ -26,10 +29,10 @@ export class Store {
   @CreateDateColumn()
   private created_at: Date;
 
-  @CreateDateColumn()
+  @UpdateDateColumn()
   private updated_at: Date;
 
-  @CreateDateColumn()
+  @DeleteDateColumn()
   private deleted_at: Date;
 
   @Column({nullable : false})
@@ -39,11 +42,16 @@ export class Store {
   private is_approved: boolean;
   
   @ManyToOne(type => User, user => user.getUser_id)
+  @JoinColumn({name: "user_id"})
   user_id: User;
 
   @OneToMany(() => Menu, menu => menu.getMenuId)
   menu_id: Menu[];
-  
+
+  get getUser_id(): User{
+    return this.user_id
+  }
+
   get getStore_id(): number {
     return this.store_id;
   }
