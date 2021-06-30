@@ -1,5 +1,3 @@
-import { ShutdownSignal } from "@nestjs/common";
-import { isHexColor } from "class-validator";
 import { 
   Column,
   Entity, 
@@ -56,7 +54,7 @@ export class Menu {
     },
   )
   categories: Category[];
-  
+
   @ManyToMany(() => OptionGroup)
   @JoinTable({
     name: "menus_and_option_groups",
@@ -65,11 +63,10 @@ export class Menu {
       referencedColumnName: "menu_id"
     },
     inverseJoinColumn: {
-      name: "option_group_id",//데이터그립에있는 optiongroup테이블에 있는 속성이름
-      referencedColumnName: "option_group_id"//optiongroup엔티티에있는 PK속성이름
-    }
+      name: "option_group_id",
+      referencedColumnName: "option_group_id"
     },
-    )
+  })
   optionGroups: OptionGroup[];
 
   get getMenuId(): number {

@@ -7,6 +7,12 @@ import {
 } from "typeorm";
 import { Menu } from "../menu/menu.entity";
 
+export enum CategoryRole {
+  BiG = "big",
+  SMALL = "small",
+  ETC = "etc"
+};
+
 @Entity({name: "categories"})
 export class Category {
   @PrimaryGeneratedColumn()
@@ -18,9 +24,30 @@ export class Category {
   @Column({nullable: true})
   private description: string;
 
+  @Column({
+    type: "enum",
+    enum: CategoryRole,
+    default: CategoryRole.ETC
+  })
+  private role: string;
+
   @Column({default: true})
   private state: string;
 
+  @ManyToMany(() => Menu)
+  @JoinTable({
+    name: "menus_and_categories",
+    joinColumn: {
+      name: "category_id",
+      referencedColumnName: "category_id"
+    },
+    inverseJoinColumn: {
+      name: "menu_id",
+      referencedColumnName: "menu_id"
+    }
+  })
+  menus: Menu[];
+  
   get getCategoryId(): number {
     return this.category_id;
   }
@@ -34,6 +61,9 @@ export class Category {
   get getCategoryState(): string {
     return this.state;
   }
+  get getCategoryRole(): string {
+    return this.getCategoryRole;
+  }
 
   set setCategoryName(name: string) {
     this.name = name;
@@ -45,4 +75,8 @@ export class Category {
   set setCategoryState(state: string) {
     this.state = state;
   }
+  set setCategoryRole(role: string) {
+    this.role = role;
+  }
+
 }
