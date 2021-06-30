@@ -4,7 +4,7 @@ import { Option } from "./option.entity";
 @Entity({name:"option_groups"})
 export class OptionGroup {
   @PrimaryGeneratedColumn()
-  private option_groups_id: number;
+  private option_group_id: number;
 
   @Column({nullable: false})
   private name: string;
@@ -19,7 +19,7 @@ export class OptionGroup {
   option_id: Option[];
 
   get getOptionGroupId(): number {
-    return this.option_groups_id;
+    return this.option_group_id;
   }
   get getOptionGroupName(): string {
     return this.name;

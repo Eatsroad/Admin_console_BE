@@ -41,7 +41,7 @@ export class MenuController {
   @Patch('/:menuId/optiongroup')
   updateOptiongroup(
     @Param('menuId') menuId: number,
-    @Body('menu') menu:MenuUpdateDto,  
+    @Body() menu:MenuUpdateDto,  
   ){
     return this.menuService.updateOptionGroupInMenu(menuId, menu);
   }
@@ -49,9 +49,17 @@ export class MenuController {
   @Patch('/:menuId/category')
   updateCategory(
     @Param('menuId') menuId: number,
-    @Body('menu') menu:MenuUpdateDto, 
+    @Body() menu:MenuUpdateDto, 
   ){
     return this.menuService.updateCategoryInMenu(menuId, menu);
+  }
+
+  @Patch('/:menuId/enabletime')
+  updateEnableTime(
+    @Param('menuId') menuId: number,
+    @Body() menu:MenuUpdateDto, 
+  ){
+    return this.menuService.updateEnableTimeInMenu(menuId, menu);
   }
 }
 

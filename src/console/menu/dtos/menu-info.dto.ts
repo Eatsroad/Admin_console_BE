@@ -15,6 +15,7 @@ export class MenuInfoResponseDto {
         this.state= menu.getMenuState;
         this.categories = menu.categories;
         this.optionGroups = menu.optionGroups;
+        this.enable_time = menu.enable_time;
     }
     menu_id: number;
     store_id: Store;
@@ -24,5 +25,6 @@ export class MenuInfoResponseDto {
     state: string;
     categories: Category[];
     optionGroups : OptionGroup[];
+    enable_time: EnableTime;
 }
 

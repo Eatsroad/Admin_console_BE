@@ -9,6 +9,7 @@ import { MenuUpdateDto } from './dtos/update-menu.dto';
 import { OptionGroup } from '../../../src/entities/option/optionGroup.entity';
 import { Category } from '../../../src/entities/category/category.entity';
 import { Store } from '../../../src/entities/store/store.entity';
+import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
 
 
 @Injectable()
@@ -17,6 +18,7 @@ export class MenuService {
       @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
       ) {}
 
+    
     private convert2StoreObj = async (store_id:number): Promise<Store> => {
       const store = getRepository(Store);
       return await store.findOne(store_id); 
@@ -30,6 +32,11 @@ export class MenuService {
     private convert2OptionGroupObj = async (optionGroup:number[]) : Promise<OptionGroup[]> => {
       const optiongroups = getRepository(OptionGroup);
       return await optiongroups.findByIds(optionGroup);
+    }
+
+    private convert2EnableTimeObj = async (Enabletime : number) : Promise<EnableTime> => {
+      const enableTime = getRepository(EnableTime);
+      return await enableTime.findOne(Enabletime);
     }
 
     private menuCreateDtoToEntity = async (dto: MenuCreateDto): Promise<Menu> => {
@@ -67,7 +74,7 @@ export class MenuService {
   }
     
   async getMenuInfo(menuId: number): Promise<MenuInfoResponseDto> {
-    const menu = await this.menuRepository.findOne(menuId,{relations:["store_id","categories","optionGroups"]});
+    const menu = await this.menuRepository.findOne(menuId,{relations:["store_id","categories","optionGroups","enable_time"]});
     if (!!menu) {
       return new MenuInfoResponseDto(menu);
     } else {
@@ -96,6 +103,8 @@ export class MenuService {
   ) : Promise<BasicMessageDto>{
     const menu = await this.menuRepository.findOne(menuId);
     menu.store_id = await this.convert2StoreObj(dto.store_id);
+    
+    await this.menuRepository.save(menu);
     return new BasicMessageDto("StoreId is Updated Successfully")
   }
 
@@ -104,7 +113,6 @@ export class MenuService {
     ): Promise<BasicMessageDto> {
       const menu = await this.menuRepository.findOne(menuId);
       menu.categories = await this.convert2CategoryObj(dto.categories);
-
       await this.menuRepository.save(menu);
       return new BasicMessageDto("Category Updated successfully!");
     }
@@ -116,9 +124,19 @@ export class MenuService {
     menu.optionGroups = await this.convert2OptionGroupObj(dto.optionGroups);
    
     await this.menuRepository.save(menu);
-    return new BasicMessageDto("OptionGroup Deleted Successfully.");
-  
+    return new BasicMessageDto("OptionGroup Updated Successfully.");
  }
+
+  async updateEnableTimeInMenu(menuId: number,
+    dto: MenuUpdateDto
+  ): Promise<BasicMessageDto> {
+    const menu = await this.menuRepository.findOne(menuId);
+    menu.enable_time = await this.convert2EnableTimeObj(dto.enable_time);
+    await this.menuRepository.save(menu);
+
+    return new BasicMessageDto("EnableTime Updated Successfully.");
+  }
+
   async removeMenu(menuId : number): Promise<BasicMessageDto> {
     const result = await this.menuRepository.delete(menuId);
     if (result.affected !== 0) {
@@ -130,8 +148,8 @@ export class MenuService {
     ): Promise<BasicMessageDto> {
       const menu = await this.menuRepository.findOne(menuId);
       menu.categories = null;
-
       await this.menuRepository.save(menu);
+
       return new BasicMessageDto("Category Deleted successfully!");
     }
 
@@ -139,10 +157,20 @@ export class MenuService {
    ): Promise<BasicMessageDto> {
     const menu = await this.menuRepository.findOne(menuId);
     menu.optionGroups = null;
-   
     await this.menuRepository.save(menu);
+    
     return new BasicMessageDto("OptionGroup Deleted Successfully.");
   
  }
+
+ async removeEnableTimeInMenu(menuId: number,
+  ): Promise<BasicMessageDto> {
+   const menu = await this.menuRepository.findOne(menuId);
+   menu.enable_time = null;
+   await this.menuRepository.save(menu);
+   
+   return new BasicMessageDto("EnableTime Deleted Successfully.");
+ 
+}
 
 }
