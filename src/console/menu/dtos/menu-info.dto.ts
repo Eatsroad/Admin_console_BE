@@ -1,6 +1,7 @@
 
 import { Category } from "src/entities/category/category.entity";
 import { EnableTime } from "src/entities/menu/enableTime.entity";
+import { OptionGroup } from "src/entities/option/optionGroup.entity";
 import { Menu } from "../../../../src/entities/menu/menu.entity";
 import { Store } from "../../../../src/entities/store/store.entity";
 
@@ -12,6 +13,8 @@ export class MenuInfoResponseDto {
         this.price = menu.getMenuPrice;
         this.description = menu.getMenuDesc;
         this.state= menu.getMenuState;
+        this.categories = menu.categories;
+        this.optionGroups = menu.optionGroups;
     }
     menu_id: number;
     store_id: Store;
@@ -19,5 +22,7 @@ export class MenuInfoResponseDto {
     price: number;
     description: string;
     state: string;
+    categories: Category[];
+    optionGroups : OptionGroup[];
 }
 

@@ -22,6 +22,16 @@ export class MenuService {
       return await store.findOne(store_id); 
     }
 
+    private convert2CategoryObj = async (category:number[]) : Promise<Category[]> => {
+      const categories = getRepository(Category);
+      return await categories.findByIds(category);
+    }
+
+    private convert2OptionGroupObj = async (optionGroup:number[]) : Promise<OptionGroup[]> => {
+      const optiongroups = getRepository(OptionGroup);
+      return await optiongroups.findByIds(optionGroup);
+    }
+
     private menuCreateDtoToEntity = async (dto: MenuCreateDto): Promise<Menu> => {
         const menu = new Menu();
         menu.setMenuName = dto.name;
@@ -32,38 +42,38 @@ export class MenuService {
         return menu;
     }
 
-    private MenuExist = async (name:string, price:number, description:string): Promise<boolean> => {
-      return (
-        (await this.menuRepository
-          .createQueryBuilder()
-          .select("m.menu_id")
-          .from(Menu, "m")
-          .where("m.name = :name",{name})
-          .andWhere("m.price = :price",{price})
-          .andWhere("m.description = :description",{description})
-          .getOne()) !== undefined
-      );
-    };
+  private MenuExist = async (name:string, price:number, description:string): Promise<boolean> => {
+    return (
+      (await this.menuRepository
+        .createQueryBuilder()
+        .select("m.menu_id")
+        .from(Menu, "m")
+        .where("m.name = :name",{name})
+        .andWhere("m.price = :price",{price})
+        .andWhere("m.description = :description",{description})
+        .getOne()) !== undefined
+    );
+  };
 
-    async saveMenu(dto: MenuCreateDto): Promise<MenuInfoResponseDto> {
-      if( await this.MenuExist(dto.name, dto.price, dto.description )) {
-        throw new ConflictException("Menu is already in use!");
-      } else {
-        const menu = await this.menuRepository.save(
-          await this.menuCreateDtoToEntity(dto)
-        );
-        return new MenuInfoResponseDto(menu);
-      }
+  async saveMenu(dto: MenuCreateDto): Promise<MenuInfoResponseDto> {
+    if( await this.MenuExist(dto.name, dto.price, dto.description )) {
+      throw new ConflictException("Menu is already in use!");
+    } else {
+      const menu = await this.menuRepository.save(
+        await this.menuCreateDtoToEntity(dto)
+      );
+      return new MenuInfoResponseDto(menu);
     }
+  }
     
-    async getMenuInfo(menuId: number): Promise<MenuInfoResponseDto> {
-      const menu = await this.menuRepository.findOne(menuId,{relations:["store_id"]});
-      if (!!menu) {
-        return new MenuInfoResponseDto(menu);
-      } else {
-      throw new NotFoundException();
-      }
+  async getMenuInfo(menuId: number): Promise<MenuInfoResponseDto> {
+    const menu = await this.menuRepository.findOne(menuId,{relations:["store_id","categories","optionGroups"]});
+    if (!!menu) {
+      return new MenuInfoResponseDto(menu);
+    } else {
+    throw new NotFoundException();
     }
+  }
 
   async updateMenuInfo(
     menuId: number,
@@ -93,7 +103,7 @@ export class MenuService {
     dto: MenuUpdateDto
     ): Promise<BasicMessageDto> {
       const menu = await this.menuRepository.findOne(menuId);
-      menu.categories = dto.categories;
+      menu.categories = await this.convert2CategoryObj(dto.categories);
 
       await this.menuRepository.save(menu);
       return new BasicMessageDto("Category Updated successfully!");
@@ -103,7 +113,7 @@ export class MenuService {
     dto: MenuUpdateDto
    ): Promise<BasicMessageDto> {
     const menu = await this.menuRepository.findOne(menuId);
-    menu.optionGroups = dto.optionGroups;
+    menu.optionGroups = await this.convert2OptionGroupObj(dto.optionGroups);
    
     await this.menuRepository.save(menu);
     return new BasicMessageDto("OptionGroup Deleted Successfully.");

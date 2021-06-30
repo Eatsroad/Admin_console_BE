@@ -9,11 +9,11 @@ import { MenuCreateDto } from "./create-menu.dto";
 export class MenuUpdateDto extends PartialType(MenuCreateDto) {
     @IsOptional()
     @IsNumber()
-    optionGroups : OptionGroup[];
+    optionGroups : number[];
     
     @IsOptional()
     @IsNumber()
-    categories : Category[];
+    categories : number[];
 
     
 }

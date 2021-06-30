@@ -144,12 +144,40 @@ describe('MenuService', () => {
     store2.setAddress = "STORE2ADDRESS";
     await connection.manager.save(store2);
 
+    const category2 = new Category();
+    category2.setCategoryName = "CATEGORY2NAME";
+    category2.setCategoryDesc = "CATEGORY2DESC";
+    category2.setCategoryState = "CATEGORY2STATE";
+    await connection.manager.save(category2);
+    const category3 = new Category();
+    category2.setCategoryName = "CATEGORY3NAME";
+    category2.setCategoryDesc = "CATEGORY3DESC";
+    category2.setCategoryState = "CATEGORY3STATE";
+    await connection.manager.save(category3);
+
+    const CategoryList = [category2, category3];
+
+    const optiongroup2 = new OptionGroup();
+    optiongroup2.setOptionGroupName = "OPTIONGROUP2";
+    optiongroup2.setOptionGroupDesc = "OPTIONGRUOP2DESC";
+    optiongroup2.setOptionGroupState = "OPTIONGROUP2STATE";
+    await connection.manager.save(optiongroup2);
+    const optiongroup3 = new OptionGroup();
+    optiongroup3.setOptionGroupName = "OPTIONGROUP3";
+    optiongroup3.setOptionGroupDesc = "OPTIONGRUOP3DESC";
+    optiongroup3.setOptionGroupState = "OPTIONGROUP3STATE";
+    await connection.manager.save(optiongroup3);
+
+    const OptionGroupList = [optiongroup2, optiongroup3];
+
     const savedMenu = new Menu();
     savedMenu.setMenuName = NAME;
     savedMenu.setMenuPrice = PRICE;
     savedMenu.setMenuDesc = DESC;
     savedMenu.setMenuState = STATE;
     savedMenu.store_id = store2;
+    savedMenu.categories = CategoryList;
+    savedMenu.optionGroups = OptionGroupList;
     
     await menuRepository.save(savedMenu);
 
@@ -160,11 +188,30 @@ describe('MenuService', () => {
     updateDtoInfo.state = "AVAILABLE";
     updateDtoInfo.store_id = 3;
 
+    console.log(updateDtoInfo);
     const responseInfo = await menuService.updateMenuInfo(
       savedMenu.getMenuId,
       updateDtoInfo
     );
+
     
+    const updateDto = new MenuUpdateDto();
+    updateDto.categories = [2,];
+    updateDto.optionGroups = [2,];
+
+    console.log(updateDto);
+    const response = await menuService.updateCategoryInMenu(
+      savedMenu.getMenuId,
+      updateDto
+    )
+    
+    const response2 = await menuService.updateOptionGroupInMenu(
+      savedMenu.getMenuId,
+      updateDto
+    )
+    
+    expect(response).toBeInstanceOf(BasicMessageDto);
+    expect(response2).toBeInstanceOf(BasicMessageDto);
     expect(responseInfo).toBeInstanceOf(BasicMessageDto);
   
     const updatedMenu = await menuService.getMenuInfo(savedMenu.getMenuId);
@@ -173,6 +220,8 @@ describe('MenuService', () => {
     expect(updatedMenu.description).toBe("UPDATED DESC");
     expect(updatedMenu.state).toBe("AVAILABLE");
     expect(updatedMenu.store_id).toStrictEqual(store2);
+    expect(updatedMenu.categories).toStrictEqual([category2]);
+    expect(updatedMenu.optionGroups).toStrictEqual([optiongroup2]);
     
   });
 
@@ -275,6 +324,7 @@ describe('MenuService', () => {
     expect(updatedMenu.store_id).toStrictEqual(store3);
   });
 
+
   it("Should remove menu(All)", async () => {
     const savedUser = await saveMenu();
 
@@ -308,5 +358,4 @@ describe('MenuService', () => {
     const menu = await menuRepository.findOne(savedMenu.getMenuId);
     expect(menu.getMenuState).toBe(null);
   });
-
 });
