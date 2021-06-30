@@ -7,9 +7,12 @@ import { User } from 'src/entities/user/user.entity';
 import { CategoryController } from './category.controller';
 import { CategoryService } from './category.service';
 
+
 @Module({
   imports: [TypeOrmModule.forFeature([Category, Menu, Store, User])],
   controllers: [CategoryController],
   providers: [CategoryService]
 })
-export class CategoryModule {}
+export class CategoryModule {
+
+}

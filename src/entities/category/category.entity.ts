@@ -18,7 +18,7 @@ export class Category {
   @PrimaryGeneratedColumn()
   private category_id: number;
 
-  @Column({nullable: false})
+  @Column({nullable: true})
   private name: string;
 
   @Column({nullable: true})
@@ -32,7 +32,7 @@ export class Category {
   private role: string;
 
   @Column({default: true})
-  private state: boolean;
+  private state: string;
 
   @ManyToMany(() => Menu)
   @JoinTable({
@@ -57,7 +57,8 @@ export class Category {
   get getCategoryDesc(): string {
     return this.description;
   }
-  get getCategoryState(): boolean {
+  
+  get getCategoryState(): string {
     return this.state;
   }
   get getCategoryRole(): string {
@@ -70,7 +71,8 @@ export class Category {
   set setCategoryDesc(description: string) {
     this.description = description;
   }
-  set setCategoryState(state: boolean) {
+  
+  set setCategoryState(state: string) {
     this.state = state;
   }
   set setCategoryRole(role: string) {

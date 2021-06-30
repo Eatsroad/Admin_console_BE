@@ -5,7 +5,7 @@ module.exports = {
   password: 'whtjdgus04!',
   database: 'eatsroad',
   logging: false,
-  entities: ['dist/**/*.entity{.ts,.js}'],
+  entities: [ 'dist/**/*.entity{.ts,.js}'],
   synchronize: false,
   type: 'mariadb',
 };

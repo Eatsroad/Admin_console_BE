@@ -39,6 +39,7 @@ export class User {
   })
   private user_role: string;
 
+
   @CreateDateColumn()
   private created_at: Date;
 
@@ -66,9 +67,9 @@ export class User {
   get getPhone_number(): string {
     return this.phone_number;
   }
-  get getUser_role(): string {
-    return this.user_role;
-  }
+  // get getUser_role(): string {
+  //   return this.user_role;
+  // }
   get getCreated_at():Date {
     return this.created_at;
   }

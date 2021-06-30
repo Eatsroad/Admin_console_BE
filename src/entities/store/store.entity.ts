@@ -1,11 +1,13 @@
 import { 
   Column, 
   CreateDateColumn, 
+  DeleteDateColumn, 
   Entity, 
   JoinColumn, 
   ManyToOne, 
   OneToMany, 
-  PrimaryGeneratedColumn 
+  PrimaryGeneratedColumn, 
+  UpdateDateColumn
 } from "typeorm";
 import { User } from "../user/user.entity";
 
@@ -26,21 +28,29 @@ export class Store {
   @CreateDateColumn()
   private created_at: Date;
 
-  @CreateDateColumn()
+  @UpdateDateColumn({default: null})
   private updated_at: Date;
 
-  @CreateDateColumn()
+  @DeleteDateColumn({default: null})
   private deleted_at: Date;
 
-  @Column({nullable : false})
+  @Column({nullable : true})
   private tables: number;
 
   @Column({default: false})
   private is_approved: boolean;
   
-  @ManyToOne(() => User, user => user.stores)
-  user: User;
-  
+  @ManyToOne(type => User, user => user.getUser_id)
+  @JoinColumn({name: "user_id"})
+  user_id: User;
+
+  @OneToMany(() => Menu, menu => menu.getMenuId)
+  menu_id: Menu[];
+
+  get getUser_id(): User{
+    return this.user_id
+  }
+
   get getStore_id(): number {
     return this.store_id;
   }
