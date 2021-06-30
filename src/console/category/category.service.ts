@@ -28,7 +28,7 @@ export class CategoryService {
     category.setCategoryDesc = dto.description;
     category.setCategoryState = dto.state;
     category.menus = await this.convertMenuId2MenuObj(dto.menus);
-
+    category.setCategoryRole = dto.role;
     return category;
   }
 
