@@ -29,7 +29,7 @@ export class Category {
     enum: CategoryRole,
     default: CategoryRole.ETC
   })
-  private role: string;
+  private role: CategoryRole;
 
   @Column({default: true})
   private state: string;
@@ -61,8 +61,8 @@ export class Category {
   get getCategoryState(): string {
     return this.state;
   }
-  get getCategoryRole(): string {
-    return this.getCategoryRole;
+  get getCategoryRole(): CategoryRole {
+    return this.role;
   }
 
   set setCategoryName(name: string) {
@@ -75,7 +75,7 @@ export class Category {
   set setCategoryState(state: string) {
     this.state = state;
   }
-  set setCategoryRole(role: string) {
+  set setCategoryRole(role: CategoryRole) {
     this.role = role;
   }
 

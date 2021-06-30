@@ -22,7 +22,7 @@ getStoreInfo(
   @Param('storeId', ParseIntPipe) storeid:number
   ):Promise<StoreInfoResponseDto>{
   return this.StoreService.getStoreInfo(storeid);
-  }
+}
 
 @Put('/:storeId')
 updateStoreInfo(

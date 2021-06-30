@@ -1,4 +1,5 @@
 import { IsArray, IsBoolean, IsNumber, IsString } from "class-validator";
+import { CategoryRole } from "src/entities/category/category.entity";
 
 export class CategoryCreateDto {
   @IsString()
@@ -14,5 +15,5 @@ export class CategoryCreateDto {
   menus: number[];
 
   @IsString()
-  role: string;
+  role: CategoryRole;
 }
