@@ -49,7 +49,7 @@ export class User {
   @DeleteDateColumn()
   private deleted_at: Date;
 
-  @OneToMany(() => Store, store => store.user)
+  @OneToMany(() => Store, store => store.user_id)
   stores: Store[];
 
   get getUser_id(): number {
@@ -67,9 +67,9 @@ export class User {
   get getPhone_number(): string {
     return this.phone_number;
   }
-  // get getUser_role(): string {
-  //   return this.user_role;
-  // }
+  get getUser_role(): string {
+    return this.user_role;
+  }
   get getCreated_at():Date {
     return this.created_at;
   }
