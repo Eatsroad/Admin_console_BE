@@ -12,4 +12,7 @@ export class CategoryCreateDto {
 
   @IsArray()
   menus: number[];
+
+  @IsString()
+  role: string;
 }

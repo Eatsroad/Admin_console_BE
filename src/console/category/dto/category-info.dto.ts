@@ -8,10 +8,13 @@ export class CategoryInfoResponseDto {
     this.menus = category.menus;
     this.description = category.getCategoryDesc;
     this.state = category.getCategoryState;
+    this.role = category.getCategoryRole;
   }
   name: string;
   menus: Menu[];
   description: string;
   state: boolean
   category_id: number;
+  role: string;
+
 }
