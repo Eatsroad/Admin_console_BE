@@ -39,14 +39,37 @@ export class Menu {
   @OneToOne(() => EnableTime, enableTime => enableTime.getEnableTimeId,{
     cascade: [ "update" ]
   })
+  @JoinColumn({name: "enable_time"})
   enable_time: EnableTime;
 
-  @ManyToMany(() => Category)
-  @JoinTable()
+  @ManyToMany(() => Category,)
+  @JoinTable({
+    name: "menus_and_categories",
+    joinColumn: {
+      name: "menu_id",
+      referencedColumnName: "menu_id"
+    },
+    inverseJoinColumn: {
+      name: "category_id",
+      referencedColumnName: "category_id"
+    }
+    },
+  )
   categories: Category[];
   
   @ManyToMany(() => OptionGroup)
-  @JoinTable()
+  @JoinTable({
+    name: "menus_and_option_groups",
+    joinColumn: {
+      name: "menu_id",
+      referencedColumnName: "menu_id"
+    },
+    inverseJoinColumn: {
+      name: "option_group_id",//데이터그립에있는 optiongroup테이블에 있는 속성이름
+      referencedColumnName: "option_group_id"//optiongroup엔티티에있는 PK속성이름
+    }
+    },
+    )
   optionGroups: OptionGroup[];
 
   get getMenuId(): number {

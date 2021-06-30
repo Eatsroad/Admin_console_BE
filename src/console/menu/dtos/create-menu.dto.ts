@@ -20,7 +20,5 @@ export class MenuCreateDto{
     @IsNumber()
     store_id: number;
 
-    // @IsOptional()
-    // @IsNumber()
-    // enable_time:number;
+    
 }

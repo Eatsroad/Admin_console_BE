@@ -12,7 +12,7 @@ export class Category {
   @PrimaryGeneratedColumn()
   private category_id: number;
 
-  @Column({nullable: false})
+  @Column({nullable: true})
   private name: string;
 
   @Column({nullable: true})
