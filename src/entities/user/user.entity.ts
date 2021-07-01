@@ -3,6 +3,7 @@ import {
   CreateDateColumn, 
   DeleteDateColumn, 
   Entity,
+  JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn, 
   UpdateDateColumn 
@@ -31,12 +32,13 @@ export class User {
   @Column({nullable: false})
   private password: string;
 
-  // @Column({nullable: false, 
-  //   type: "enum",
-  //   enum: UserRole,
-  //   default: UserRole.USER
-  // })
-  // private user_role: UserRole;
+  @Column({nullable: false, 
+    // type: "enum",
+    // enum: UserRole,
+    // default: UserRole.USER
+  })
+  private user_role: string;
+
 
   @CreateDateColumn()
   private created_at: Date;
@@ -47,8 +49,8 @@ export class User {
   @DeleteDateColumn()
   private deleted_at: Date;
 
-  @OneToMany(type => Store, store => store.getStore_id)
-  store_id: Store[];
+  @OneToMany(() => Store, store => store.user_id)
+  stores: Store[];
 
   get getUser_id(): number {
     return this.user_id;
@@ -65,9 +67,9 @@ export class User {
   get getPhone_number(): string {
     return this.phone_number;
   }
-  // get getUser_role(): string {
-  //   return this.user_role;
-  // }
+  get getUser_role(): string {
+    return this.user_role;
+  }
   get getCreated_at():Date {
     return this.created_at;
   }
@@ -90,9 +92,9 @@ export class User {
   set setPassword(password: string) {
     this.password = password;
   }
-  // set setUserRole(user_role: UserRole) {
-  //  this.user_role = user_role;
-  // }
+  set setUserRole(user_role: string) {
+   this.user_role = user_role;
+  }
   set setDeletedAt(deleted_at: Date) {
     this.deleted_at = deleted_at;
   }
