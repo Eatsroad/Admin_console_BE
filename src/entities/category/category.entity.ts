@@ -6,13 +6,6 @@ import {
   PrimaryGeneratedColumn 
 } from "typeorm";
 import { Menu } from "../menu/menu.entity";
-
-export enum CategoryRole {
-  BiG = "big",
-  SMALL = "small",
-  ETC = "etc"
-};
-
 @Entity({name: "categories"})
 export class Category {
   @PrimaryGeneratedColumn()
@@ -24,12 +17,8 @@ export class Category {
   @Column({nullable: true})
   private description: string;
 
-  @Column({
-    type: "enum",
-    enum: CategoryRole,
-    default: CategoryRole.ETC
-  })
-  private role: CategoryRole;
+  @Column({nullable: true})
+  private role: string;
 
   @Column({default: true})
   private state: string;
@@ -61,7 +50,7 @@ export class Category {
   get getCategoryState(): string {
     return this.state;
   }
-  get getCategoryRole(): CategoryRole {
+  get getCategoryRole(): string {
     return this.role;
   }
 
@@ -75,7 +64,7 @@ export class Category {
   set setCategoryState(state: string) {
     this.state = state;
   }
-  set setCategoryRole(role: CategoryRole) {
+  set setCategoryRole(role: string) {
     this.role = role;
   }
 

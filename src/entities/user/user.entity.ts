@@ -32,13 +32,8 @@ export class User {
   @Column({nullable: false})
   private password: string;
 
-  @Column({nullable: false, 
-    // type: "enum",
-    // enum: UserRole,
-    // default: UserRole.USER
-  })
+  @Column({nullable: false})
   private user_role: string;
-
 
   @CreateDateColumn()
   private created_at: Date;

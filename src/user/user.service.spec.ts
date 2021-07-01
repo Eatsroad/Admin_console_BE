@@ -22,8 +22,7 @@ describe('UserService', () => {
   const EMAIL = 'test@test.com';
   const PASSWORD = '1234abc5';
   const PHONE_NUMBER = '010-7725-1929';
-  const USER_ROLE = UserRole.USER;
-  // const WRONG_TOKEN = 'asdfasdf';
+  const USER_ROLE = "USER";
 
   const saveUser = async (): Promise<User> => {
     const savedUser = new User();
@@ -87,7 +86,7 @@ describe('UserService', () => {
     savedUser.setName = NAME;
     savedUser.setPassword = PASSWORD;
     savedUser.setPhone_number = PHONE_NUMBER;
-    savedUser.setUserRole = UserRole.USER;
+    savedUser.setUserRole = "USER";
     await userRepository.save(savedUser);
 
     const dto = new UserCreateDto();

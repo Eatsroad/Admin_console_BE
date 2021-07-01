@@ -1,7 +1,7 @@
 import { Category } from '../../entities/category/category.entity';
 import { Menu } from '../../entities/menu/menu.entity';
 import { createMemoryDB } from '../../utils/connections/create-memory-db';
-import { Connection, Repository } from 'typeorm';
+import { Connection, EntitySchema, Repository } from 'typeorm';
 import { CategoryService } from './category.service';
 import { Store } from '../../entities/store/store.entity';
 import { User } from '../../entities/user/user.entity';
@@ -10,6 +10,9 @@ import { ConflictException, NotFoundException } from '@nestjs/common';
 import { CategoryUpdatedto } from './dto/update-category.dto';
 import { BasicMessageDto } from '../../common/dtos/basic-massage.dto';
 import { CategoryMenuUpdateDto } from './dto/update-category-menus.dto';
+import { EnableTime } from '../../entities/menu/enableTime.entity';
+import { OptionGroup } from '../../entities/option/optionGroup.entity';
+import { Option } from '../../entities/option/option.entity';
 
 describe('CategoryService', () => {
   let categoryService: CategoryService;
@@ -34,7 +37,7 @@ describe('CategoryService', () => {
   }
 
   beforeAll(async () => {
-    connection = await createMemoryDB([Category, Menu, Store, User]);
+    connection = await createMemoryDB([Category, Menu, Store, User, EnableTime, OptionGroup, Option]);
     categoryRepoditory = await connection.getRepository(Category);
     categoryService = new CategoryService(categoryRepoditory);
   });
@@ -65,7 +68,7 @@ describe('CategoryService', () => {
     expect(responseDto.description).toBe(CategoryDesc);
     expect(typeof responseDto.category_id).toBe("number");
     expect(responseDto.menus).toStrictEqual(ResMenu);
-    expect(responseDto.state).toBe(true);   
+    expect(responseDto.state).toBe("true");   
   });
 
   it("Should Save category with not empty menus", async () => {
@@ -94,7 +97,7 @@ describe('CategoryService', () => {
     expect(responseDto.description).toBe(CategoryDesc);
     expect(typeof responseDto.category_id).toBe("number");
     expect(responseDto.menus).toStrictEqual(MenuList);
-    expect(responseDto.state).toBe(true);   
+    expect(responseDto.state).toBe("true");   
   });
 
   it("Should not Save category and throw ConfilctExeception", async () => {

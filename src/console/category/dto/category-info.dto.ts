@@ -1,4 +1,4 @@
-import { Category, CategoryRole } from "src/entities/category/category.entity";
+import { Category } from "src/entities/category/category.entity";
 import { Menu } from "src/entities/menu/menu.entity";
 
 export class CategoryInfoResponseDto {
@@ -15,6 +15,6 @@ export class CategoryInfoResponseDto {
   description: string;
   state: string;
   category_id: number;
-  role: CategoryRole;
+  role: string;
 
 }
