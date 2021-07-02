@@ -8,7 +8,7 @@ import {
   Post, 
   Put 
 } from '@nestjs/common';
-import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
+import { BasicMessageDto } from '../../src/common/dtos/basic-massage.dto';
 import { UserCreateDto } from './dtos/create-user.dto';
 import { UserUpdateDto } from './dtos/update-user.dto';
 import { UserInfoResponseDto } from './dtos/user-info.dto';

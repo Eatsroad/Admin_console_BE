@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn 
 } from "typeorm";
 import { Menu } from "../menu/menu.entity";
+
 @Entity({name: "categories"})
 export class Category {
   @PrimaryGeneratedColumn()
@@ -20,7 +21,7 @@ export class Category {
   @Column({nullable: true})
   private role: string;
 
-  @Column({default: true})
+  @Column({nullable: true})
   private state: string;
 
   @ManyToMany(() => Menu)
@@ -50,6 +51,7 @@ export class Category {
   get getCategoryState(): string {
     return this.state;
   }
+
   get getCategoryRole(): string {
     return this.role;
   }
@@ -64,6 +66,7 @@ export class Category {
   set setCategoryState(state: string) {
     this.state = state;
   }
+
   set setCategoryRole(role: string) {
     this.role = role;
   }

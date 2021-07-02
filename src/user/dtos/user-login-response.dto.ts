@@ -1,4 +1,4 @@
-import { User } from "src/entities/user/user.entity";
+import { User } from "../../../src/entities/user/user.entity";
 
 export class UserLoginResponseDto {
   constructor(user: User) {

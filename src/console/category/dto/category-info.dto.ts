@@ -1,5 +1,5 @@
-import { Category } from "src/entities/category/category.entity";
-import { Menu } from "src/entities/menu/menu.entity";
+import { Category } from "../../../../src/entities/category/category.entity";
+import { Menu } from "../../../../src/entities/menu/menu.entity";
 
 export class CategoryInfoResponseDto {
   constructor(category: Category) {
@@ -16,5 +16,6 @@ export class CategoryInfoResponseDto {
   state: string;
   category_id: number;
   role: string;
+
 
 }

@@ -10,11 +10,6 @@ import {
 } from "typeorm";
 import { Store } from "../store/store.entity";
 
-export enum UserRole {
-  USER = "USER",
-  ADMIN = "ADMIN",
-}
-
 @Entity({name: "users"})
 export class User {
   @PrimaryGeneratedColumn()

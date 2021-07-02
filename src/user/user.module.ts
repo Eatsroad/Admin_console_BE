@@ -1,10 +1,10 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserAuthMiddleware } from 'src/middlewares/user-auth.middleare';
+import { UserAuthMiddleware } from '../../src/middlewares/user-auth.middleare';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
-import { Store } from 'src/entities/store/store.entity';
-import { User } from 'src/entities/user/user.entity';
+import { Store } from '../../src/entities/store/store.entity';
+import { User } from '../../src/entities/user/user.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Store])],

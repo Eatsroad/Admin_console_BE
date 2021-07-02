@@ -23,7 +23,7 @@ describe('UserService', () => {
   const PASSWORD = '1234abc5';
   const PHONE_NUMBER = '010-7725-1929';
   const USER_ROLE = "USER";
-
+  
   const saveUser = async (): Promise<User> => {
     const savedUser = new User();
 
