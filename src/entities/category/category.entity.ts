@@ -7,11 +7,11 @@ import {
 } from "typeorm";
 import { Menu } from "../menu/menu.entity";
 
-export enum CategoryRole {
-  BiG = "big",
-  SMALL = "small",
-  ETC = "etc"
-};
+// export enum CategoryRole {
+//   BiG = "big",
+//   SMALL = "small",
+//   ETC = "etc"
+// };
 
 @Entity({name: "categories"})
 export class Category {
@@ -24,14 +24,14 @@ export class Category {
   @Column({nullable: true})
   private description: string;
 
-  @Column({
-    type: "enum",
-    enum: CategoryRole,
-    default: CategoryRole.ETC
-  })
-  private role: CategoryRole;
+  // @Column({
+  //   type: "enum",
+  //   enum: CategoryRole,
+  //   default: CategoryRole.ETC
+  // })
+  // private role: CategoryRole;
 
-  @Column({default: true})
+  @Column({nullable: true})
   private state: string;
 
   @ManyToMany(() => Menu)
@@ -61,9 +61,9 @@ export class Category {
   get getCategoryState(): string {
     return this.state;
   }
-  get getCategoryRole(): CategoryRole {
-    return this.role;
-  }
+  // get getCategoryRole(): CategoryRole {
+  //   return this.role;
+  // }
 
   set setCategoryName(name: string) {
     this.name = name;
@@ -75,8 +75,8 @@ export class Category {
   set setCategoryState(state: string) {
     this.state = state;
   }
-  set setCategoryRole(role: CategoryRole) {
-    this.role = role;
-  }
+  // set setCategoryRole(role: CategoryRole) {
+  //   this.role = role;
+  // }
 
 }

@@ -65,12 +65,9 @@ export class Menu {
     inverseJoinColumn: {
       name: "option_group_id",
       referencedColumnName: "option_group_id"
-<<<<<<< HEAD
     }
-=======
->>>>>>> 7d8f7145d822f1ef520d60f2140e6ad73e1dc498
-    },
-  })
+   },
+  )
   optionGroups: OptionGroup[];
 
   get getMenuId(): number {

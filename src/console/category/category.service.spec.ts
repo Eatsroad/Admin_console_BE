@@ -10,6 +10,8 @@ import { ConflictException, NotFoundException } from '@nestjs/common';
 import { CategoryUpdatedto } from './dto/update-category.dto';
 import { BasicMessageDto } from '../../common/dtos/basic-massage.dto';
 import { CategoryMenuUpdateDto } from './dto/update-category-menus.dto';
+import { OptionGroup } from '../../../src/entities/option/optionGroup.entity';
+import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
 
 describe('CategoryService', () => {
   let categoryService: CategoryService;
@@ -34,7 +36,7 @@ describe('CategoryService', () => {
   }
 
   beforeAll(async () => {
-    connection = await createMemoryDB([Category, Menu, Store, User]);
+    connection = await createMemoryDB([Category, Menu, Store, User,Option,OptionGroup,EnableTime]);
     categoryRepoditory = await connection.getRepository(Category);
     categoryService = new CategoryService(categoryRepoditory);
   });

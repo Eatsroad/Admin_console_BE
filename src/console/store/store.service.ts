@@ -7,7 +7,7 @@ import { getRepository, Repository } from 'typeorm';
 import { StoreCreateDto } from './dtos/create-store.dto';
 import { StoreInfoResponseDto } from './dtos/store-info-dto';
 import { StoreUpdateDto } from './dtos/update-store.dto';
-import { User } from 'src/entities/user/user.entity';
+import { User } from '../../../src/entities/user/user.entity';
 
 
 

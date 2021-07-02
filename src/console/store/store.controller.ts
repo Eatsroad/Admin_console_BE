@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Request } from '@nestjs/common';
 import { request } from 'express';
-import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
+import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { StoreCreateDto } from './dtos/create-store.dto';
 import { StoreInfoResponseDto } from './dtos/store-info-dto';
 import { StoreUpdateDto } from './dtos/update-store.dto';

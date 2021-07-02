@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { OptionGroup } from "./optionGroup.entity";
 
 @Entity({name: "options"})
@@ -12,10 +12,11 @@ export class Option {
   @Column({nullable: false})
   private price: number;
 
-  @Column({default: true})
-  private state: boolean;
+  @Column({nullable: true})
+  private state: string;
 
   @ManyToOne(() => OptionGroup, optionGroup => optionGroup.getOptionGroupId)
+  @JoinColumn({name:"option_group_id"})
   option_group_id: OptionGroup[];
 
   get getOptionId(): number {
@@ -27,7 +28,7 @@ export class Option {
   get getOptionPrice(): number {
     return this.price;
   }
-  get getOptionState(): boolean {
+  get getOptionState(): string {
     return this.state;
   }
 
@@ -37,7 +38,7 @@ export class Option {
   set setOptionPrice(price: number) {
     this.price = price;
   }
-  set setOptionState(state: boolean) {
+  set setOptionState(state: string) {
     this.state = state;
   } 
 }

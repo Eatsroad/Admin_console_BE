@@ -1,4 +1,4 @@
-import { Store } from "src/entities/store/store.entity";
+import { Store } from "../../../../src/entities/store/store.entity";
 
 export class StoreInfoResponseDto{
     constructor(store: Store){

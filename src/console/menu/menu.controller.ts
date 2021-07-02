@@ -30,6 +30,27 @@ export class MenuController {
     return this.menuService.removeMenu(menuId);
   }
 
+  @Delete('/:menuId/category')
+  removeCategory(
+    @Param('menuId', ParseIntPipe) menuId: number,
+  ) {
+    return this.menuService.removeCategoryInMenu(menuId);
+  }
+
+  @Delete('/:menuId/optiongroup')
+  removeOptionGroup(
+    @Param('menuId', ParseIntPipe) menuId: number,
+  ) {
+    return this.menuService.removeOptionGroupInMenu(menuId);
+  }
+
+  @Delete('/:menuId/enabletime')
+  removeEnableTime(
+    @Param('menuId', ParseIntPipe) menuId: number,
+  ) {
+    return this.menuService.removeEnableTimeInMenu(menuId);
+  }
+
   @Put('/:menuId')
   updateMenuInfo(
     @Param('menuId', ParseIntPipe) menuId: number,

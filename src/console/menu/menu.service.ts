@@ -2,7 +2,7 @@ import { ConflictException, Injectable, Next, NotFoundException } from '@nestjs/
 import { InjectRepository } from '@nestjs/typeorm';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { Menu } from '../../../src/entities/menu/menu.entity';
-import { getRepository, Repository } from 'typeorm';
+import { Equal, getRepository, Repository } from 'typeorm';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
@@ -49,21 +49,19 @@ export class MenuService {
         return menu;
     }
 
-  private MenuExist = async (name:string, price:number, description:string): Promise<boolean> => {
-    return (
-      (await this.menuRepository
-        .createQueryBuilder()
-        .select("m.menu_id")
-        .from(Menu, "m")
-        .where("m.name = :name",{name})
-        .andWhere("m.price = :price",{price})
-        .andWhere("m.description = :description",{description})
-        .getOne()) !== undefined
-    );
+  private MenuExist = async (storeId: number, name: string): Promise<boolean> => {
+    const menu = 
+      await this.menuRepository.createQueryBuilder()
+      .select("m.name")
+      .from(Menu,"m")
+      .where("m.store_id =:storeId",{storeId})
+      .andWhere("m.name =:name",{ name })
+      .getMany();
+      return menu !== undefined;
   };
 
   async saveMenu(dto: MenuCreateDto): Promise<MenuInfoResponseDto> {
-    if( await this.MenuExist(dto.name, dto.price, dto.description )) {
+    if( await this.MenuExist(dto.store_id, dto.name )) {
       throw new ConflictException("Menu is already in use!");
     } else {
       const menu = await this.menuRepository.save(
@@ -113,7 +111,8 @@ export class MenuService {
     ): Promise<BasicMessageDto> {
       const menu = await this.menuRepository.findOne(menuId);
       menu.categories = await this.convert2CategoryObj(dto.categories);
-      await this.menuRepository.save(menu);
+
+      const result = await this.menuRepository.save(menu);
       return new BasicMessageDto("Category Updated successfully!");
     }
 
@@ -122,7 +121,6 @@ export class MenuService {
    ): Promise<BasicMessageDto> {
     const menu = await this.menuRepository.findOne(menuId);
     menu.optionGroups = await this.convert2OptionGroupObj(dto.optionGroups);
-   
     await this.menuRepository.save(menu);
     return new BasicMessageDto("OptionGroup Updated Successfully.");
  }
