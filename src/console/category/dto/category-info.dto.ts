@@ -15,6 +15,7 @@ export class CategoryInfoResponseDto {
   description: string;
   state: string;
   category_id: number;
-  // role: CategoryRole;
+  role: string;
+
 
 }
