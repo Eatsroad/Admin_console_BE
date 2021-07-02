@@ -31,7 +31,7 @@ describe('UserService', () => {
     savedUser.setName = NAME;
     savedUser.setPassword = PASSWORD;
     savedUser.setPhone_number = PHONE_NUMBER;
-    // savedUser.setUserRole = USER_ROLE;
+    savedUser.setUserRole = USER_ROLE;
 
     return await userRepository.save(savedUser);
   };
@@ -60,7 +60,7 @@ describe('UserService', () => {
     dto.email = EMAIL;
     dto.password = PASSWORD;
     dto.phone_number = PHONE_NUMBER;
-    // dto.user_role = USER_ROLE;
+    dto.user_role = USER_ROLE;
 
     const responseDto = await userService.saveUser(dto);
 
@@ -86,11 +86,7 @@ describe('UserService', () => {
     savedUser.setName = NAME;
     savedUser.setPassword = PASSWORD;
     savedUser.setPhone_number = PHONE_NUMBER;
-<<<<<<< HEAD
-    // savedUser.setUserRole = UserRole.USER;
-=======
     savedUser.setUserRole = "USER";
->>>>>>> 13bbca9cb241e232ef165cd10d407e141e10df29
     await userRepository.save(savedUser);
 
     const dto = new UserCreateDto();
@@ -112,7 +108,7 @@ describe('UserService', () => {
     savedUser.setName = NAME;
     savedUser.setPassword = PASSWORD;
     savedUser.setPhone_number = PHONE_NUMBER;
-    // savedUser.setUserRole = USER_ROLE;
+    savedUser.setUserRole = USER_ROLE;
     savedUser = await userRepository.save(savedUser);
   
     const response = await userService.getUserInfo(savedUser.getUser_id);

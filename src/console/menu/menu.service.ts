@@ -49,19 +49,22 @@ export class MenuService {
         return menu;
     }
 
-  private MenuExist = async (storeId: number, name: string): Promise<boolean> => {
-    const menu = 
-      await this.menuRepository.createQueryBuilder()
-      .select("m.name")
-      .from(Menu,"m")
-      .where("m.store_id =:storeId",{storeId})
-      .andWhere("m.name =:name",{ name })
-      .getMany();
-      return menu !== undefined;
-  };
+    private MenuExist = async (name:string, price: number, description: string, state:string):Promise<boolean> => {
+      return (
+        (await this.menuRepository
+          .createQueryBuilder()
+          .select("m.menu_id")
+          .from(Menu, "m")
+          .where("m.name = :name",{name})
+          .andWhere("m.price = :price",{price})
+          .andWhere("m.description = :description",{description})
+          .andWhere("m.state = :state",{state})
+          .getOne()) !== undefined
+      );
+    };
 
   async saveMenu(dto: MenuCreateDto): Promise<MenuInfoResponseDto> {
-    if( await this.MenuExist(dto.store_id, dto.name )) {
+    if( await this.MenuExist(dto.name,dto.price, dto.description, dto.state )) {
       throw new ConflictException("Menu is already in use!");
     } else {
       const menu = await this.menuRepository.save(
@@ -84,6 +87,9 @@ export class MenuService {
     menuId: number,
     dto: MenuUpdateDto
   ): Promise<BasicMessageDto> {
+    if(await this.MenuExist(dto.name,dto.price, dto.description, dto.state )){
+      throw new ConflictException("Menu is already in use!");
+  } else {
     const result = await this.menuRepository
     .createQueryBuilder()
     .update( "menus", { ...dto })
@@ -93,6 +99,7 @@ export class MenuService {
     if(result.affected !== 0) {
       return new BasicMessageDto("Updated Successfully.");
     } else throw new NotFoundException();
+  }
   }
     
   async updateStoreIdInMenu (
@@ -131,7 +138,6 @@ export class MenuService {
     const menu = await this.menuRepository.findOne(menuId);
     menu.enable_time = await this.convert2EnableTimeObj(dto.enable_time);
     await this.menuRepository.save(menu);
-
     return new BasicMessageDto("EnableTime Updated Successfully.");
   }
 
