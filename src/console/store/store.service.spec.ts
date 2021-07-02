@@ -56,10 +56,6 @@ describe("StoreService", () => {
     await connection.close();
   });
 
-  // afterEach(async () => {
-  //   await storeRepository.query("DELETE FROM stores");
-  // });
-
   it("should be defined", () => {
     expect(storeService).toBeDefined();
   });
@@ -127,6 +123,8 @@ describe("StoreService", () => {
     expect(response.store_id).toBe(savedStore.getStore_id);
     expect(response.address).toBe(savedStore.getAddress);
     expect(response.name).toBe(savedStore.getName);
+    expect(response.phone_number).toBe(savedStore.getPhone_number);
+    expect(response.tables).toBe(savedStore.getTables);
   });
 
   it("Should throw NotFoundException if store_id is invalid", async () => {
@@ -138,7 +136,7 @@ describe("StoreService", () => {
     }
   });
 
-  it("Should update store infos(name and address and tables phone_number)", async () => {
+  it("Should update store infos(All)", async () => {
     const savedStore = await saveStore();
 
     const updateDto = new StoreUpdateDto();
@@ -158,6 +156,74 @@ describe("StoreService", () => {
     expect(updatedStore.getName).toBe("NEW_NAME");
     expect(updatedStore.getAddress).toBe("NEW_ADDRESS");
     expect(updatedStore.getTables).toBe(100);
+    expect(updatedStore.getPhone_number).toBe("01087654321");
+  });
+
+  it("Should update store infos(name)", async () => {
+    const savedStore = await saveStore();
+
+    const updateDto = new StoreUpdateDto();
+    updateDto.name = "NEW_NAME";
+
+    const response = await storeService.updateStoreInfo(
+      savedStore.getStore_id,
+      updateDto
+    );
+
+    expect(response).toBeInstanceOf(BasicMessageDto);
+
+    const updatedStore = await storeRepository.findOne(savedStore.getStore_id);
+    expect(updatedStore.getName).toBe("NEW_NAME");
+  });
+
+  it("Should update store infos(Address)", async () => {
+    const savedStore = await saveStore();
+
+    const updateDto = new StoreUpdateDto();
+    updateDto.address = "NEW_ADDRESS";
+
+    const response = await storeService.updateStoreInfo(
+      savedStore.getStore_id,
+      updateDto
+    );
+
+    expect(response).toBeInstanceOf(BasicMessageDto);
+
+    const updatedStore = await storeRepository.findOne(savedStore.getStore_id);
+    expect(updatedStore.getAddress).toBe("NEW_ADDRESS");
+  });
+
+  it("Should update store infos(Tables)", async () => {
+    const savedStore = await saveStore();
+
+    const updateDto = new StoreUpdateDto();
+    updateDto.tables = 100;
+
+    const response = await storeService.updateStoreInfo(
+      savedStore.getStore_id,
+      updateDto
+    );
+
+    expect(response).toBeInstanceOf(BasicMessageDto);
+
+    const updatedStore = await storeRepository.findOne(savedStore.getStore_id);
+    expect(updatedStore.getTables).toBe(100);
+  });
+
+  it("Should update store infos(Phone_Number)", async () => {
+    const savedStore = await saveStore();
+
+    const updateDto = new StoreUpdateDto();
+    updateDto.phone_number = "01087654321";
+
+    const response = await storeService.updateStoreInfo(
+      savedStore.getStore_id,
+      updateDto
+    );
+
+    expect(response).toBeInstanceOf(BasicMessageDto);
+
+    const updatedStore = await storeRepository.findOne(savedStore.getStore_id);
     expect(updatedStore.getPhone_number).toBe("01087654321");
   });
 
