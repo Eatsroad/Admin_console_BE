@@ -8,7 +8,7 @@ export class CategoryInfoResponseDto {
     this.menus = category.menus;
     this.description = category.getCategoryDesc;
     this.state = category.getCategoryState;
-    // this.role = category.getCategoryRole;
+    this.role = category.getCategoryRole;
   }
   name: string;
   menus: Menu[];
