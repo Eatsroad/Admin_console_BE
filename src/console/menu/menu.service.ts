@@ -49,21 +49,20 @@ export class MenuService {
         return menu;
     }
 
-    private MenuExist = async (name:string, price: number, description: string):Promise<boolean> => {
+    private MenuExist = async (name:string, store_id:number):Promise<boolean> => {
       return (
         (await this.menuRepository
           .createQueryBuilder()
           .select("m.menu_id")
           .from(Menu, "m")
           .where("m.name = :name",{name})
-          .andWhere("m.price = :price",{price})
-          .andWhere("m.description = :description",{description})
+          .andWhere("m.store_id = :store_id",{ store_id })
           .getOne()) !== undefined
       );
     };
 
   async saveMenu(dto: MenuCreateDto): Promise<MenuInfoResponseDto> {
-    if( await this.MenuExist(dto.name,dto.price, dto.description)) {
+    if( await this.MenuExist(dto.name, dto.store_id)) {
       throw new ConflictException("Menu is already in use!");
     } else {
       const menu = await this.menuRepository.save(
@@ -86,7 +85,7 @@ export class MenuService {
     menuId: number,
     dto: MenuUpdateDto
   ): Promise<BasicMessageDto> {
-    if(await this.MenuExist(dto.name,dto.price, dto.description )){
+    if(await this.MenuExist(dto.name, dto.store_id)){
       throw new ConflictException("Menu is already in use!");
   } else {
     const result = await this.menuRepository
