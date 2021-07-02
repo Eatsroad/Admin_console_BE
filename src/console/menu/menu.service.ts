@@ -2,7 +2,7 @@ import { ConflictException, Injectable, Next, NotFoundException } from '@nestjs/
 import { InjectRepository } from '@nestjs/typeorm';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { Menu } from '../../../src/entities/menu/menu.entity';
-import { Equal, getRepository, Repository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
@@ -49,7 +49,7 @@ export class MenuService {
         return menu;
     }
 
-    private MenuExist = async (name:string, price: number, description: string, state:string):Promise<boolean> => {
+    private MenuExist = async (name:string, price: number, description: string):Promise<boolean> => {
       return (
         (await this.menuRepository
           .createQueryBuilder()
@@ -58,13 +58,12 @@ export class MenuService {
           .where("m.name = :name",{name})
           .andWhere("m.price = :price",{price})
           .andWhere("m.description = :description",{description})
-          .andWhere("m.state = :state",{state})
           .getOne()) !== undefined
       );
     };
 
   async saveMenu(dto: MenuCreateDto): Promise<MenuInfoResponseDto> {
-    if( await this.MenuExist(dto.name,dto.price, dto.description, dto.state )) {
+    if( await this.MenuExist(dto.name,dto.price, dto.description)) {
       throw new ConflictException("Menu is already in use!");
     } else {
       const menu = await this.menuRepository.save(
@@ -87,7 +86,7 @@ export class MenuService {
     menuId: number,
     dto: MenuUpdateDto
   ): Promise<BasicMessageDto> {
-    if(await this.MenuExist(dto.name,dto.price, dto.description, dto.state )){
+    if(await this.MenuExist(dto.name,dto.price, dto.description )){
       throw new ConflictException("Menu is already in use!");
   } else {
     const result = await this.menuRepository
