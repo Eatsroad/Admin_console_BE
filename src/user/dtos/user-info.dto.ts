@@ -1,3 +1,4 @@
+import { Store } from "src/entities/store/store.entity";
 import { User } from "../../entities/user/user.entity";
 
 export class UserInfoResponseDto {
@@ -7,10 +8,12 @@ export class UserInfoResponseDto {
     this.phone_number = user.getPhone_number;
     this.email = user.getEmail;
     this.user_role = user.getUser_role;
+    this.stores = user.stores;
   }
   user_id: number;
   name: string;
   phone_number: string;
   email: string;
   user_role: string;
+  stores: Store[];
 }

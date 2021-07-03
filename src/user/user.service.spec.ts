@@ -12,6 +12,7 @@ import { OptionGroup } from '../../src/entities/option/optionGroup.entity';
 import { Category } from '../../src/entities/category/category.entity';
 import { EnableTime } from '../../src/entities/menu/enableTime.entity';
 import { UserUpdateDto } from './dtos/update-user.dto';
+import { connected } from 'process';
 
 describe('UserService', () => {
   let userService: UserService;

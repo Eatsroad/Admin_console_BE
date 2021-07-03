@@ -50,7 +50,7 @@ export class UserService {
   }
 
   async getUserInfo(userId: number): Promise<UserInfoResponseDto> {
-    const user = await this.userRepository.findOne(userId);
+    const user = await this.userRepository.findOne(userId, {relations: ["stores"]});
     if (!!user) {
       return new UserInfoResponseDto(user);
     } else {
