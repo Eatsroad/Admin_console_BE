@@ -16,9 +16,7 @@ import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
 export class MenuService {
     constructor(
       @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
-      ) {}
-
-    
+    ) {}
     private convert2StoreObj = async (store_id:number): Promise<Store> => {
       const store = getRepository(Store);
       return await store.findOne(store_id); 
@@ -74,11 +72,11 @@ export class MenuService {
   }
     
   async getMenuInfo(menuId: number): Promise<MenuInfoResponseDto> {
-    const menu = await this.menuRepository.findOne(menuId,{relations:["store_id","categories","optionGroups","enable_time"]});
+    const menu = await this.menuRepository.findOne(menuId, {relations:["store_id","categories","optionGroups","enable_time"]});
     if (!!menu) {
       return new MenuInfoResponseDto(menu);
     } else {
-    throw new NotFoundException();
+      throw new NotFoundException();
     }
   }
 
@@ -147,8 +145,7 @@ export class MenuService {
     } else throw new NotFoundException();
   }
 
-  async removeCategoryInMenu(menuId : number,
-    ): Promise<BasicMessageDto> {
+  async removeCategoryInMenu(menuId: number): Promise<BasicMessageDto> {
       const menu = await this.menuRepository.findOne(menuId);
       menu.categories = null;
       await this.menuRepository.save(menu);
@@ -156,14 +153,12 @@ export class MenuService {
       return new BasicMessageDto("Category Deleted successfully!");
     }
 
-  async removeOptionGroupInMenu(menuId: number,
-   ): Promise<BasicMessageDto> {
+  async removeOptionGroupInMenu(menuId: number): Promise<BasicMessageDto> {
     const menu = await this.menuRepository.findOne(menuId);
     menu.optionGroups = null;
     await this.menuRepository.save(menu);
     
     return new BasicMessageDto("OptionGroup Deleted Successfully.");
-  
  }
 
  async removeEnableTimeInMenu(menuId: number,

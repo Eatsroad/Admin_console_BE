@@ -40,7 +40,7 @@ export class User {
   @DeleteDateColumn()
   private deleted_at: Date;
 
-  @OneToMany(() => Store, store => store.user_id)
+  @OneToMany(() => Store, store => store.user)
   stores: Store[];
 
   get getUser_id(): number {
@@ -72,6 +72,7 @@ export class User {
   }
   get getStorePreviewInfo(): StorePreviewInfo[] {
     let result: StorePreviewInfo[] = [];
+
     this.stores.forEach((store) => {
       const data = {
         name: store.getName,

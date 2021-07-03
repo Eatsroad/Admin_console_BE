@@ -7,7 +7,7 @@ export class CategoryCreateDto {
   @IsString()
   description: string;
 
-  @IsBoolean()
+  @IsString()
   state: string;
 
   @IsArray()
@@ -15,4 +15,7 @@ export class CategoryCreateDto {
 
   @IsString()
   role: string;
+
+  @IsNumber()
+  store_id: number;
 }
