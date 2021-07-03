@@ -63,6 +63,7 @@ export class CategoryService {
       throw new NotFoundException();
     }
   }
+  
   async updateMenuInCategory(
     categoryId: number,
     dto: CategoryMenuUpdateDto
@@ -74,6 +75,7 @@ export class CategoryService {
 
     return new BasicMessageDto("Update menus");
   }
+
   async updateCategoryInfo(
     categoryId: number,
     dto: CategoryUpdatedto

@@ -15,10 +15,9 @@ import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
 @Injectable()
 export class MenuService {
     constructor(
-      @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
-      ) {}
+    @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
+    ) {}
 
-    
     private convert2StoreObj = async (store_id:number): Promise<Store> => {
       const store = getRepository(Store);
       return await store.findOne(store_id); 
@@ -150,29 +149,32 @@ export class MenuService {
     ): Promise<BasicMessageDto> {
       const menu = await this.menuRepository.findOne(menuId);
       menu.categories = null;
-      await this.menuRepository.save(menu);
-
+      const result = await this.menuRepository.save(menu);
+      if (result.categories == null){
       return new BasicMessageDto("Category Deleted successfully!");
+      } else throw new NotFoundException();
     }
 
   async removeOptionGroupInMenu(menuId: number,
    ): Promise<BasicMessageDto> {
     const menu = await this.menuRepository.findOne(menuId);
     menu.optionGroups = null;
-    await this.menuRepository.save(menu);
-    
+    const result = await this.menuRepository.save(menu);
+    if(result.optionGroups == null){
     return new BasicMessageDto("OptionGroup Deleted Successfully.");
-  
+    } else throw new NotFoundException();
  }
 
  async removeEnableTimeInMenu(menuId: number,
   ): Promise<BasicMessageDto> {
    const menu = await this.menuRepository.findOne(menuId);
    menu.enable_time = null;
-   await this.menuRepository.save(menu);
-   
+   const result = await this.menuRepository.save(menu);
+   if(result.enable_time == null){
    return new BasicMessageDto("EnableTime Deleted Successfully.");
- 
+  } else throw new NotFoundException();
 }
 
 }
+
+
