@@ -41,11 +41,11 @@ export class Store {
   @Column({default: false})
   private is_approved: boolean;
   
-  @ManyToOne(type => User, user => user.getUser_id)
+  @ManyToOne(type => User, user => user.getUser_id,{ onDelete:"CASCADE" })
   @JoinColumn({name: "user_id"})
   user_id: User;
 
-  @OneToMany(() => Menu, menu => menu.getMenuId)
+  @OneToMany(() => Menu, menu => menu.store_id)
   menu_id: Menu[];
 
   get getUser_id(): User{

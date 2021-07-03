@@ -73,6 +73,7 @@ export class UserService {
   }
 
   async removeUser(userId: number): Promise<BasicMessageDto> {
+    
     const result = await this.userRepository.delete(userId);
     if (result.affected !== 0) {
       return new BasicMessageDto("Deleted Successfully.");

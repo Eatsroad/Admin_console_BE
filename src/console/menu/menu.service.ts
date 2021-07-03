@@ -2,7 +2,7 @@ import { ConflictException, Injectable, Next, NotFoundException } from '@nestjs/
 import { InjectRepository } from '@nestjs/typeorm';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { Menu } from '../../../src/entities/menu/menu.entity';
-import { getRepository, Repository } from 'typeorm';
+import { Any, getRepository, Not, Repository } from 'typeorm';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
@@ -78,6 +78,22 @@ export class MenuService {
     } else {
     throw new NotFoundException();
     }
+  }
+
+  async getMenuList(storeId: number): Promise<MenuInfoResponseDto[]>{
+    const result = await this.menuRepository.find({
+      where :{
+        store_id: storeId,
+      },
+      relations:['store_id','categories','optionGroups'],
+    });
+    // const result = await this.menuRepository.createQueryBuilder()
+    // .select("menus")
+    // .from(Menu,"menus")
+    // .where("menus.store_id =:storeId",{ storeId })
+    // .getMany();
+    console.log(result);
+    return result.map((result) => new MenuInfoResponseDto(result));
   }
 
   async updateMenuInfo(
@@ -175,6 +191,7 @@ export class MenuService {
   } else throw new NotFoundException();
 }
 
+ 
 }
 
 

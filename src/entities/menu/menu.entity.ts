@@ -30,7 +30,7 @@ export class Menu {
   @Column({nullable: true})
   private state: string;
 
-  @ManyToOne(() => Store, store => store.getStore_id)
+  @ManyToOne(() => Store, store => store.menu_id)
   @JoinColumn({name: "store_id"})
   store_id : Store;
 
