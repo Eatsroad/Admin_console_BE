@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Menu } from 'src/entities/menu/menu.entity';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
@@ -39,6 +40,11 @@ export class MenuController {
   })
   getMenuInfo(@Param('menuId', ParseIntPipe) menuId: number,): Promise<MenuInfoResponseDto>{
     return this.menuService.getMenuInfo(menuId);
+  }
+
+  @Get()
+  getMenuList( @Query('store_id') store_id: number): Promise<MenuInfoResponseDto[]>{
+    return this.menuService.getMenuList(store_id);
   }
 
   @Delete('/:menuId')
@@ -160,6 +166,8 @@ export class MenuController {
   ): Promise<BasicMessageDto>{
     return this.menuService.updateEnableTimeInMenu(menuId, menu);
   }
+
+
 }
 
 

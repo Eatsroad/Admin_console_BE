@@ -2,7 +2,7 @@ import { ConflictException, Injectable, Next, NotFoundException } from '@nestjs/
 import { InjectRepository } from '@nestjs/typeorm';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { Menu } from '../../../src/entities/menu/menu.entity';
-import { getRepository, Repository } from 'typeorm';
+import { Any, getRepository, Not, Repository } from 'typeorm';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
@@ -15,8 +15,9 @@ import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
 @Injectable()
 export class MenuService {
     constructor(
-      @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
+    @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
     ) {}
+
     private convert2StoreObj = async (store_id:number): Promise<Store> => {
       const store = getRepository(Store);
       return await store.findOne(store_id); 
@@ -47,21 +48,20 @@ export class MenuService {
         return menu;
     }
 
-    private MenuExist = async (name:string, price: number, description: string):Promise<boolean> => {
+    private MenuExist = async (name:string, store_id:number):Promise<boolean> => {
       return (
         (await this.menuRepository
           .createQueryBuilder()
           .select("m.menu_id")
           .from(Menu, "m")
           .where("m.name = :name",{name})
-          .andWhere("m.price = :price",{price})
-          .andWhere("m.description = :description",{description})
+          .andWhere("m.store_id = :store_id",{ store_id })
           .getOne()) !== undefined
       );
     };
 
   async saveMenu(dto: MenuCreateDto): Promise<MenuInfoResponseDto> {
-    if( await this.MenuExist(dto.name,dto.price, dto.description)) {
+    if( await this.MenuExist(dto.name, dto.store_id)) {
       throw new ConflictException("Menu is already in use!");
     } else {
       const menu = await this.menuRepository.save(
@@ -72,19 +72,29 @@ export class MenuService {
   }
     
   async getMenuInfo(menuId: number): Promise<MenuInfoResponseDto> {
-    const menu = await this.menuRepository.findOne(menuId, {relations:["store_id","categories","optionGroups","enable_time"]});
+    const menu = await this.menuRepository.findOne(menuId,{relations:["store_id","categories","optionGroups","enable_time"]});
     if (!!menu) {
       return new MenuInfoResponseDto(menu);
     } else {
-      throw new NotFoundException();
+    throw new NotFoundException();
     }
+  }
+
+  async getMenuList(storeId: number): Promise<MenuInfoResponseDto[]>{
+    const result = await this.menuRepository.find({
+      where :{
+        store_id: storeId,
+      },
+      relations:['store_id','categories','optionGroups'],
+    });
+    return result.map((result) => new MenuInfoResponseDto(result));
   }
 
   async updateMenuInfo(
     menuId: number,
     dto: MenuUpdateDto
   ): Promise<BasicMessageDto> {
-    if(await this.MenuExist(dto.name,dto.price, dto.description )){
+    if(await this.MenuExist(dto.name, dto.store_id)){
       throw new ConflictException("Menu is already in use!");
   } else {
     const result = await this.menuRepository
@@ -145,30 +155,37 @@ export class MenuService {
     } else throw new NotFoundException();
   }
 
-  async removeCategoryInMenu(menuId: number): Promise<BasicMessageDto> {
+  async removeCategoryInMenu(menuId : number,
+    ): Promise<BasicMessageDto> {
       const menu = await this.menuRepository.findOne(menuId);
       menu.categories = null;
-      await this.menuRepository.save(menu);
-
+      const result = await this.menuRepository.save(menu);
+      if (result.categories == null){
       return new BasicMessageDto("Category Deleted successfully!");
+      } else throw new NotFoundException();
     }
 
-  async removeOptionGroupInMenu(menuId: number): Promise<BasicMessageDto> {
+  async removeOptionGroupInMenu(menuId: number,
+   ): Promise<BasicMessageDto> {
     const menu = await this.menuRepository.findOne(menuId);
     menu.optionGroups = null;
-    await this.menuRepository.save(menu);
-    
+    const result = await this.menuRepository.save(menu);
+    if(result.optionGroups == null){
     return new BasicMessageDto("OptionGroup Deleted Successfully.");
+    } else throw new NotFoundException();
  }
 
  async removeEnableTimeInMenu(menuId: number,
   ): Promise<BasicMessageDto> {
    const menu = await this.menuRepository.findOne(menuId);
    menu.enable_time = null;
-   await this.menuRepository.save(menu);
-   
+   const result = await this.menuRepository.save(menu);
+   if(result.enable_time == null){
    return new BasicMessageDto("EnableTime Deleted Successfully.");
+  } else throw new NotFoundException();
+}
+
  
 }
 
-}
+

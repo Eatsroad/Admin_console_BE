@@ -1,4 +1,3 @@
-import { Store } from "src/entities/store/store.entity";
 import { User } from "../../entities/user/user.entity";
 export interface StorePreviewInfo {
   name: string;

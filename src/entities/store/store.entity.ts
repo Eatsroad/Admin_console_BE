@@ -1,4 +1,3 @@
-import { MenuPreviewInfo } from "src/console/store/dtos/store-info-dto";
 import { 
   Column, 
   CreateDateColumn, 
@@ -43,7 +42,7 @@ export class Store {
   @Column({default: false})
   private is_approved: boolean;
   
-  @ManyToOne(type => User, user => user.getUser_id)
+  @ManyToOne(type => User, user => user.getUser_id,{ onDelete:"CASCADE" })
   @JoinColumn({name: "user_id"})
   user: User;
 

@@ -40,6 +40,7 @@ export class StoreService {
         .getOne()) !== undefined
     );
   };
+  
   private isAddressUsed = async (address: string): Promise<boolean> => {
     return (
       (await this.storeRepository
@@ -101,6 +102,7 @@ export class StoreService {
       .update("stores", { ...dto })
       .where("store_id = :storeId", { storeId })
       .execute();
+
     if (result.affected !== 0) {
       return new BasicMessageDto("Updated Successfully.");
     } else throw new NotFoundException();

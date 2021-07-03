@@ -34,7 +34,7 @@ export class Menu {
   @JoinColumn({name: "store_id"})
   store_id : Store;
 
-  @OneToOne(() => EnableTime, enableTime => enableTime.getEnableTimeId, {
+  @OneToOne(() => EnableTime, enableTime => enableTime.getEnableTimeId,{
     cascade: [ "update" ]
   })
   @JoinColumn({name: "enable_time"})
