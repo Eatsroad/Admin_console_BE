@@ -82,12 +82,19 @@ describe('MenuService', () => {
   it("Should not save menu and throw ConflictException", async () => {
     expect.assertions(1);
 
+    const store1 = new Store();
+    store1.setName = "df";
+    store1.setTables = 10;
+    store1.setPhone_number = "asdfasdf";
+    store1.setAddress = "asdfasd";
+    await connection.manager.save(store1);
+
     const savedMenu = new Menu();
     savedMenu.setMenuName = NAME;
     savedMenu.setMenuPrice = PRICE;
     savedMenu.setMenuDesc = DESC;
     savedMenu.setMenuState = STATE;
-    savedMenu.store_id = STOREID;
+    savedMenu.store_id = store1;
     await menuRepository.save(savedMenu);
 
     const dto = new MenuCreateDto();
@@ -95,8 +102,13 @@ describe('MenuService', () => {
     dto.price = PRICE;
     dto.description = DESC;
     dto.state = STATE;
+<<<<<<< HEAD
     dto.store_id = STOREID;
     
+=======
+    dto.store_id = 2;
+
+>>>>>>> 194768d49c0b6f641521c8d04634b7654b0169d9
     try {
       await menuService.saveMenu(dto);
     } catch (exception) {
@@ -195,7 +207,7 @@ describe('MenuService', () => {
     updateDtoInfo.description = "UPDATED DESC";
     updateDtoInfo.price = 10000;
     updateDtoInfo.state = "AVAILABLE";
-    updateDtoInfo.store_id = 3;
+    updateDtoInfo.store_id = 4;
 
     const responseInfo = await menuService.updateMenuInfo(
       savedMenu.getMenuId,
@@ -362,7 +374,7 @@ describe('MenuService', () => {
     await menuRepository.save(savedMenu);
 
     const updateDto = new MenuUpdateDto();
-    updateDto.store_id = 5;
+    updateDto.store_id = 6;
 
     const response = await menuService.updateStoreIdInMenu(
     savedMenu.getMenuId,

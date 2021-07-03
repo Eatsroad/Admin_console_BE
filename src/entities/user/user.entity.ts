@@ -72,15 +72,18 @@ export class User {
   }
   get getStorePreviewInfo(): StorePreviewInfo[] {
     let result: StorePreviewInfo[] = [];
-
-    this.stores.forEach((store) => {
-      const data = {
-        name: store.getName,
-        store_id: store.getStore_id
-      };
-      result.push(data);
-    });
-    return result;
+    try {
+      this.stores.forEach((store) => {
+        const data = {
+          name: store.getName,
+          store_id: store.getStore_id
+        };
+        result.push(data);
+      });
+      return result;
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   set setName(name: string) {

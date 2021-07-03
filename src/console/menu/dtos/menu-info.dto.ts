@@ -1,4 +1,3 @@
-
 import { Category } from "src/entities/category/category.entity";
 import { EnableTime } from "src/entities/menu/enableTime.entity";
 import { OptionGroup } from "src/entities/option/optionGroup.entity";
