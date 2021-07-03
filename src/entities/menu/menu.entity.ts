@@ -30,15 +30,11 @@ export class Menu {
   @Column({nullable: true})
   private state: string;
 
-<<<<<<< HEAD
-  @ManyToOne(() => Store, store => store.menu_id)
-=======
   @ManyToOne(() => Store, store => store.menus)
->>>>>>> 126f3dabbf6d8c8ef56acca10283db5919a4d1bd
   @JoinColumn({name: "store_id"})
   store_id : Store;
 
-  @OneToOne(() => EnableTime, enableTime => enableTime.getEnableTimeId, {
+  @OneToOne(() => EnableTime, enableTime => enableTime.getEnableTimeId,{
     cascade: [ "update" ]
   })
   @JoinColumn({name: "enable_time"})
