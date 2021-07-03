@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn, 
   UpdateDateColumn
 } from "typeorm";
+import { Category } from "../category/category.entity";
 import { Menu } from "../menu/menu.entity";
 import { User } from "../user/user.entity";
 
@@ -43,14 +44,13 @@ export class Store {
   
   @ManyToOne(type => User, user => user.getUser_id,{ onDelete:"CASCADE" })
   @JoinColumn({name: "user_id"})
-  user_id: User;
+  user: User;
 
   @OneToMany(() => Menu, menu => menu.store_id)
-  menu_id: Menu[];
+  menus: Menu[];
 
-  get getUser_id(): User{
-    return this.user_id
-  }
+  @OneToMany(() => Category, category => category.store)
+  categories: Category[];
 
   get getStore_id(): number {
     return this.store_id;
@@ -79,6 +79,17 @@ export class Store {
   get getIsApproved(): boolean {
     return this.is_approved;
   }
+  // get getMenus(): MenuPreviewInfo[] {
+  //   let result: MenuPreviewInfo[] = [];
+  //   this.menus.forEach((menu) => {
+  //     const data: MenuPreviewInfo = {
+  //       menu_id: menu.getMenuId,
+  //     };
+
+  //     result.push(data);
+  //   });
+  //   return result;
+  // }
 
   set setName(name: string) {
     this.name = name;

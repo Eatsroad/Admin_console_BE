@@ -8,6 +8,7 @@ import { BasicMessageDto } from '../../common/dtos/basic-massage.dto';
 import { CategoryUpdatedto } from './dto/update-category.dto';
 import { Menu } from '../../entities/menu/menu.entity';
 import { CategoryMenuUpdateDto } from './dto/update-category-menus.dto';
+import { Store } from 'src/entities/store/store.entity';
 
 
 @Injectable()
@@ -29,6 +30,7 @@ export class CategoryService {
     category.setCategoryState = dto.state;
     category.menus = await this.convertMenuId2MenuObj(dto.menus);
     category.setCategoryRole = dto.role;
+    category.store = await getRepository(Store).findOne(dto.store_id);
     return category;
   }
 
@@ -96,5 +98,15 @@ export class CategoryService {
     if (result.affected !== 0) {
       return new BasicMessageDto("Deleted Successfully");
     } else throw new NotFoundException();
+  }
+
+  async getAllCategoryWithStoreId(storeId: number): Promise<CategoryInfoResponseDto[]> {
+    const categories = await this.categoryRepository.find({
+      where: { 
+        store: storeId 
+      }, 
+      relations: ['menus'] 
+    });
+    return categories.map((category) => new CategoryInfoResponseDto(category));
   }
 }

@@ -1,11 +1,14 @@
 import { 
   Column,
   Entity, 
+  JoinColumn, 
   JoinTable, 
   ManyToMany, 
+  ManyToOne, 
   PrimaryGeneratedColumn 
 } from "typeorm";
 import { Menu } from "../menu/menu.entity";
+import { Store } from "../store/store.entity";
 
 @Entity({name: "categories"})
 export class Category {
@@ -37,7 +40,11 @@ export class Category {
     }
   })
   menus: Menu[];
-  
+
+  @ManyToOne(() => Store, store => store.categories)
+  @JoinColumn({name: "store_id"})
+  store : Store;
+
   get getCategoryId(): number {
     return this.category_id;
   }

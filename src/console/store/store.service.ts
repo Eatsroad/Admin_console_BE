@@ -64,7 +64,7 @@ export class StoreService {
 
     const someuser = getRepository(User);
     const someuser_id = await someuser.findOne(userid);
-    store.user_id = someuser_id;
+    store.user = someuser_id;
 
     return store;
   };
@@ -85,7 +85,7 @@ export class StoreService {
   }
 
   async getStoreInfo(storeId: number): Promise<StoreInfoResponseDto> {
-    const store = await this.storeRepository.findOne(storeId);
+    const store = await this.storeRepository.findOne(storeId, {relations: ["menus", "user"]});
     if (!!store) {
       return new StoreInfoResponseDto(store);
     } else {

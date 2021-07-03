@@ -12,4 +12,5 @@ export class StoreCreateDto{
 
     @IsNumber()
     tables: number;
+    
 }
