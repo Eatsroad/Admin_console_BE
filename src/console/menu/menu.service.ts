@@ -48,13 +48,13 @@ export class MenuService {
         return menu;
     }
 
-    private MenuExist = async (name:string, store_id:number):Promise<boolean> => {
+    private MenuExist = async (name: string, store_id: number): Promise<boolean> => {
       return (
         (await this.menuRepository
           .createQueryBuilder()
           .select("m.menu_id")
           .from(Menu, "m")
-          .where("m.name = :name",{name})
+          .where("m.name = :name",{ name })
           .andWhere("m.store_id = :store_id",{ store_id })
           .getOne()) !== undefined
       );
