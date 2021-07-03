@@ -87,7 +87,6 @@ export class MenuService {
       },
       relations:['store_id','categories','optionGroups'],
     });
-    console.log(result);
     return result.map((result) => new MenuInfoResponseDto(result));
   }
 

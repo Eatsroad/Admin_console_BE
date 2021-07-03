@@ -34,7 +34,7 @@ describe("StoreService", () => {
     savedStore.setAddress = ADDRESS;
     savedStore.setPhone_number = PHONE_NUMBER;
     savedStore.setTables = TABLES;
-    savedStore.user_id = USERID;
+    savedStore.user = USERID;
     return await storeRepository.save(savedStore);
   };
 
