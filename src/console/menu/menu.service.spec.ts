@@ -96,6 +96,7 @@ describe('MenuService', () => {
     dto.description = DESC;
     dto.state = STATE;
     dto.store_id = STOREID;
+    
     try {
       await menuService.saveMenu(dto);
     } catch (exception) {

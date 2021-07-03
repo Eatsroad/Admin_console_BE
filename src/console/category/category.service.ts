@@ -8,7 +8,7 @@ import { BasicMessageDto } from '../../common/dtos/basic-massage.dto';
 import { CategoryUpdatedto } from './dto/update-category.dto';
 import { Menu } from '../../entities/menu/menu.entity';
 import { CategoryMenuUpdateDto } from './dto/update-category-menus.dto';
-import { Store } from 'src/entities/store/store.entity';
+import { Store } from '../../../src/entities/store/store.entity';
 
 
 @Injectable()
