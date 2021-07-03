@@ -1,3 +1,4 @@
+import { StorePreviewInfo } from "src/user/dtos/user-info.dto";
 import { 
   Column, 
   CreateDateColumn, 
@@ -68,6 +69,17 @@ export class User {
   }
   get getDeleted_at(): Date {
     return this.deleted_at;
+  }
+  get getStorePreviewInfo(): StorePreviewInfo[] {
+    let result: StorePreviewInfo[] = [];
+    this.stores.forEach((store) => {
+      const data = {
+        name: store.getName,
+        store_id: store.getStore_id
+      };
+      result.push(data);
+    });
+    return result;
   }
 
   set setName(name: string) {
