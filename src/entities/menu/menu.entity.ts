@@ -1,3 +1,5 @@
+import { CategoryPreviewInfo } from "src/console/category/dto/category-info.dto";
+import { OptionGroupPreviewInfo } from "src/console/optiongroup/dtos/optiongroup-info.dto";
 import { 
   Column,
   Entity, 
@@ -89,6 +91,39 @@ export class Menu {
   get getMenuState(): string {
     return this.state;
   }
+
+  get getCategoryPreviewInfo(): CategoryPreviewInfo[] {
+    let result: CategoryPreviewInfo[] = [];
+    try {
+      this.categories.forEach((category) => {
+        const data = {
+          name: category.getCategoryName,
+          category_id: category.getCategoryId
+        };
+        result.push(data);
+      });
+      return result;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  get getOptionGroupsPreviewInfo(): OptionGroupPreviewInfo[] {
+    let result: OptionGroupPreviewInfo[] = [];
+    try {
+      this.optionGroups.forEach((optiongroups) => {
+        const data = {
+          name: optiongroups.getOptionGroupName,
+          option_group_id: optiongroups.getOptionGroupId
+        };
+        result.push(data);
+      });
+      return result;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  
 
   set setMenuName(name: string) {
     this.name = name;

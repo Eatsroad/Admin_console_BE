@@ -1,5 +1,9 @@
 import { Category } from "../../../../src/entities/category/category.entity";
 import { Menu } from "../../../../src/entities/menu/menu.entity";
+export interface CategoryPreviewInfo {
+  name: string;
+  category_id: number;
+};
 
 export class CategoryInfoResponseDto {
   constructor(category: Category) {
