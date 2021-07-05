@@ -12,6 +12,8 @@ import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
 import { MenuService } from './menu.service';
 import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
+import { CategoryPreviewInfo } from '../category/dto/category-info.dto';
+import { OptionGroupPreviewInfo } from '../optiongroup/dtos/optiongroup-info.dto';
 
 
 describe('MenuService', () => {
@@ -34,6 +36,38 @@ describe('MenuService', () => {
     savedMenu.store_id = STOREID;
     return await menuRepository.save(savedMenu);
   };
+
+  const MakeCategoryPreview = (categories:Category[]) : CategoryPreviewInfo[] => {
+    let result : CategoryPreviewInfo[] = [];
+    try{
+      categories.forEach((category)=>{
+        const data = {
+          name : category.getCategoryName,
+          category_id : category.getCategoryId
+        };
+        result.push(data);
+      });
+      return result;
+    } catch(e){
+      console.log(e);
+    }
+  } 
+
+  const MakeOptionGroupPreview = (optionGroups:OptionGroup[]) : OptionGroupPreviewInfo[] => {
+    let result : OptionGroupPreviewInfo[] = [];
+    try{
+      optionGroups.forEach((optiongroup)=>{
+        const data = {
+          name : optiongroup.getOptionGroupName,
+          option_group_id : optiongroup.getOptionGroupId
+        };
+        result.push(data);
+      });
+      return result;
+    } catch(e){
+      console.log(e);
+    }
+  } 
   
   beforeAll(async () => {
     connection = await createMemoryDB([Menu, User, Store, Category, OptionGroup, Option, EnableTime]);
@@ -69,14 +103,12 @@ describe('MenuService', () => {
     expect(responseDto.price).toBe(PRICE);
     expect(responseDto.description).toBe(DESC);
     expect(responseDto.state).toBe(STATE);
-    expect(responseDto.store_id).toStrictEqual(store1);
 
     const savedMenu = await menuService.getMenuInfo(responseDto.menu_id);
     expect(savedMenu.name).toBe(responseDto.name);
     expect(savedMenu.price).toBe(responseDto.price);
     expect(savedMenu.description).toBe(responseDto.description);
     expect(savedMenu.state).toBe(responseDto.state);
-    expect(savedMenu.store_id).toStrictEqual(responseDto.store_id);
   });
 
   it("Should not save menu and throw ConflictException", async () => {
@@ -133,7 +165,6 @@ describe('MenuService', () => {
     expect(response.price).toBe(savedMenu.getMenuPrice);
     expect(response.description).toBe(savedMenu.getMenuDesc);
     expect(response.state).toBe(savedMenu.getMenuState);
-    expect(response.store_id).toStrictEqual(savedMenu.store_id);
   });
 
   it("Should throw NotFoundException if menu_id is invalid", async () => {
@@ -154,28 +185,20 @@ describe('MenuService', () => {
 
     const category2 = new Category();
     category2.setCategoryName = "CATEGORY2NAME";
-    category2.setCategoryDesc = "CATEGORY2DESC";
-    category2.setCategoryState = "CATEGORY2STATE";
     await connection.manager.save(category2);
 
     const category3 = new Category();
     category3.setCategoryName = "CATEGORY3NAME";
-    category3.setCategoryDesc = "CATEGORY3DESC";
-    category3.setCategoryState = "CATEGORY3STATE";
     await connection.manager.save(category3);
 
     const CategoryList = [category2, category3];
 
     const optiongroup2 = new OptionGroup();
     optiongroup2.setOptionGroupName = "OPTIONGROUP2";
-    optiongroup2.setOptionGroupDesc = "OPTIONGRUOP2DESC";
-    optiongroup2.setOptionGroupState = "OPTIONGROUP2STATE";
     await connection.manager.save(optiongroup2);
 
     const optiongroup3 = new OptionGroup();
     optiongroup3.setOptionGroupName = "OPTIONGROUP3";
-    optiongroup3.setOptionGroupDesc = "OPTIONGRUOP3DESC";
-    optiongroup3.setOptionGroupState = "OPTIONGROUP3STATE";
     await connection.manager.save(optiongroup3);
 
     const OptionGroupList = [optiongroup2, optiongroup3];
@@ -234,14 +257,14 @@ describe('MenuService', () => {
     expect(response3).toBeInstanceOf(BasicMessageDto);
     expect(responseInfo).toBeInstanceOf(BasicMessageDto);
   
+    
     const updatedMenu = await menuService.getMenuInfo(savedMenu.getMenuId);
     expect(updatedMenu.name).toBe("UPDATED NAME");
     expect(updatedMenu.price).toBe(10000);
     expect(updatedMenu.description).toBe("UPDATED DESC");
     expect(updatedMenu.state).toBe("AVAILABLE");
-    expect(updatedMenu.store_id).toStrictEqual(store2);
-    expect(updatedMenu.categories[0]).toStrictEqual(category2);
-    expect(updatedMenu.optionGroups[0]).toStrictEqual(optiongroup2);
+    expect(updatedMenu.categories).toStrictEqual(MakeCategoryPreview([category2,]));
+    expect(updatedMenu.optionGroups).toStrictEqual(MakeOptionGroupPreview([optiongroup2,]));
     expect(updatedMenu.enable_time).toStrictEqual(enabletime1);
     
   });
@@ -351,37 +374,6 @@ describe('MenuService', () => {
     expect(updatedMenu.enable_time).toStrictEqual(enabletime1);
   });
 
-  it("Should update menu info(StoreId)", async () => {
-   
-    const store3 = new Store();
-    store3.setName = "STORE3NAME";
-    store3.setPhone_number = "3333";
-    store3.setAddress = "STORE3ADDRESS";
-    await connection.manager.save(store3);
-
-    const savedMenu = new Menu();
-    savedMenu.setMenuName = NAME;
-    savedMenu.setMenuDesc = DESC;
-    savedMenu.setMenuPrice = PRICE;
-    savedMenu.setMenuState = STATE;
-    savedMenu.store_id = store3;
-
-    await menuRepository.save(savedMenu);
-
-    const updateDto = new MenuUpdateDto();
-    updateDto.store_id = 6;
-
-    const response = await menuService.updateStoreIdInMenu(
-    savedMenu.getMenuId,
-      updateDto
-    );
-
-    expect(response).toBeInstanceOf(BasicMessageDto);
-
-    const updatedMenu = await menuService.getMenuInfo(savedMenu.getMenuId);
-    expect(updatedMenu.store_id).toStrictEqual(store3);
-  });
-
   it("Should update menu info(Category)", async () => {
     const store3 = new Store();
     store3.setName = "STORE3NAME";
@@ -424,7 +416,7 @@ describe('MenuService', () => {
     expect(responseInfo).toBeInstanceOf(BasicMessageDto);
 
     const updatedMenu = await menuService.getMenuInfo(savedMenu.getMenuId);
-    expect(updatedMenu.categories).toStrictEqual([category2]);
+    expect(updatedMenu.categories).toStrictEqual(MakeCategoryPreview([category2,]));
   });
 
   it("Should update menu info(OptionGroup)", async () => {
@@ -469,7 +461,7 @@ describe('MenuService', () => {
     expect(responseInfo).toBeInstanceOf(BasicMessageDto);
 
     const updatedMenu = await menuService.getMenuInfo(savedMenu.getMenuId);
-    expect(updatedMenu.optionGroups[0]).toStrictEqual(optiongroup2);
+    expect(updatedMenu.optionGroups).toStrictEqual(MakeOptionGroupPreview([optiongroup2,]));
   });
 
 
