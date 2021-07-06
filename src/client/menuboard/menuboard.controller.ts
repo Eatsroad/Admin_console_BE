@@ -1,7 +1,11 @@
 import { Controller, Get, Param, ParseIntPipe, Query } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { CategoryService } from "src/console/category/category.service";
-import { MenuboardCategoryResponseDto } from "./dtos/menuboard-info.dto";
+import {
+  MenuboardCategoryResponseDto,
+  MenuboardMenuDetailResponseDto,
+  MenuboardMenuResponseDto,
+} from "./dtos/menuboard-info.dto";
 import { MenuboardService } from "./menuboard.service";
 
 @Controller("menuboard")
@@ -9,7 +13,7 @@ import { MenuboardService } from "./menuboard.service";
 export class MenuboardController {
   constructor(private readonly menuBoardService: MenuboardService) {}
 
-  @Get("/:storeId")
+  @Get("/category")
   @ApiOperation({
     summary: "카테고리 정보 API",
     description: "해당 음식점의 모든 (음식)카테고리를 보여줍니다.",
@@ -19,23 +23,38 @@ export class MenuboardController {
     type: MenuboardCategoryResponseDto,
   })
   getAllCategory(
-    @Param("storeId", ParseIntPipe) storeId: number
+    @Query("storeId", ParseIntPipe) storeId: number
   ): Promise<MenuboardCategoryResponseDto[]> {
     return this.menuBoardService.getCategoryByStoreId(storeId);
   }
 
-  @Get()
+  @Get("/menu")
   @ApiOperation({
     summary: "카테고리 - 음식 API",
     description: "해당 카테고리에 해당하는 음식을 보여줍니다.",
   })
   @ApiResponse({
     description: "해당 카테고리에 해당하는 음식을 보여줍니다.",
-    type: MenuboardCategoryResponseDto,
+    type: MenuboardMenuResponseDto,
   })
-  getCategoryByMenuId(
-    @Query("storeId") storeId: number
-  ): Promise<MenuboardCategoryResponseDto[]> {
-    return this.menuBoardService.getCategoryByStoreId(storeId);
+  getAllMenu(
+    @Query("categoryId") categoryId: number
+  ): Promise<MenuboardMenuResponseDto> {
+    return this.menuBoardService.getMenuByCategoryId(categoryId);
+  }
+
+  @Get("/detail")
+  @ApiOperation({
+    summary: "음식 - 옵션그룹 API",
+    description: "해당 메뉴에 해당하는 옵션그룹을 보여줍니다.",
+  })
+  @ApiResponse({
+    description: "해당 메뉴에 해당하는 옵션그룹을 보여줍니다.",
+    type: MenuboardMenuDetailResponseDto,
+  })
+  getAllOptiongroup(
+    @Query("menuId") menuId: number
+  ): Promise<MenuboardMenuDetailResponseDto> {
+    return this.menuBoardService.getDetailBymenuId(menuId);
   }
 }
