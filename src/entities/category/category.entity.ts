@@ -1,3 +1,4 @@
+import { MenuPreviewInfo } from "src/console/store/dtos/store-info-dto";
 import { 
   Column,
   Entity, 
@@ -45,6 +46,21 @@ export class Category {
   @JoinColumn({name: "store_id"})
   store : Store;
 
+  get getMenuPreview(): MenuPreviewInfo[] {
+    let result: MenuPreviewInfo[] = [];
+    try {
+      this.menus.forEach((menu) => {
+        const data: MenuPreviewInfo = {
+          name: menu.getMenuName,
+          menu_id: menu.getMenuId
+        };
+        result.push(data);
+      });
+      return result;
+    } catch (e) {
+      console.log(e);
+    }
+  }
   get getCategoryId(): number {
     return this.category_id;
   }
