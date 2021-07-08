@@ -32,13 +32,11 @@ export class Menu {
   @Column({nullable: true})
   private state: string;
 
-  @ManyToOne(() => Store, store => store.menus)
+  @ManyToOne(() => Store, store => store.menus, { onDelete : "CASCADE" })
   @JoinColumn({name: "store_id"})
   store_id : Store;
 
-  @OneToOne(() => EnableTime, enableTime => enableTime.getEnableTimeId,{
-    cascade: [ "update" ]
-  })
+  @OneToOne(() => EnableTime, enableTime => enableTime.menu_id)
   @JoinColumn({name: "enable_time"})
   enable_time: EnableTime;
 

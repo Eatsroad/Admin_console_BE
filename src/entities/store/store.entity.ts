@@ -42,11 +42,11 @@ export class Store {
   @Column({default: false})
   private is_approved: boolean;
   
-  @ManyToOne(type => User, user => user.getUser_id,{ onDelete:"CASCADE" })
+  @ManyToOne(type => User, user => user.getUser_id,{ onDelete : "CASCADE" })
   @JoinColumn({name: "user_id"})
   user: User;
 
-  @OneToMany(() => Menu, menu => menu.store_id)
+  @OneToMany(() => Menu, menu => menu.store_id,{ cascade : ['remove']})
   menus: Menu[];
 
   @OneToMany(() => Category, category => category.store)
