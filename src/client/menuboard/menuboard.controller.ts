@@ -5,6 +5,7 @@ import {
   MenuboardCategoryResponseDto,
   MenuboardMenuDetailResponseDto,
   MenuboardMenuResponseDto,
+  MenuboardOptionResponseDto,
 } from "./dtos/menuboard-info.dto";
 import { MenuboardService } from "./menuboard.service";
 
@@ -31,10 +32,10 @@ export class MenuboardController {
   @Get("/menu")
   @ApiOperation({
     summary: "카테고리 - 음식 API",
-    description: "해당 카테고리에 해당하는 음식을 보여줍니다.",
+    description: "카테고리에 해당하는 음식을 보여줍니다.",
   })
   @ApiResponse({
-    description: "해당 카테고리에 해당하는 음식을 보여줍니다.",
+    description: "카테고리에 해당하는 음식을 보여줍니다.",
     type: MenuboardMenuResponseDto,
   })
   getAllMenu(
@@ -46,15 +47,30 @@ export class MenuboardController {
   @Get("/detail")
   @ApiOperation({
     summary: "음식 - 옵션그룹 API",
-    description: "해당 메뉴에 해당하는 옵션그룹을 보여줍니다.",
+    description: "메뉴에 해당하는 옵션그룹을 보여줍니다.",
   })
   @ApiResponse({
-    description: "해당 메뉴에 해당하는 옵션그룹을 보여줍니다.",
+    description: "메뉴에 해당하는 옵션그룹을 보여줍니다.",
     type: MenuboardMenuDetailResponseDto,
   })
   getAllOptiongroup(
     @Query("menuId") menuId: number
   ): Promise<MenuboardMenuDetailResponseDto> {
     return this.menuBoardService.getDetailBymenuId(menuId);
+  }
+
+  @Get("/option")
+  @ApiOperation({
+    summary: "옵션그룹 - 옵션 API",
+    description: "옵션그룹에 해당하는 옵션들을 보여줍니다",
+  })
+  @ApiResponse({
+    description: "옵션그룹에 해당하는 옵션들을 보여줍니다.",
+    type: MenuboardOptionResponseDto,
+  })
+  getAllOptionByOptiongroupId(
+    @Query("optiongroupId") optiongroupId: number
+  ): Promise<MenuboardOptionResponseDto> {
+    return this.menuBoardService.getOptionByOptiongroupId(optiongroupId);
   }
 }

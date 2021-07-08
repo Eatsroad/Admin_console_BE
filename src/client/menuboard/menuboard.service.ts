@@ -2,11 +2,13 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Category } from "src/entities/category/category.entity";
 import { Menu } from "src/entities/menu/menu.entity";
+import { OptionGroup } from "src/entities/option/optionGroup.entity";
 import { Repository } from "typeorm";
 import {
   MenuboardCategoryResponseDto,
   MenuboardMenuDetailResponseDto,
   MenuboardMenuResponseDto,
+  MenuboardOptionResponseDto,
 } from "./dtos/menuboard-info.dto";
 
 @Injectable()
@@ -15,7 +17,9 @@ export class MenuboardService {
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
     @InjectRepository(Menu)
-    private readonly menuRepository: Repository<Menu>
+    private readonly menuRepository: Repository<Menu>,
+    @InjectRepository(OptionGroup)
+    private readonly optiongroupRepository: Repository<OptionGroup>
   ) {}
 
   async getCategoryByStoreId(
@@ -53,5 +57,16 @@ export class MenuboardService {
       .where("menu.menu_id =:menuId", { menuId })
       .getOne();
     return new MenuboardMenuDetailResponseDto(menuDetail);
+  }
+
+  async getOptionByOptiongroupId(
+    optiongroupId: number
+  ): Promise<MenuboardOptionResponseDto> {
+    const optiongroup = await this.optiongroupRepository
+      .createQueryBuilder("optiongroup")
+      .innerJoinAndSelect("optiongroup.option_id", "options")
+      .where("optiongroup.option_group_id =: optiongroupId", { optiongroupId })
+      .getOne();
+    return new MenuboardOptionResponseDto(optiongroup);
   }
 }

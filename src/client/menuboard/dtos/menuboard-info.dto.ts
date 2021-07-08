@@ -1,3 +1,4 @@
+import { Option } from "src/entities/option/option.entity";
 import { OptionGroup } from "src/entities/option/optionGroup.entity";
 import { Category } from "../../../../src/entities/category/category.entity";
 import { Menu } from "../../../../src/entities/menu/menu.entity";
@@ -32,4 +33,13 @@ export class MenuboardMenuDetailResponseDto {
   }
   name: string;
   optiongroups: OptionGroup[];
+}
+
+export class MenuboardOptionResponseDto {
+  constructor(optiongroup: OptionGroup) {
+    this.option_group_id = optiongroup.getOptionGroupId;
+    this.option = optiongroup.option_id;
+  }
+  option_group_id: number;
+  option: Option[];
 }
