@@ -32,7 +32,7 @@ export class Menu {
   @Column({nullable: true})
   private state: string;
 
-  @ManyToOne(() => Store, store => store.menus, { onDelete : "CASCADE" })
+  @ManyToOne(() => Store, store => store.menus)
   @JoinColumn({name: "store_id"})
   store_id : Store;
 

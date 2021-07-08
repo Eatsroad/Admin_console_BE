@@ -46,7 +46,7 @@ export class Store {
   @JoinColumn({name: "user_id"})
   user: User;
 
-  @OneToMany(() => Menu, menu => menu.store_id,{ cascade : ['remove']})
+  @OneToMany(() => Menu, menu => menu.store_id)
   menus: Menu[];
 
   @OneToMany(() => Category, category => category.store)
