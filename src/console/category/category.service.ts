@@ -24,7 +24,6 @@ export class CategoryService {
 
   private categoryCreateDtoToEntity = async (dto: CategoryCreateDto): Promise<Category> => {
     const category = new Category();
-    
     category.setCategoryName = dto.name;
     category.setCategoryDesc = dto.description;
     category.setCategoryState = dto.state;

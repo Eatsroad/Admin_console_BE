@@ -60,6 +60,17 @@ export class MenuService {
       );
     };
 
+    private StoreExist = async (storeId:number) : Promise<Boolean> => {
+      return (
+        (await this.menuRepository
+        .createQueryBuilder()
+        .select("m.name")
+        .from(Menu,"m")
+        .where("m.store_id =:storeId", { storeId })
+        .getOne()) !== undefined
+      )
+    };
+
   async saveMenu(dto: MenuCreateDto): Promise<MenuInfoResponseDto> {
     if( await this.MenuExist(dto.name, dto.store_id)) {
       throw new ConflictException("Menu is already in use!");
@@ -76,18 +87,21 @@ export class MenuService {
     if (!!menu) {
       return new MenuInfoResponseDto(menu);
     } else {
-    throw new NotFoundException();
+      throw new NotFoundException();
     }
   }
 
-  async getMenuList(storeId: number): Promise<MenuInfoResponseDto[]>{
+
+  async getMenuList (storeId: number): Promise<MenuInfoResponseDto[]> {
+    if(await this.StoreExist(storeId)){
     const result = await this.menuRepository.find({
       where :{
         store_id: storeId,
       },
       relations:['store_id','categories','optionGroups'],
     });
-    return result.map((result) => new MenuInfoResponseDto(result));
+    return await result.map((result) => new MenuInfoResponseDto(result));
+  } else throw new NotFoundException();   
   }
 
   async updateMenuInfo(
@@ -102,7 +116,6 @@ export class MenuService {
     .update( "menus", { ...dto })
     .where("menu_id = :menuId", { menuId })
     .execute();
-
     if(result.affected !== 0) {
       return new BasicMessageDto("Updated Successfully.");
     } else throw new NotFoundException();
@@ -154,26 +167,6 @@ export class MenuService {
       return new BasicMessageDto("Deleted Successfully.");
     } else throw new NotFoundException();
   }
-
-  async removeCategoryInMenu(menuId : number,
-    ): Promise<BasicMessageDto> {
-      const menu = await this.menuRepository.findOne(menuId);
-      menu.categories = null;
-      const result = await this.menuRepository.save(menu);
-      if (result.categories == null){
-      return new BasicMessageDto("Category Deleted successfully!");
-      } else throw new NotFoundException();
-    }
-
-  async removeOptionGroupInMenu(menuId: number,
-   ): Promise<BasicMessageDto> {
-    const menu = await this.menuRepository.findOne(menuId);
-    menu.optionGroups = null;
-    const result = await this.menuRepository.save(menu);
-    if(result.optionGroups == null){
-    return new BasicMessageDto("OptionGroup Deleted Successfully.");
-    } else throw new NotFoundException();
- }
 
  async removeEnableTimeInMenu(menuId: number,
   ): Promise<BasicMessageDto> {
