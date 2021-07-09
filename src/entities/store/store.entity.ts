@@ -42,7 +42,7 @@ export class Store {
   @Column({default: false})
   private is_approved: boolean;
   
-  @ManyToOne(type => User, user => user.getUser_id,{ onDelete:"CASCADE" })
+  @ManyToOne(type => User, user => user.getUser_id,{ onDelete : "CASCADE" })
   @JoinColumn({name: "user_id"})
   user: User;
 
