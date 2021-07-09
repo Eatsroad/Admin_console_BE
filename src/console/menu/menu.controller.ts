@@ -43,7 +43,15 @@ export class MenuController {
   }
 
   @Get()
-  getMenuList( @Query('store_id') store_id: number): Promise<MenuInfoResponseDto[]>{
+  @ApiOperation({
+    summary : '메뉴 전체 정보 API',
+    description: '요청된 가게 id에 해당하는 메뉴 전체를 가져옵니다.'
+  })
+  @ApiResponse({
+    description: '요청된 가게 id에 해당하는 메뉴 전체를 가져옵니다.',
+    type : MenuInfoResponseDto
+  })
+  getMenuList( @Query('store_id', ParseIntPipe) store_id: number): Promise<MenuInfoResponseDto[]>{
     return this.menuService.getMenuList(store_id);
   }
 
@@ -59,34 +67,6 @@ export class MenuController {
     @Param('menuId', ParseIntPipe) menuId: number,
   ) {
     return this.menuService.removeMenu(menuId);
-  }
-
-  @Delete('/:menuId/category')
-  @ApiOperation({
-    summary: '메뉴의 카테고리 삭제 API',
-    description: '요청된 메뉴 id에 해당하는 메뉴의 카테고리를 삭제합니다.'
-  })
-  @ApiResponse({
-    description: '요청된 메뉴 id에 해당하는 메뉴의 카테고리를 삭제합니다.'
-  })
-  removeCategory(
-    @Param('menuId', ParseIntPipe) menuId: number,
-  ) {
-    return this.menuService.removeCategoryInMenu(menuId);
-  }
-
-  @Delete('/:menuId/optiongroup')
-  @ApiOperation({
-    summary: '메뉴의 옵션그룹 삭제 API',
-    description: '요청된 메뉴 id에 해당하는 메뉴의 옵션그룹을 삭제합니다.'
-  })
-  @ApiResponse({
-    description: '요청된 메뉴 id에 해당하는 메뉴의 옵션그룹을 삭제합니다.'
-  })
-  removeOptionGroup(
-    @Param('menuId', ParseIntPipe) menuId: number,
-  ) {
-    return this.menuService.removeOptionGroupInMenu(menuId);
   }
 
   @Delete('/:menuId/enabletime')

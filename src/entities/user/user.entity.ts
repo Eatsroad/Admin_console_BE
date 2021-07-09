@@ -40,7 +40,7 @@ export class User {
   @DeleteDateColumn()
   private deleted_at: Date;
 
-  @OneToMany(() => Store, store => store.user)
+  @OneToMany(() => Store, store => store.user, { cascade : ['remove'] })
   stores: Store[];
 
   get getUser_id(): number {

@@ -1,4 +1,5 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { OptionPreviewInfo } from "src/console/option/dtos/option-info.dto";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Option } from "./option.entity";
 
 @Entity({name:"option_groups"})
@@ -15,7 +16,19 @@ export class OptionGroup {
   @Column({nullable: true})
   private state: string;
 
-  @OneToMany(() => Option, option => option.getOptionId)
+  @ManyToMany(() => Option)
+  @JoinTable({
+    name: "options_and_option_groups",
+    joinColumn: {
+      name: "option_group_id",
+      referencedColumnName: "option_group_id"
+    },
+    inverseJoinColumn: {
+      name: "option_id",
+      referencedColumnName: "option_id"
+    }
+   },
+  )
   option_id: Option[];
 
   get getOptionGroupId(): number {
@@ -29,6 +42,22 @@ export class OptionGroup {
   }
   get getOptionGroupState(): string {
     return this.state;
+  }
+
+  get getOptionsPreviewInfo(): OptionPreviewInfo[] {
+    let result: OptionPreviewInfo[] = [];
+    try {
+      this.option_id.forEach((options) => {
+        const data = {
+          name: options.getOptionName,
+          option_id: options.getOptionId
+        };
+        result.push(data);
+      });
+      return result;
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   set setOptionGroupName(name: string) {

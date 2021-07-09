@@ -500,24 +500,6 @@ describe('MenuService', () => {
     expect(menu.getMenuState).toBe(null);
   });
 
-  it("Should remove menu(Category)", async () => {
-    const savedMenu = await saveMenu();
-    const response = await menuService.removeCategoryInMenu(savedMenu.getMenuId);
-    expect(response).toBeInstanceOf(BasicMessageDto);
-
-    const menu = await menuRepository.findOne(savedMenu.getMenuId);
-    expect(menu.categories).toBeUndefined();
-  });
-
-  it("Should remove menu(OptionGroup)", async () => {
-    const savedMenu = await saveMenu();
-    const response = await menuService.removeOptionGroupInMenu(savedMenu.getMenuId);
-    expect(response).toBeInstanceOf(BasicMessageDto);
-
-    const menu = await menuRepository.findOne(savedMenu.getMenuId);
-    expect(menu.optionGroups).toBeUndefined();
-  });
-
   it("Should remove menu(EnableTime)", async () => {
     const savedMenu = await saveMenu();
     const response = await menuService.removeEnableTimeInMenu(savedMenu.getMenuId);
