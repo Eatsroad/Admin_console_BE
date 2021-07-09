@@ -65,7 +65,7 @@ export class MenuboardService {
     const optiongroup = await this.optiongroupRepository
       .createQueryBuilder("optiongroup")
       .innerJoinAndSelect("optiongroup.option_id", "options")
-      .where("optiongroup.option_group_id =: optiongroupId", { optiongroupId })
+      .where("optiongroup.option_group_id =:optiongroupId", { optiongroupId })
       .getOne();
     return new MenuboardOptionResponseDto(optiongroup);
   }
