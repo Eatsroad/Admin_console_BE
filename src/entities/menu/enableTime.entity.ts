@@ -15,7 +15,7 @@ export class EnableTime {
   @Column({nullable: true})
   private description: string;
 
-  @OneToOne(() => Menu, menu => menu.getMenuId)
+  @OneToOne(() => Menu, menu => menu.enable_time)
   menu_id: Menu;
 
   get getEnableTimeId(): number {
