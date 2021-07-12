@@ -1,10 +1,8 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { throwError, VirtualTimeScheduler } from 'rxjs';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { OptionGroup } from '../../../src/entities/option/optionGroup.entity';
 import { getRepository, Repository } from 'typeorm';
-import { MenuCreateDto } from '../menu/dtos/create-menu.dto';
 import { OptionGroupCreateDto } from './dtos/create-optiongroup.dto';
 import { OptionGroupInfoResponseDto } from './dtos/optiongroup-info.dto';
 import { OptionGroupUpdateDto } from './dtos/update-optiongroup.dto';
@@ -60,6 +58,28 @@ export class OptiongroupService {
             throw new NotFoundException();
         }
     }
+
+    // async getAllOptiongroupList (menuId : number) : Promise<OptionGroupInfoResponseDto[]>{
+    //     const Optiongroups = await this.optiongroupRepository.find({
+    //         where: {
+    //             menu_id : menuId
+    //         },
+    //         relations: ['menu_id']
+    //     });
+    //     return Optiongroups.map((optiongroup) => new OptionGroupInfoResponseDto(optiongroup));
+    // }
+
+    // async getAllOptionGroupList ( storeId : number) : Promise<OptionGroupInfoResponseDto[]>{
+    //     const Optiongroup = await this.optiongroupRepository
+    //     .createQueryBuilder("menus_and_option_groups")
+    //     .leftJoinAndSelect("menus_and_option_groups.menu_id","menus")
+    //     .select(["menus_and_option_groups.option_group_id"])
+    //     .andWhere("menus_and_option_groups.store_id =:storeId",{ storeId })
+    //     .getRawMany();
+
+    //     console.log(Optiongroup);
+    //    return await Optiongroup.map((result) => new OptionGroupInfoResponseDto(result));
+    // }
 
     async updateOptiongroupInfo(
         option_group_id: number,
