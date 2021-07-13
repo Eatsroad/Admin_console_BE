@@ -29,6 +29,18 @@ export class Category {
   private state: string;
 
   @ManyToMany(() => Menu)
+  @JoinTable({
+    name: "menus_and_categories",
+    joinColumn: {
+      name: "menu_id",
+      referencedColumnName: "menu_id"
+    },
+    inverseJoinColumn: {
+      name: "category_id",
+      referencedColumnName: "category_id"
+    }
+    },
+  )
   menus: Menu[];
 
   @ManyToOne(() => Store, store => store.categories)

@@ -27,12 +27,14 @@ export class CategoryController {
   constructor(
     private readonly categpryService: CategoryService,
   ) {};
+
   @Get()
   getAllCategory(
     @Query('storeId') storeId: number
   ): Promise<CategoryInfoResponseDto[]> {
     return this.categpryService.getAllCategoryWithStoreId(storeId);
-  }
+  };
+  
   @Post()
   @ApiOperation({
     summary: '카테고리 생성 API',
