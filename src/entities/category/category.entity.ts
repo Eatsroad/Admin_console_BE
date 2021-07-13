@@ -32,12 +32,12 @@ export class Category {
   @JoinTable({
     name: "menus_and_categories",
     joinColumn: {
-      name: "menu_id",
-      referencedColumnName: "menu_id"
-    },
-    inverseJoinColumn: {
       name: "category_id",
       referencedColumnName: "category_id"
+    },
+    inverseJoinColumn: {
+      name: " menu_id",
+      referencedColumnName: "menu_id"
     }
     },
   )
