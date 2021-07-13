@@ -64,7 +64,7 @@ export class CategoryService {
       throw new NotFoundException();
     }
   }
-  
+
   async updateMenuInCategory(
     categoryId: number,
     dto: CategoryMenuUpdateDto
@@ -104,7 +104,7 @@ export class CategoryService {
       where: { 
         store: storeId 
       }, 
-      relations: ['menus'] 
+      relations: ['menus' ,'store_id'] 
     });
     return categories.map((category) => new CategoryInfoResponseDto(category));
   }
