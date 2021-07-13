@@ -11,5 +11,5 @@ export class OptionCreateDto{
     price: number;
 
     @IsString()
-    state: string;;
+    state: string;
 }

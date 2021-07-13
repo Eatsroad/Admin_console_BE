@@ -104,8 +104,8 @@ export class CategoryController {
     description: "카테고리를 삭제합니다.",
   })
   deleteCategory(
-    @Param('categoryId', ParseIntPipe) cateogryId: number,
+    @Param('categoryId', ParseIntPipe) cateogoryId: number,
   ) {
-    return this.categpryService.removeCategory(cateogryId);
+    return this.categpryService.removeCategory(cateogoryId);
   };
 }
