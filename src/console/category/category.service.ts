@@ -100,11 +100,12 @@ export class CategoryService {
   }
 
   async getAllCategoryWithStoreId(storeId: number): Promise<CategoryInfoResponseDto[]> {
+    console.log(storeId);
     const categories = await this.categoryRepository.find({
       where: { 
         store: storeId 
       }, 
-      relations: ['menus' ,'store_id'] 
+      relations: ['store'] 
     });
     return categories.map((category) => new CategoryInfoResponseDto(category));
   }
