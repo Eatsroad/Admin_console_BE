@@ -36,11 +36,10 @@ export class Category {
       referencedColumnName: "category_id"
     },
     inverseJoinColumn: {
-      name: " menu_id",
+      name: "menu_id",
       referencedColumnName: "menu_id"
     }
-    },
-  )
+  })
   menus: Menu[];
 
   @ManyToOne(() => Store, store => store.categories)
