@@ -1,6 +1,6 @@
-import { MenuPreviewInfo } from "src/console/store/dtos/store-info-dto";
+
+import { MenuPreviewInfo } from "src/console/menu/dtos/menu-info.dto";
 import { Category } from "../../../../src/entities/category/category.entity";
-import { Menu } from "../../../../src/entities/menu/menu.entity";
 export interface CategoryPreviewInfo {
   name: string;
   category_id: number;

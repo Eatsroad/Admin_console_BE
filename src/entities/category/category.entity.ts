@@ -1,4 +1,5 @@
-import { MenuPreviewInfo } from "src/console/store/dtos/store-info-dto";
+
+import { MenuPreviewInfo } from "src/console/menu/dtos/menu-info.dto";
 import { 
   Column,
   Entity, 
@@ -36,7 +37,7 @@ export class Category {
       referencedColumnName: "category_id"
     },
     inverseJoinColumn: {
-      name: " menu_id",
+      name: "menu_id",
       referencedColumnName: "menu_id"
     }
     },

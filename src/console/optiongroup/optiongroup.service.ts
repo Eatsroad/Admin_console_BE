@@ -68,7 +68,7 @@ export class OptiongroupService {
         .distinct(true)
         .andWhere("menus.store_id =:storeId",{ storeId })
         .getMany();
-        console.log(Optiongroup);
+        
         let result : getAllOptionGroupListDto[] = [];
         try{
             Optiongroup.forEach((optiongroups)=> {
