@@ -1,6 +1,5 @@
 import { MenuPreviewInfo } from "src/console/menu/dtos/menu-info.dto";
 import { OptionPreviewInfo } from "src/console/option/dtos/option-info.dto";
-import { Option } from "src/entities/option/option.entity";
 import { OptionGroup } from "../../../../src/entities/option/optionGroup.entity";
 
 export interface OptionGroupPreviewInfo {

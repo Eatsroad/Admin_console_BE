@@ -26,7 +26,6 @@ export class MenuInfoResponseDto {
     description: string;
     state: string;
     categories: CategoryPreviewInfo[];
-    optionGroups : OptionGroupPreviewInfo[];
+    optionGroups: OptionGroupPreviewInfo[];
     enable_time: EnableTime;
 }
-
