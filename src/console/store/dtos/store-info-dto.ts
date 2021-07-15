@@ -18,7 +18,7 @@ export class StoreInfoResponseDto{
     store_id: number;
     name: string;
     address: string;
-    phone_number:string;
-    tables:number;
+    phone_number: string;
+    tables: number;
     menus: Menu[];
 }

@@ -27,12 +27,14 @@ export class CategoryController {
   constructor(
     private readonly categpryService: CategoryService,
   ) {};
+
   @Get()
   getAllCategory(
     @Query('storeId') storeId: number
   ): Promise<CategoryInfoResponseDto[]> {
     return this.categpryService.getAllCategoryWithStoreId(storeId);
-  }
+  };
+  
   @Post()
   @ApiOperation({
     summary: '카테고리 생성 API',
@@ -104,8 +106,8 @@ export class CategoryController {
     description: "카테고리를 삭제합니다.",
   })
   deleteCategory(
-    @Param('categoryId', ParseIntPipe) cateogryId: number,
+    @Param('categoryId', ParseIntPipe) categoryId: number,
   ) {
-    return this.categpryService.removeCategory(cateogryId);
+    return this.categpryService.removeCategory(categoryId);
   };
 }
