@@ -55,7 +55,7 @@ export class Menu {
   )
   categories: Category[];
 
-  @ManyToMany(() => OptionGroup)
+  @ManyToMany(() => OptionGroup, optiongroup => optiongroup.menus)
   @JoinTable({
     name: "menus_and_option_groups",
     joinColumn: {

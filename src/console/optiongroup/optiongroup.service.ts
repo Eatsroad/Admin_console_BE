@@ -4,9 +4,10 @@ import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { OptionGroup } from '../../../src/entities/option/optionGroup.entity';
 import { getRepository, Repository } from 'typeorm';
 import { OptionGroupCreateDto } from './dtos/create-optiongroup.dto';
-import { OptionGroupInfoResponseDto } from './dtos/optiongroup-info.dto';
+import { getAllOptionGroupListDto, OptionGroupInfoResponseDto, OptionGroupPreviewInfo } from './dtos/optiongroup-info.dto';
 import { OptionGroupUpdateDto } from './dtos/update-optiongroup.dto';
 import { Option } from '../../../src/entities/option/option.entity';
+import { Menu } from 'src/entities/menu/menu.entity';
 
 @Injectable()
 export class OptiongroupService {
@@ -59,27 +60,32 @@ export class OptiongroupService {
         }
     }
 
-    // async getAllOptiongroupList (menuId : number) : Promise<OptionGroupInfoResponseDto[]>{
-    //     const Optiongroups = await this.optiongroupRepository.find({
-    //         where: {
-    //             menu_id : menuId
-    //         },
-    //         relations: ['menu_id']
-    //     });
-    //     return Optiongroups.map((optiongroup) => new OptionGroupInfoResponseDto(optiongroup));
-    // }
-
-    // async getAllOptionGroupList ( storeId : number) : Promise<OptionGroupInfoResponseDto[]>{
-    //     const Optiongroup = await this.optiongroupRepository
-    //     .createQueryBuilder("menus_and_option_groups")
-    //     .leftJoinAndSelect("menus_and_option_groups.menu_id","menus")
-    //     .select(["menus_and_option_groups.option_group_id"])
-    //     .andWhere("menus_and_option_groups.store_id =:storeId",{ storeId })
-    //     .getRawMany();
-
-    //     console.log(Optiongroup);
-    //    return await Optiongroup.map((result) => new OptionGroupInfoResponseDto(result));
-    // }
+    async getAllOptionGroupList ( storeId : number) : Promise<getAllOptionGroupListDto[]>{
+        const Optiongroup = await this.optiongroupRepository
+        .createQueryBuilder("menus_and_option_groups")
+        .leftJoinAndSelect("menus_and_option_groups.menus","menus")
+        .leftJoinAndSelect("menus_and_option_groups.option_id", "options")
+        .distinct(true)
+        .andWhere("menus.store_id =:storeId",{ storeId })
+        .getMany();
+        console.log(Optiongroup);
+        let result : getAllOptionGroupListDto[] = [];
+        try{
+            Optiongroup.forEach((optiongroups)=> {
+            const data = {
+                name: optiongroups.getOptionGroupName,
+                option_group_id: optiongroups.getOptionGroupId,
+                menus: optiongroups.getMenusPreviewInfo,
+                option_id:optiongroups.getOptionsPreviewInfo
+            };
+            result.push(data);
+        });
+        return result;
+        } catch (e){
+            console.log(e);   
+        }
+       
+    }
 
     async updateOptiongroupInfo(
         option_group_id: number,
@@ -100,7 +106,6 @@ export class OptiongroupService {
         }
     }
 
-    
     async updateOptionInOptionGroup(
         option_group_id:number,
         dto:OptionGroupUpdateDto
@@ -121,5 +126,4 @@ export class OptiongroupService {
         } else throw new NotFoundException();
     }
 
-    
 }
