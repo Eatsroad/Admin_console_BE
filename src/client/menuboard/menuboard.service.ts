@@ -47,7 +47,7 @@ export class MenuboardService {
     return new MenuboardMenuResponseDto(menus);
   }
 
-  async getDetailBymenuId(
+  async getOptionGroupBymenuId(
     menuId: number
   ): Promise<MenuboardMenuDetailResponseDto> {
     const menuDetail = await this.menuRepository

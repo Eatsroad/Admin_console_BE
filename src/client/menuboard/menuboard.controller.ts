@@ -56,7 +56,7 @@ export class MenuboardController {
   getAllOptiongroup(
     @Query("menuId") menuId: number
   ): Promise<MenuboardMenuDetailResponseDto> {
-    return this.menuBoardService.getDetailBymenuId(menuId);
+    return this.menuBoardService.getOptionGroupBymenuId(menuId);
   }
 
   @Get("/option")

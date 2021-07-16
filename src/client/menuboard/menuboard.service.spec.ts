@@ -20,16 +20,6 @@ describe("MenuboardService", () => {
   let menuboardService: MenuboardService;
   let connection: Connection;
 
-  /*
-  let storeService : StoreService;
-  let menuService : MenuService;
-  let categoryService : CategoryService;
-  let optiongroupService : OptiongroupService;
-  let optionService : OptionService;
-*/
-
-  // 카테고리 생성
-
   //store
   let storeRepository: Repository<Store>;
   let storeService: StoreService;
@@ -84,8 +74,6 @@ describe("MenuboardService", () => {
   let optionRepository: Repository<Option>;
   let optionService: OptionService;
 
-  //
-
   beforeAll(async () => {
     connection = await createMemoryDB([
       Category,
@@ -117,23 +105,7 @@ describe("MenuboardService", () => {
       menuRepository,
       optionGroupRepository
     );
-
-    // console.log((await storeService.getStoreInfo(1)).name);
-    // console.log(await categoryService.getCategoryInfo(1));
-    // console.log(await menuboardService.getCategoryByStoreId(1));
   });
-
-  // beforeEach(async () => {
-  //   const module: TestingModule = await Test.createTestingModule({
-  //     providers: [MenuboardService],
-  //   }).compile();
-
-  //   menuboardService = module.get<MenuboardService>(MenuboardService);
-  // });
-
-  // it("should be defined", () => {
-  //   expect(storeService).toBeDefined();
-  // });
 
   it("should get correct category info", async () => {
     await saveStore();
@@ -194,7 +166,6 @@ describe("MenuboardService", () => {
       expect(exception).toBeInstanceOf(TypeError);
     }
   });
-  //--------------------------------------------------------------------------------------------------------------
 
   it("should get correct optiongroup info", async () => {
     const optiongroup1 = new OptionGroup();
@@ -218,7 +189,7 @@ describe("MenuboardService", () => {
 
     await menuRepository.save(savedMenu);
 
-    const response = await menuboardService.getDetailBymenuId(
+    const response = await menuboardService.getOptionGroupBymenuId(
       savedMenu.getMenuId
     );
     expect(response.optiongroups[0].getOptionGroupName).toBe("optiongroup1");
@@ -235,13 +206,12 @@ describe("MenuboardService", () => {
 
   it("should throw NotFoundException if menuId is not exist", async () => {
     try {
-      await menuboardService.getDetailBymenuId(-1);
+      await menuboardService.getOptionGroupBymenuId(-1);
     } catch (exception) {
       expect(exception).toBeInstanceOf(TypeError);
     }
   });
 
-  //-------------------------------------------------------------------------------------------------
   it("should get correct option info", async () => {
     const option1 = new Option();
     option1.setOptionName = "option1";
