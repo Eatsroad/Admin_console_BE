@@ -62,9 +62,9 @@ export class OptiongroupService {
 
     async getAllOptionGroupList ( storeId : number) : Promise<getAllOptionGroupListDto[]>{
         const Optiongroup = await this.optiongroupRepository
-        .createQueryBuilder("menus_and_option_groups")
-        .leftJoinAndSelect("menus_and_option_groups.menus","menus")
-        .leftJoinAndSelect("menus_and_option_groups.option_id", "options")
+        .createQueryBuilder("option_groups")
+        .leftJoinAndSelect("option_groups.menus","menus")
+        .leftJoinAndSelect("option_groups.option_id", "options")
         .distinct(true)
         .andWhere("menus.store_id =:storeId",{ storeId })
         .getMany();
