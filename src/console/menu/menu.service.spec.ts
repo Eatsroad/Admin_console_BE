@@ -14,6 +14,7 @@ import { MenuService } from './menu.service';
 import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
 import { CategoryPreviewInfo } from '../category/dto/category-info.dto';
 import { OptionGroupPreviewInfo } from '../optiongroup/dtos/optiongroup-info.dto';
+import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 
 
 describe('MenuService', () => {
@@ -167,6 +168,60 @@ describe('MenuService', () => {
     expect(response.state).toBe(savedMenu.getMenuState);
   });
 
+  it("Should get menu List correctly", async () => {
+    const store1 = new Store();
+    store1.setName = "STORE1NAME";
+    store1.setAddress = "STORE1ADDRESS";
+    store1.setPhone_number = "1111";
+    store1.setDeletedAt = null;
+    store1.setUpdatedAt = null;
+    await connection.manager.save(store1);
+
+    const category1 = new Category();
+    category1.setCategoryName = "CATEGORY1NAME";
+    category1.setCategoryDesc = "CATEGORY1DESC";
+    await connection.manager.save(category1);
+    const category2 = new Category();
+    category2.setCategoryName = "CATEGORY2NAME";
+    category2.setCategoryDesc = "CATEGORY2DESC";
+    await connection.manager.save(category2);
+
+    const categoryList = [category1, category2];
+
+    const optionGroup1 = new OptionGroup();
+    optionGroup1.setOptionGroupName = "OPTIONGROUP1NAME";
+    optionGroup1.setOptionGroupDesc = "OPTIONGROUP1DESC";
+    await connection.manager.save(optionGroup1);
+    const optionGroup2 = new OptionGroup();
+    optionGroup2.setOptionGroupName = "OPTIONGROUP2NAME";
+    optionGroup2.setOptionGroupDesc = "OPTIONGROUP2DESC";
+    await connection.manager.save(optionGroup2);
+
+    const optionGroupList = [optionGroup1, optionGroup2];
+
+    let savedMenu = new Menu();
+    savedMenu.setMenuName = NAME;
+    savedMenu.setMenuPrice = PRICE;
+    savedMenu.setMenuDesc = DESC;
+    savedMenu.setMenuState = STATE;
+    savedMenu.store_id = store1;
+    savedMenu.categories = categoryList;
+    savedMenu.optionGroups = optionGroupList;
+    await menuRepository.save(savedMenu);
+
+    let savedMenuPreview = new MenuInfoResponseDto(savedMenu);
+    savedMenuPreview.categories = MakeCategoryPreview(categoryList);
+    savedMenuPreview.optionGroups = MakeOptionGroupPreview(optionGroupList);
+    savedMenuPreview.name = NAME;
+    savedMenuPreview.price = PRICE;
+    savedMenuPreview.description = DESC;
+    savedMenuPreview.state = STATE;
+    
+
+    const response = await menuService.getMenuList(savedMenu.store_id.getStore_id);
+    expect(response).toStrictEqual([savedMenuPreview]);
+  });
+
   it("Should throw NotFoundException if menu_id is invalid", async () => {
     expect.assertions(1);
     try {
@@ -233,8 +288,8 @@ describe('MenuService', () => {
     );
 
     const updateDto = new MenuUpdateDto();
-    updateDto.categories = [1,];
-    updateDto.optionGroups = [1,];
+    updateDto.categories = [3,];
+    updateDto.optionGroups = [3,];
     updateDto.enable_time = 1;
 
     const response = await menuService.updateCategoryInMenu(
@@ -406,7 +461,7 @@ describe('MenuService', () => {
     await menuRepository.save(savedMenu);
 
     const updateDtoInfo = new MenuUpdateDto();
-    updateDtoInfo.categories = [3,];
+    updateDtoInfo.categories = [5,];
 
     const responseInfo = await menuService.updateCategoryInMenu(
       savedMenu.getMenuId,
@@ -451,7 +506,7 @@ describe('MenuService', () => {
     await menuRepository.save(savedMenu);
 
     const updateDtoInfo = new MenuUpdateDto();
-    updateDtoInfo.optionGroups = [3,];
+    updateDtoInfo.optionGroups = [5,];
 
     const responseInfo = await menuService.updateOptionGroupInMenu(
     savedMenu.getMenuId,
