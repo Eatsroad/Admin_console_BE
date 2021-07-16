@@ -216,7 +216,6 @@ describe('MenuService', () => {
     savedMenuPreview.price = PRICE;
     savedMenuPreview.description = DESC;
     savedMenuPreview.state = STATE;
-    
 
     const response = await menuService.getMenuList(savedMenu.store_id.getStore_id);
     expect(response).toStrictEqual([savedMenuPreview]);

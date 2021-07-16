@@ -14,7 +14,8 @@ import { Store } from '../.../../../../src/entities/store/store.entity';
 import { User } from '../../../src/entities/user/user.entity';
 import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
 import { Category } from '../../../src/entities/category/category.entity';
-import { MenuUpdateDto } from '../menu/dtos/update-menu.dto';
+import { getAllOptionGroupListDto } from './dtos/optiongroup-info.dto';
+import { MenuPreviewInfo } from '../menu/dtos/menu-info.dto';
 
 describe('OptiongroupService', () => {
   let optionGroupService: OptiongroupService;
@@ -50,7 +51,23 @@ describe('OptiongroupService', () => {
       console.log(e);
     }
   } 
-  
+
+  const MakeMenuPreview = (menus: Menu[]): MenuPreviewInfo[] => {
+    let result : MenuPreviewInfo[] = [];
+    try{
+      menus.forEach((menu) => {
+        const data = {
+          name: menu.getMenuName,
+          menu_id: menu.getMenuId
+        };
+        result.push(data);
+      });
+      return result;
+    } catch(e){
+      console.log(e);
+    }
+  }
+
   beforeAll(async () => {
     connection = await createMemoryDB([OptionGroup, Option, Menu, Store, User, EnableTime, Category]);
     optionGroupRepository = await connection.getRepository(OptionGroup);
@@ -162,6 +179,64 @@ describe('OptiongroupService', () => {
     expect(response.option_id).toStrictEqual(savedOptionGroup.getOptionsPreviewInfo);
   });
 
+  it("Should get optionGroup List correctly", async () => {
+    const store1 = new Store();
+    store1.setName = "STORE1NAME";
+    store1.setAddress = "STORE1ADDRESS";
+    store1.setPhone_number = "1111";
+    store1.setDeletedAt = null;
+    store1.setUpdatedAt = null;
+    await connection.manager.save(store1);
+
+    const option1 = new Option();
+    option1.setOptionName = "NAME";
+    option1.setOptionPrice = 500;
+    option1.setOptionState = "STATE";
+    await connection.manager.save(option1);
+    const option2 = new Option();
+    option2.setOptionName = "NAME2";
+    option2.setOptionPrice = 500;
+    option2.setOptionState = "STATE2";
+    await connection.manager.save(option2);
+
+    const OptionList = [option1, option2];
+
+    const menu1 = new Menu();
+    menu1.store_id = store1;
+    menu1.setMenuName = "MENU1NAME";
+    menu1.setMenuPrice = 50000;
+    await connection.manager.save(menu1);
+
+    const menu2 = new Menu();
+    menu2.store_id = store1;
+    menu2.setMenuName = "MENU2NAME";
+    menu2.setMenuPrice = 5000;
+    
+    await connection.manager.save(menu2);
+
+    const menuList = [menu1, menu2];
+
+    let savedOptionGroup = new OptionGroup();
+    savedOptionGroup.setOptionGroupName = NAME;
+    savedOptionGroup.setOptionGroupDesc = DESC;
+    savedOptionGroup.setOptionGroupState = STATE;
+    savedOptionGroup.option_id = OptionList;
+    savedOptionGroup.menus= menuList;
+    await optionGroupRepository.save(savedOptionGroup);
+    
+    let savedOptionGroupPreview = new getAllOptionGroupListDto(savedOptionGroup);
+    savedOptionGroupPreview.option_id = MakeOptionPreview(OptionList);
+    savedOptionGroupPreview.menus = MakeMenuPreview(menuList);
+    savedOptionGroupPreview.name = NAME;
+
+    const response = await optionGroupService.getAllOptionGroupList(store1.getStore_id);
+  
+    expect(response[0].name).toBe(savedOptionGroupPreview.name);
+    expect(response[0].menus).toStrictEqual(savedOptionGroupPreview.menus);
+    expect(response[0].option_group_id).toBe(savedOptionGroupPreview.option_group_id);
+    expect(response[0].option_id).toStrictEqual(savedOptionGroupPreview.option_id);
+  });
+
   it("Should throw NotFoundException if option_id is invalid", async () => {
     expect.assertions(1);
     try {
@@ -205,7 +280,7 @@ describe('OptiongroupService', () => {
     );
 
     const updateDto = new OptionGroupUpdateDto();
-    updateDto.option_id = [7,];
+    updateDto.option_id = [9,];
 
     const response = await optionGroupService.updateOptionInOptionGroup(
       savedOptionGroup.getOptionGroupId,
@@ -298,7 +373,7 @@ describe('OptiongroupService', () => {
 
     
     const updateDto = new OptionGroupUpdateDto();
-    updateDto.option_id = [9,];
+    updateDto.option_id = [11,];
 
     const response = await optionGroupService.updateOptionInOptionGroup(
       savedOptionGroup.getOptionGroupId,
