@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Category } from "src/entities/category/category.entity";
-import { Menu } from "src/entities/menu/menu.entity";
-import { OptionGroup } from "src/entities/option/optionGroup.entity";
+import { Category } from "../../../src/entities/category/category.entity";
+import { Menu } from "../../../src/entities/menu/menu.entity";
+import { OptionGroup } from "../../../src/entities/option/optionGroup.entity";
 import { Repository } from "typeorm";
 import {
   MenuboardCategoryResponseDto,
@@ -29,13 +29,12 @@ export class MenuboardService {
       where: {
         store: storeId,
       },
-      //relations: ["menus"],
+      //  relations: ["categories", "user_id", "menus"],
     });
     return categories.map(
       (category) => new MenuboardCategoryResponseDto(category)
     );
   }
-
   async getMenuByCategoryId(
     categoryId: number
   ): Promise<MenuboardMenuResponseDto> {
