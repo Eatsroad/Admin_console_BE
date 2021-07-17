@@ -1,14 +1,13 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { throwError, VirtualTimeScheduler } from 'rxjs';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { OptionGroup } from '../../../src/entities/option/optionGroup.entity';
 import { getRepository, Repository } from 'typeorm';
-import { MenuCreateDto } from '../menu/dtos/create-menu.dto';
 import { OptionGroupCreateDto } from './dtos/create-optiongroup.dto';
-import { OptionGroupInfoResponseDto } from './dtos/optiongroup-info.dto';
+import { getAllOptionGroupListDto, OptionGroupInfoResponseDto, OptionGroupPreviewInfo } from './dtos/optiongroup-info.dto';
 import { OptionGroupUpdateDto } from './dtos/update-optiongroup.dto';
 import { Option } from '../../../src/entities/option/option.entity';
+import { Menu } from 'src/entities/menu/menu.entity';
 
 @Injectable()
 export class OptiongroupService {
@@ -61,6 +60,33 @@ export class OptiongroupService {
         }
     }
 
+    async getAllOptionGroupList ( storeId : number) : Promise<getAllOptionGroupListDto[]>{
+        const Optiongroup = await this.optiongroupRepository
+        .createQueryBuilder("option_groups")
+        .leftJoinAndSelect("option_groups.menus","menus")
+        .leftJoinAndSelect("option_groups.option_id", "options")
+        .distinct(true)
+        .andWhere("menus.store_id =:storeId",{ storeId })
+        .getMany();
+        
+        let result : getAllOptionGroupListDto[] = [];
+        try{
+            Optiongroup.forEach((optiongroups)=> {
+            const data = {
+                name: optiongroups.getOptionGroupName,
+                option_group_id: optiongroups.getOptionGroupId,
+                menus: optiongroups.getMenusPreviewInfo,
+                option_id:optiongroups.getOptionsPreviewInfo
+            };
+            result.push(data);
+        });
+        return result;
+        } catch (e){
+            console.log(e);   
+        }
+       
+    }
+
     async updateOptiongroupInfo(
         option_group_id: number,
         dto: OptionGroupUpdateDto
@@ -80,7 +106,6 @@ export class OptiongroupService {
         }
     }
 
-    
     async updateOptionInOptionGroup(
         option_group_id:number,
         dto:OptionGroupUpdateDto
@@ -101,5 +126,4 @@ export class OptiongroupService {
         } else throw new NotFoundException();
     }
 
-    
 }
