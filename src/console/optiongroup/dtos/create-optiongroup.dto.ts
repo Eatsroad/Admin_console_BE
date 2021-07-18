@@ -1,4 +1,4 @@
-import { IsArray, IsEmail, IsEnum, IsString } from "class-validator";
+import { IsArray, IsEmail, IsEnum, IsNumber, IsString } from "class-validator";
 
 export class OptionGroupCreateDto {
   @IsString()
@@ -12,4 +12,7 @@ export class OptionGroupCreateDto {
 
   @IsArray()
   option_id: number[];
+
+  @IsNumber()
+  store_id: number;
 }
