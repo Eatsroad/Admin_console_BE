@@ -57,7 +57,7 @@ export class CategoryService {
   }
 
   async getCategoryInfo(categoryId: number): Promise<CategoryInfoResponseDto> {
-    const category = await this.categoryRepository.findOne(categoryId, {relations: ["menus"]});
+    const category = await this.categoryRepository.findOne( categoryId, { relations: [ 'menus' ] } );
     if (!!category) {
       return new CategoryInfoResponseDto(category);
     } else {
@@ -100,11 +100,12 @@ export class CategoryService {
   }
 
   async getAllCategoryWithStoreId(storeId: number): Promise<CategoryInfoResponseDto[]> {
+    console.log(storeId);
     const categories = await this.categoryRepository.find({
       where: { 
         store: storeId 
       }, 
-      relations: ['menus' ,'store_id'] 
+      relations: ['menus'] 
     });
     return categories.map((category) => new CategoryInfoResponseDto(category));
   }

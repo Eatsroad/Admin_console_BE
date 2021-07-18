@@ -40,8 +40,7 @@ export class Category {
       name: "menu_id",
       referencedColumnName: "menu_id"
     }
-    },
-  )
+  })
   menus: Menu[];
 
   @ManyToOne(() => Store, store => store.categories)
