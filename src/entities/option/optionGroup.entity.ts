@@ -1,5 +1,8 @@
+import { MenuPreviewInfo } from "src/console/menu/dtos/menu-info.dto";
 import { OptionPreviewInfo } from "src/console/option/dtos/option-info.dto";
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Menu } from "../menu/menu.entity";
+import { Store } from "../store/store.entity";
 import { Option } from "./option.entity";
 
 @Entity({name:"option_groups"})
@@ -31,6 +34,13 @@ export class OptionGroup {
   )
   option_id: Option[];
 
+  @ManyToMany(() => Menu, menu => menu.optionGroups)
+  menus: Menu[];
+
+  @ManyToOne(() => Store, store => store.optionGroups)
+  @JoinColumn({name:"store_id"})
+  store: Store;
+
   get getOptionGroupId(): number {
     return this.option_group_id;
   }
@@ -56,6 +66,22 @@ export class OptionGroup {
       });
       return result;
     } catch (e) {
+      console.log(e);
+    }
+  }
+
+  get getMenusPreviewInfo(): MenuPreviewInfo[]{
+    let result: MenuPreviewInfo[] = [];
+    try{
+      this.menus.forEach((menus)=>{
+        const data = {
+          name: menus.getMenuName,
+          menu_id: menus.getMenuId
+        };
+        result.push(data);
+      });
+      return result;
+    } catch (e){
       console.log(e);
     }
   }

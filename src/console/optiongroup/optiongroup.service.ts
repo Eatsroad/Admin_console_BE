@@ -1,14 +1,13 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { throwError, VirtualTimeScheduler } from 'rxjs';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { OptionGroup } from '../../../src/entities/option/optionGroup.entity';
 import { getRepository, Repository } from 'typeorm';
-import { MenuCreateDto } from '../menu/dtos/create-menu.dto';
 import { OptionGroupCreateDto } from './dtos/create-optiongroup.dto';
 import { OptionGroupInfoResponseDto } from './dtos/optiongroup-info.dto';
 import { OptionGroupUpdateDto } from './dtos/update-optiongroup.dto';
 import { Option } from '../../../src/entities/option/option.entity';
+import { Store } from '../../../src/entities/store/store.entity';
 
 @Injectable()
 export class OptiongroupService {
@@ -32,11 +31,17 @@ export class OptiongroupService {
         return await optiongroups.findByIds(option);
     }
 
+    private convert2storeObj = async (storeId: number) : Promise<Store> => {
+        const stores = getRepository(Store);
+        return await stores.findOne(storeId);
+    }
+
     private optiongroupCreateDtoToEntity = async (dto: OptionGroupCreateDto): Promise<OptionGroup>=>{
         const optiongroup = new OptionGroup();
         optiongroup.setOptionGroupName = dto.name;
         optiongroup.setOptionGroupDesc = dto.description;
         optiongroup.setOptionGroupState = dto.state;
+        optiongroup.store = await this.convert2storeObj(dto.store_id);
         optiongroup.option_id = await this.convert2OptionObj(dto.option_id);
         return optiongroup;
     }
@@ -53,12 +58,23 @@ export class OptiongroupService {
     }
 
     async getOptiongroupInfo(option_group_id: number): Promise<OptionGroupInfoResponseDto>{
-        const optiongroup = await this.optiongroupRepository.findOne(option_group_id, {relations:['option_id']});
+        const optiongroup = await this.optiongroupRepository.findOne(option_group_id, {relations:['option_id','menus','store']});
+        console.log(optiongroup);
         if(!!optiongroup){
             return new OptionGroupInfoResponseDto(optiongroup);
         } else {
             throw new NotFoundException();
         }
+    }
+
+    async getAllOptionGroupList (storeId : number) : Promise<OptionGroupInfoResponseDto[]>{
+        const optionGroups = await this.optiongroupRepository.find({
+            where: {
+                store: storeId
+            },
+            relations: ['store','menus','option_id']
+        });
+        return optionGroups.map((optiongroup) => new OptionGroupInfoResponseDto(optiongroup));
     }
 
     async updateOptiongroupInfo(
@@ -80,7 +96,6 @@ export class OptiongroupService {
         }
     }
 
-    
     async updateOptionInOptionGroup(
         option_group_id:number,
         dto:OptionGroupUpdateDto
@@ -101,5 +116,4 @@ export class OptiongroupService {
         } else throw new NotFoundException();
     }
 
-    
 }

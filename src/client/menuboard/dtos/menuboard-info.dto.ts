@@ -1,23 +1,45 @@
+import { Option } from "src/entities/option/option.entity";
+import { OptionGroup } from "src/entities/option/optionGroup.entity";
 import { Category } from "../../../../src/entities/category/category.entity";
 import { Menu } from "../../../../src/entities/menu/menu.entity";
-// export interface CategoryPreviewInfo {
-//   name: string;
-//   category_id: number;
-// }
 
 export class MenuboardCategoryResponseDto {
   constructor(category: Category) {
     this.category_id = category.getCategoryId;
     this.name = category.getCategoryName;
-    //this.menus = category.menus;
     this.description = category.getCategoryDesc;
     this.state = category.getCategoryState;
     this.role = category.getCategoryRole;
   }
   name: string;
-  //menus: Menu[];
   description: string;
   state: string;
   category_id: number;
   role: string;
+}
+export class MenuboardMenuResponseDto {
+  constructor(category: Category) {
+    this.name = category.getCategoryName;
+    this.menus = category.menus;
+  }
+  name: string;
+  menus: Menu[];
+}
+
+export class MenuboardMenuDetailResponseDto {
+  constructor(menu: Menu) {
+    this.name = menu.getMenuName;
+    this.optiongroups = menu.optionGroups;
+  }
+  name: string;
+  optiongroups: OptionGroup[];
+}
+
+export class MenuboardOptionResponseDto {
+  constructor(optiongroup: OptionGroup) {
+    this.option_group_id = optiongroup.getOptionGroupId;
+    this.option = optiongroup.option_id;
+  }
+  option_group_id: number;
+  option: Option[];
 }

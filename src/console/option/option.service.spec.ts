@@ -9,6 +9,11 @@ import { OptionGroupPreviewInfo } from '../optiongroup/dtos/optiongroup-info.dto
 import { OptionCreateDto } from './dtos/create-option.dto';
 import { OptionUpdateDto } from './dtos/update-option.dto';
 import { OptionService } from './option.service';
+import { Menu } from '../../../src/entities/menu/menu.entity';
+import { Category } from '../../../src/entities/category/category.entity';
+import { User } from '../../../src/entities/user/user.entity';
+import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
+import { Store } from '../../../src/entities/store/store.entity';
 
 describe('OptionService', () => {
   let optionService: OptionService;
@@ -47,7 +52,7 @@ describe('OptionService', () => {
 
   
   beforeAll(async () => {
-    connection = await createMemoryDB([ OptionGroup, Option]);
+    connection = await createMemoryDB([ OptionGroup, Option, Menu, Category, User, EnableTime, Store]);
     optionRepository = await connection.getRepository(Option);
     optionService = new OptionService(optionRepository);
   });

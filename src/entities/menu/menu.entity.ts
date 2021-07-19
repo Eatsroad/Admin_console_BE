@@ -40,7 +40,7 @@ export class Menu {
   @JoinColumn({name: "enable_time"})
   enable_time: EnableTime;
 
-  @ManyToMany(() => Category,)
+  @ManyToMany(() => Category)
   @JoinTable({
     name: "menus_and_categories",
     joinColumn: {
@@ -51,11 +51,10 @@ export class Menu {
       name: "category_id",
       referencedColumnName: "category_id"
     }
-    },
-  )
+  })
   categories: Category[];
 
-  @ManyToMany(() => OptionGroup)
+  @ManyToMany(() => OptionGroup, optiongroup => optiongroup.menus)
   @JoinTable({
     name: "menus_and_option_groups",
     joinColumn: {

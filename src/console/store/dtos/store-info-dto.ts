@@ -1,11 +1,6 @@
 import { Menu } from "src/entities/menu/menu.entity";
 import { Store } from "../../../../src/entities/store/store.entity";
 
-export interface MenuPreviewInfo {
-    name: string;
-    menu_id: number;
-};
-
 export class StoreInfoResponseDto{
     constructor(store: Store){
         this.store_id = store.getStore_id;
@@ -18,7 +13,7 @@ export class StoreInfoResponseDto{
     store_id: number;
     name: string;
     address: string;
-    phone_number:string;
-    tables:number;
+    phone_number: string;
+    tables: number;
     menus: Menu[];
 }
