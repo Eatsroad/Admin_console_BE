@@ -3,7 +3,7 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
 import { MenuUpdateDto } from '../menu/dtos/update-menu.dto';
 import { OptionGroupCreateDto } from './dtos/create-optiongroup.dto';
-import { getAllOptionGroupListDto, OptionGroupInfoResponseDto } from './dtos/optiongroup-info.dto';
+import { OptionGroupInfoResponseDto } from './dtos/optiongroup-info.dto';
 import { OptionGroupUpdateDto } from './dtos/update-optiongroup.dto';
 import { OptiongroupService } from './optiongroup.service';
 
@@ -48,9 +48,9 @@ export class OptiongroupController {
     })
     @ApiResponse({
         description: '요청된 가게id에 해당하는 옵션그룹 전체를 가져옵니다.',
-        type: getAllOptionGroupListDto
+        type: OptionGroupInfoResponseDto
     })
-    getAllOptionGroupList(@Query('store_id', ParseIntPipe) store_id : number): Promise<getAllOptionGroupListDto[]>{
+    getAllOptionGroupList(@Query('store_id', ParseIntPipe) store_id : number): Promise<OptionGroupInfoResponseDto[]>{
         return this.optiongroupService.getAllOptionGroupList(store_id);
     }
 

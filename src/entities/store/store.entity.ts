@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import { Category } from "../category/category.entity";
 import { Menu } from "../menu/menu.entity";
+import { OptionGroup } from "../option/optionGroup.entity";
 import { User } from "../user/user.entity";
 
 @Entity({name: "stores"})
@@ -51,6 +52,9 @@ export class Store {
 
   @OneToMany(() => Category, category => category.store)
   categories: Category[];
+
+  @OneToMany(() => OptionGroup, optiongroup => optiongroup.store)
+  optionGroups: OptionGroup[];
 
   get getStore_id(): number {
     return this.store_id;

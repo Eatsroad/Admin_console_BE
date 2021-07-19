@@ -1,7 +1,8 @@
 import { MenuPreviewInfo } from "src/console/menu/dtos/menu-info.dto";
 import { OptionPreviewInfo } from "src/console/option/dtos/option-info.dto";
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Menu } from "../menu/menu.entity";
+import { Store } from "../store/store.entity";
 import { Option } from "./option.entity";
 
 @Entity({name:"option_groups"})
@@ -35,6 +36,10 @@ export class OptionGroup {
 
   @ManyToMany(() => Menu, menu => menu.optionGroups)
   menus: Menu[];
+
+  @ManyToOne(() => Store, store => store.optionGroups)
+  @JoinColumn({name:"store_id"})
+  store: Store;
 
   get getOptionGroupId(): number {
     return this.option_group_id;
