@@ -8,7 +8,7 @@ import { OptionGroupInfoResponseDto } from './dtos/optiongroup-info.dto';
 import { OptionGroupUpdateDto } from './dtos/update-optiongroup.dto';
 import { Option } from '../../../src/entities/option/option.entity';
 import { Store } from '../../../src/entities/store/store.entity';
-import { Menu } from 'src/entities/menu/menu.entity';
+import { Menu } from '../../../src/entities/menu/menu.entity';
 
 @Injectable()
 export class OptiongroupService {
@@ -65,7 +65,6 @@ export class OptiongroupService {
 
     async getOptiongroupInfo(option_group_id: number): Promise<OptionGroupInfoResponseDto>{
         const optiongroup = await this.optiongroupRepository.findOne(option_group_id, {relations:['option_id','menus','store']});
-        console.log(optiongroup);
         if(!!optiongroup){
             return new OptionGroupInfoResponseDto(optiongroup);
         } else {

@@ -1,9 +1,6 @@
 import { IsAlpha, IsArray, IsNumber, IsString } from "class-validator";
 
 export class OptionCreateDto{
-    @IsArray()
-    option_group_id: number[];
-
     @IsString()
     name: string;
 
@@ -12,4 +9,7 @@ export class OptionCreateDto{
 
     @IsString()
     state: string;
+
+    @IsNumber()
+    store_id: number;
 }

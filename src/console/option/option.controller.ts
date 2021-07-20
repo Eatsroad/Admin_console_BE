@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
 import { TableInheritance } from 'typeorm';
@@ -48,7 +48,7 @@ export class OptionController {
         description: '요청된 가게id에 해당하는 옵션 전체를 가져옵니다.',
         type: OptionInfoResponseDto
     })
-    getAllOptionList( @Param('store_id', ParseIntPipe) store_id:number):Promise<OptionInfoResponseDto[]>{
+    getAllOptionList( @Query('store_id', ParseIntPipe) store_id:number):Promise<OptionInfoResponseDto[]>{
         return this.optionService.getAllOptionList(store_id);
     }
 

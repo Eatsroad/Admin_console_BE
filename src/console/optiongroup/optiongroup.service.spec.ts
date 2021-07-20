@@ -282,7 +282,7 @@ describe('OptiongroupService', () => {
     expect(response[0].option_id).toStrictEqual(savedOptionGroupPreview.option_id);
   });
 
-  it("Should throw NotFoundException if option_id is invalid", async () => {
+  it("Should throw NotFoundException if option_group_id is invalid", async () => {
     expect.assertions(1);
     try {
       await optionGroupService.getOptiongroupInfo(-1);
@@ -291,7 +291,7 @@ describe('OptiongroupService', () => {
     }
   });
 
-  it("Should update option info(All)", async () => {
+  it("Should update optiongroup info(All)", async () => {
     const option1 = new Option();
     option1.setOptionName = "NAME";
     option1.setOptionPrice = 500;
@@ -431,7 +431,43 @@ describe('OptiongroupService', () => {
     expect(updatedOptionGroup.option_id).toStrictEqual(MakeOptionPreview([option1,]));
   });
 
-  it("Should remove menu(All)", async () => {
+  it("Should update optiongroup info(Menu)", async () => {
+    const menu1 = new Menu();
+    menu1.setMenuName = "MENU1NAME";
+    menu1.setMenuPrice = 50000;
+    await connection.manager.save(menu1);
+
+    const menu2 = new Menu();
+    menu2.setMenuName = "MENU2NAME";
+    menu2.setMenuPrice = 5000;
+    await connection.manager.save(menu2);
+
+    const menuList = [menu1, menu2];
+
+    const savedOptionGroup = new OptionGroup();
+    savedOptionGroup.setOptionGroupName = NAME;
+    savedOptionGroup.setOptionGroupDesc = DESC;
+    savedOptionGroup.setOptionGroupState = STATE;
+    savedOptionGroup.menus = menuList;
+
+    await optionGroupRepository.save(savedOptionGroup);
+
+    
+    const updateDto = new OptionGroupUpdateDto();
+    updateDto.menus = [5,];
+
+    const response = await optionGroupService.updateMenuInOptionGroup(
+      savedOptionGroup.getOptionGroupId,
+      updateDto
+    );
+
+    expect(response).toBeInstanceOf(BasicMessageDto);
+
+    const updatedOptionGroup = await optionGroupService.getOptiongroupInfo(savedOptionGroup.getOptionGroupId);
+    expect(updatedOptionGroup.menus).toStrictEqual(MakeMenuPreview([menu1,]));
+  });
+
+  it("Should remove optiongroup(All)", async () => {
     const savedOptionGroup = await saveOptionGroup();
 
     const response = await optionGroupService.removeOptiongroup(savedOptionGroup.getOptionGroupId);
