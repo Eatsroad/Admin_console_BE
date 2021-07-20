@@ -64,6 +64,16 @@ export class OptionService{
         }
     }
 
+    async getAllOptionList(store_id: number) : Promise<OptionInfoResponseDto[]>{
+        const options = await this.optionRepository.find({
+            where:{
+                store: store_id
+            },
+            relations:['store','option_group_id']
+        });
+        return options.map((option)=> new OptionInfoResponseDto(option));
+    }
+
     async updateOptionInfo(
         option_id:number,
         dto: OptionUpdateDto,

@@ -1,5 +1,6 @@
 import { OptionGroupPreviewInfo } from "src/console/optiongroup/dtos/optiongroup-info.dto";
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Store } from "../store/store.entity";
 import { OptionGroup } from "./optionGroup.entity";
 
 @Entity({name: "options"})
@@ -30,6 +31,10 @@ export class Option {
    },
   )
   option_group_id: OptionGroup[];
+
+  @ManyToOne(() => Store, store => store.options)
+  @JoinColumn({name:"store_id"})
+  store: Store;
 
   get getOptionId(): number {
     return this.option_id;

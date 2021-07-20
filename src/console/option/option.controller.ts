@@ -29,14 +29,27 @@ export class OptionController {
     @Get('/:option_id')
     @ApiOperation({
         summary:'옵션 정보 API',
-        description: '요청된 옵션id에 해당하는 옵션 전체를 합니다.'
+        description: '요청된 옵션id에 해당하는 옵션 전체를 가져옵니다.'
     })
     @ApiResponse({
-        description: '요청된 옵션id에 해당하는 옵션 전체를 합니다.',
+        description: '요청된 옵션id에 해당하는 옵션 전체를 가져옵니다.',
         type: OptionInfoResponseDto
     })
     getOptionInfo( @Param('option_id', ParseIntPipe) option_id:number):Promise<OptionInfoResponseDto>{
         return this.optionService.getOptionInfo(option_id);
+    }
+
+    @Get()
+    @ApiOperation({
+        summary:'옵션 전체 정보 API',
+        description: '요청된 가게id에 해당하는 옵션 전체를 가져옵니다.'
+    })
+    @ApiResponse({
+        description: '요청된 가게id에 해당하는 옵션 전체를 가져옵니다.',
+        type: OptionInfoResponseDto
+    })
+    getAllOptionList( @Param('store_id', ParseIntPipe) store_id:number):Promise<OptionInfoResponseDto[]>{
+        return this.optionService.getAllOptionList(store_id);
     }
 
     @Put('/:opton_id')
