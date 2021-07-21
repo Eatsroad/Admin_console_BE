@@ -10,6 +10,7 @@ import { MenuInfoResponseDto } from "../menu/dtos/menu-info.dto";
 import { OptionCreateDto } from "./dtos/create-option.dto";
 import { OptionInfoResponseDto } from "./dtos/option-info.dto";
 import { OptionUpdateDto } from "./dtos/update-option.dto";
+import { Store } from "../../../src/entities/store/store.entity";
 
 @Injectable()
 export class OptionService{
@@ -33,14 +34,18 @@ export class OptionService{
         const optiongroups = getRepository(OptionGroup);
         return await optiongroups.findByIds(optionGroup);
     }
-  
+
+    private convert2StoreObj = async (store_id: number): Promise<Store> => {
+        const store = getRepository(Store);
+        return await store.findOne(store_id);
+    }
 
     private optionCreateDtoToEntity = async(dto:OptionCreateDto): Promise<Option> => {
         const option = new Option();
         option.setOptionName = dto.name;
         option.setOptionPrice = dto.price;
         option.setOptionState = dto.state;
-        option.option_group_id = await this.convert2OptionGroupObj(dto.option_group_id);
+        option.store = await this.convert2StoreObj(dto.store_id);
         return option;
     }
 
@@ -56,12 +61,22 @@ export class OptionService{
     }
 
     async getOptionInfo(option_id: number): Promise<OptionInfoResponseDto> {
-        const option = await this.optionRepository.findOne(option_id,{relations:['option_group_id']});
+        const option = await this.optionRepository.findOne(option_id,{relations:['option_group_id','store']});
         if(!!option){
             return new OptionInfoResponseDto(option);
         } else {
             throw new NotFoundException();
         }
+    }
+
+    async getAllOptionList(store_id: number) : Promise<OptionInfoResponseDto[]>{
+        const options = await this.optionRepository.find({
+            where:{
+                store: store_id
+            },
+            relations:['store','option_group_id']
+        });
+        return options.map((option)=> new OptionInfoResponseDto(option));
     }
 
     async updateOptionInfo(

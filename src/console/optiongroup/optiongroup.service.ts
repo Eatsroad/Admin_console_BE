@@ -8,6 +8,7 @@ import { OptionGroupInfoResponseDto } from './dtos/optiongroup-info.dto';
 import { OptionGroupUpdateDto } from './dtos/update-optiongroup.dto';
 import { Option } from '../../../src/entities/option/option.entity';
 import { Store } from '../../../src/entities/store/store.entity';
+import { Menu } from '../../../src/entities/menu/menu.entity';
 
 @Injectable()
 export class OptiongroupService {
@@ -35,6 +36,11 @@ export class OptiongroupService {
         const stores = getRepository(Store);
         return await stores.findOne(storeId);
     }
+     
+    private convert2MenuObj = async (menu: number[]) : Promise<Menu[]> => {
+        const menus = getRepository(Menu);
+        return await menus.findByIds(menu);
+    }
 
     private optiongroupCreateDtoToEntity = async (dto: OptionGroupCreateDto): Promise<OptionGroup>=>{
         const optiongroup = new OptionGroup();
@@ -59,7 +65,6 @@ export class OptiongroupService {
 
     async getOptiongroupInfo(option_group_id: number): Promise<OptionGroupInfoResponseDto>{
         const optiongroup = await this.optiongroupRepository.findOne(option_group_id, {relations:['option_id','menus','store']});
-        console.log(optiongroup);
         if(!!optiongroup){
             return new OptionGroupInfoResponseDto(optiongroup);
         } else {
@@ -106,6 +111,18 @@ export class OptiongroupService {
         const result = await this.optiongroupRepository.save(optiongroup);
         if(!!result){
             return new BasicMessageDto("Options are Updated Successfully in OptionGroup.");
+        } else throw new NotFoundException();
+    }
+
+    async updateMenuInOptionGroup(
+        option_group_id: number,
+        dto:OptionGroupUpdateDto
+    ): Promise<BasicMessageDto> {
+        const optiongroup = await this.optiongroupRepository.findOne(option_group_id);
+        optiongroup.menus = await this.convert2MenuObj(dto.menus);
+        const result = await this.optiongroupRepository.save(optiongroup);
+        if(!!result){
+            return new BasicMessageDto("Menus are Updated Successfully in OptionGroup.");
         } else throw new NotFoundException();
     }
 
