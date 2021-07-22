@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, RequestMethod } from "@nestjs/common";
 import { MenuModule } from "./menu/menu.module";
 import { CategoryModule } from "./category/category.module";
 import { EventModule } from "./event/event.module";
@@ -32,6 +32,10 @@ export class ConsoleModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(ConsoleAuthMiddleware)
+      .exclude({
+        path: "store",
+        method: RequestMethod.POST,
+      })
       .forRoutes(
         StoreController,
         OptiongroupController,
