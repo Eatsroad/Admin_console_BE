@@ -24,10 +24,10 @@ export class StoreAuthMiddleware implements NestMiddleware {
   }
   use(req: IStoreRequest, res: Response, next: NextFunction) {
     const authorizationHeader = req.headers["authorization"];
-    const storeId = req.headers["storeid"];
+    const storeId = req.headers["store_id"];
     if (!!authorizationHeader) {
       const token = this.checkSchemaAndReturnToken(authorizationHeader);
-      req.user_id = extractUserId(token);
+      req.userId = extractUserId(token);
       req.accessToken = token;
       next();
     } else throw new BadRequestException("Authorization Header is missing.");

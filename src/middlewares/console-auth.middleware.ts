@@ -22,7 +22,7 @@ export class ConsoleAuthMiddleware implements NestMiddleware {
       return splitTemp[1];
     }
   }
-  private checkUserId = async (storeId: any): Promise<number> => {
+  private checkUserId = async (storeId: number): Promise<number> => {
     const store = getRepository(Store);
     const store_temp = await store.findOne({
       where: {
@@ -37,15 +37,15 @@ export class ConsoleAuthMiddleware implements NestMiddleware {
 
   async use(req: IStoreRequest, res: Response, next: NextFunction) {
     const authorizationHeader = req.headers["authorization"];
-    const storeId = req.headers["storeid"];
+    const storeId = req.headers["store_id"];
     if (!!authorizationHeader) {
       const token = this.checkSchemaAndReturnToken(authorizationHeader);
-      req.user_id = extractUserId(token);
+      req.userId = extractUserId(token);
       req.accessToken = token;
 
       const user_id = await this.checkUserId(storeId);
 
-      if (user_id != req.user_id) {
+      if (user_id != req.userId) {
         throw new BadRequestException("storeid Header is wrong.");
       }
       next();
