@@ -55,7 +55,7 @@ export class StoreService {
 
   private storeCreateDtoToEntity = async (
     dto: StoreCreateDto,
-    userid
+    userid: number
   ): Promise<Store> => {
     const store = new Store();
     store.setName = dto.name;
@@ -70,10 +70,7 @@ export class StoreService {
     return store;
   };
 
-  async saveStore(
-    dto: StoreCreateDto,
-    req: IStoreRequest
-  ): Promise<StoreInfoResponseDto> {
+  async saveStore(dto: StoreCreateDto, req): Promise<StoreInfoResponseDto> {
     if (await this.isStoreNameUsed(dto.name)) {
       throw new ConflictException("Store name is already in use!");
     } else if (await this.isAddressUsed(dto.address)) {
@@ -82,7 +79,7 @@ export class StoreService {
       throw new ConflictException("Store phone_number is already in use!");
     } else {
       const store = await this.storeRepository.save(
-        await this.storeCreateDtoToEntity(dto, req.user_id)
+        await this.storeCreateDtoToEntity(dto, req.userId)
       );
       return new StoreInfoResponseDto(store);
     }
