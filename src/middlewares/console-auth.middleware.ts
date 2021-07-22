@@ -11,7 +11,7 @@ import { extractUserId } from "src/utils/auth/jwt-token-util";
 import { getRepository } from "typeorm";
 
 @Injectable()
-export class StoreAuthMiddleware implements NestMiddleware {
+export class ConsoleAuthMiddleware implements NestMiddleware {
   private checkSchemaAndReturnToken(header: string): string {
     const splitTemp = header.split(" ");
     if (splitTemp[0] !== "Bearer") {
@@ -22,13 +22,32 @@ export class StoreAuthMiddleware implements NestMiddleware {
       return splitTemp[1];
     }
   }
-  use(req: IStoreRequest, res: Response, next: NextFunction) {
+  private checkUserId = async (storeId: any): Promise<number> => {
+    const store = getRepository(Store);
+    const store_temp = await store.findOne({
+      where: {
+        store_id: storeId,
+      },
+      relations: ["user", "menus", "categories", "optionGroups"],
+    });
+    const user_id = store_temp.user.getUser_id;
+
+    return user_id;
+  };
+
+  async use(req: IStoreRequest, res: Response, next: NextFunction) {
     const authorizationHeader = req.headers["authorization"];
     const storeId = req.headers["storeid"];
     if (!!authorizationHeader) {
       const token = this.checkSchemaAndReturnToken(authorizationHeader);
       req.user_id = extractUserId(token);
       req.accessToken = token;
+
+      const user_id = await this.checkUserId(storeId);
+
+      if (user_id != req.user_id) {
+        throw new BadRequestException("storeid Header is wrong.");
+      }
       next();
     } else throw new BadRequestException("Authorization Header is missing.");
   }

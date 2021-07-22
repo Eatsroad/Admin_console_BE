@@ -12,6 +12,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { request } from "express";
 import { BasicMessageDto } from "src/common/dtos/basic-massage.dto";
+import IStoreRequest from "src/interfaces/store-request";
 import { StoreCreateDto } from "./dtos/create-store.dto";
 import { StoreInfoResponseDto } from "./dtos/store-info-dto";
 import { StoreUpdateDto } from "./dtos/update-store.dto";
@@ -33,7 +34,7 @@ export class StoreController {
   })
   saveStore(
     @Body() dto: StoreCreateDto,
-    @Request() req
+    @Request() req: IStoreRequest
   ): Promise<StoreInfoResponseDto> {
     return this.StoreService.saveStore(dto, req);
   }
