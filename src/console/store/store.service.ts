@@ -11,6 +11,7 @@ import { StoreCreateDto } from "./dtos/create-store.dto";
 import { StoreInfoResponseDto } from "./dtos/store-info-dto";
 import { StoreUpdateDto } from "./dtos/update-store.dto";
 import { User } from "../../../src/entities/user/user.entity";
+import IStoreRequest from "src/interfaces/store-request";
 
 @Injectable()
 export class StoreService {
@@ -54,7 +55,7 @@ export class StoreService {
 
   private storeCreateDtoToEntity = async (
     dto: StoreCreateDto,
-    userid: string
+    userId: number
   ): Promise<Store> => {
     const store = new Store();
     store.setName = dto.name;
@@ -63,13 +64,16 @@ export class StoreService {
     store.setTables = dto.tables;
 
     const someuser = getRepository(User);
-    const someuser_id = await someuser.findOne(userid);
+    const someuser_id = await someuser.findOne(userId);
     store.user = someuser_id;
 
     return store;
   };
 
-  async saveStore(dto: StoreCreateDto, req): Promise<StoreInfoResponseDto> {
+  async saveStore(
+    dto: StoreCreateDto,
+    userId: number
+  ): Promise<StoreInfoResponseDto> {
     if (await this.isStoreNameUsed(dto.name)) {
       throw new ConflictException("Store name is already in use!");
     } else if (await this.isAddressUsed(dto.address)) {
@@ -78,7 +82,7 @@ export class StoreService {
       throw new ConflictException("Store phone_number is already in use!");
     } else {
       const store = await this.storeRepository.save(
-        await this.storeCreateDtoToEntity(dto, req.user_id)
+        await this.storeCreateDtoToEntity(dto, userId)
       );
       return new StoreInfoResponseDto(store);
     }

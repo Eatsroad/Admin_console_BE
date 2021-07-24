@@ -16,6 +16,8 @@ import { OptionGroup } from "../../../src/entities/option/optionGroup.entity";
 import { EnableTime } from "../../../src/entities/menu/enableTime.entity";
 import { Option } from "../../../src/entities/option/option.entity";
 import { extractUserId } from "../../../src/utils/auth/jwt-token-util";
+import IStoreRequest from "src/interfaces/store-request";
+import { OmitType, PartialType } from "@nestjs/mapped-types";
 
 describe("StoreService", () => {
   let storeService: StoreService;

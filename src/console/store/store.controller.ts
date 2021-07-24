@@ -36,7 +36,7 @@ export class StoreController {
     @Body() dto: StoreCreateDto,
     @Request() req: IStoreRequest
   ): Promise<StoreInfoResponseDto> {
-    return this.StoreService.saveStore(dto, req);
+    return this.StoreService.saveStore(dto, req.userId);
   }
 
   @Get("/:storeId")

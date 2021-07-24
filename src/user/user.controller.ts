@@ -1,69 +1,61 @@
-import { 
-  Body, 
-  Controller, 
-  Delete, 
-  Get, 
-  Param, 
-  ParseIntPipe, 
-  Post, 
-  Put 
-} from '@nestjs/common';
-import { BasicMessageDto } from '../../src/common/dtos/basic-massage.dto';
-import { UserCreateDto } from './dtos/create-user.dto';
-import { UserUpdateDto } from './dtos/update-user.dto';
-import { UserInfoResponseDto } from './dtos/user-info.dto';
-import { UserLoginRequestDto } from './dtos/user-login-request.dto';
-import { UserLoginResponseDto } from './dtos/user-login-response.dto';
-import { UserService } from './user.service';
-import { 
-  ApiTags, 
-  ApiOperation, 
-  ApiResponse 
-} from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+} from "@nestjs/common";
+import { BasicMessageDto } from "../../src/common/dtos/basic-massage.dto";
+import { UserCreateDto } from "./dtos/create-user.dto";
+import { UserUpdateDto } from "./dtos/update-user.dto";
+import { UserInfoResponseDto } from "./dtos/user-info.dto";
+import { UserLoginRequestDto } from "./dtos/user-login-request.dto";
+import { UserLoginResponseDto } from "./dtos/user-login-response.dto";
+import { UserService } from "./user.service";
+import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import IUserRequest from "src/interfaces/user-request";
+import { Request } from "@nestjs/common";
 
-@Controller('user')
-@ApiTags('user API')
+@Controller("user")
+@ApiTags("user API")
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   @ApiOperation({
-    summary: '유저 생성 API',
-    description: '유저를 생성합니다.'
+    summary: "유저 생성 API",
+    description: "유저를 생성합니다.",
   })
   @ApiResponse({
-    description: '유저를 생성합니다.',
-    type: UserInfoResponseDto
+    description: "유저를 생성합니다.",
+    type: UserInfoResponseDto,
   })
   saveUser(@Body() dto: UserCreateDto): Promise<UserInfoResponseDto> {
     return this.userService.saveUser(dto);
   }
 
-  @Get('/:userId')
-  getUserInfo(
-    @Param('userId', ParseIntPipe) userId: number,
-  ): Promise<UserInfoResponseDto> {
-    return this.userService.getUserInfo(userId);
+  @Get()
+  getUserInfo(@Request() req: IUserRequest): Promise<UserInfoResponseDto> {
+    return this.userService.getUserInfo(req.userId);
   }
 
-  @Put('/:userId')
+  @Put()
   updateUserInfo(
-    @Param('userId', ParseIntPipe) userId: number,
-    @Body() dto: UserUpdateDto,
+    @Request() req: IUserRequest,
+    @Body() dto: UserUpdateDto
   ): Promise<BasicMessageDto> {
-    return this.userService.updateUserInfo(userId, dto);
+    return this.userService.updateUserInfo(req.userId, dto);
   }
 
-  @Delete('/:userId')
-  removeUser(
-    @Param('userId', ParseIntPipe) userId: number,
-  ) {
-    return this.userService.removeUser(userId);
+  @Delete()
+  removeUser(@Request() req: IUserRequest) {
+    return this.userService.removeUser(req.userId);
   }
 
-  @Post('/signin')
+  @Post("/signin")
   login(@Body() dto: UserLoginRequestDto): Promise<UserLoginResponseDto> {
     return this.userService.login(dto);
   }
