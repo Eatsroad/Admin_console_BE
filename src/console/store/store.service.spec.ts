@@ -76,12 +76,16 @@ describe("StoreService", () => {
 
     expect(responseDto.name).toBe(NAME);
     expect(responseDto.address).toBe(ADDRESS);
-    expect(typeof responseDto.store_id).toBe("number");
+    expect(typeof responseDto.store_id).toBe("string");
     expect(responseDto.phone_number).toBe(PHONE_NUMBER);
 
-    const savedStore = await storeRepository.findOne(responseDto.store_id);
+    const RealStoreId = Number(
+      Buffer.from(responseDto.store_id, "base64").toString("binary")
+    );
 
-    expect(savedStore.getStore_id).toBe(responseDto.store_id);
+    const savedStore = await storeRepository.findOne(RealStoreId);
+
+    expect(savedStore.getEncodedStore_id).toBe(responseDto.store_id);
     expect(savedStore.getAddress).toBe(responseDto.address);
     expect(savedStore.getPhone_number).toBe(responseDto.phone_number);
     expect(savedStore.getName).toBe(responseDto.name);
@@ -120,9 +124,13 @@ describe("StoreService", () => {
     savedStore.setTables = TABLES;
     savedStore.setPhone_number = PHONE_NUMBER;
     savedStore = await storeRepository.save(savedStore);
+    const TempStoreId = Buffer.from(
+      String(savedStore.getStore_id),
+      "binary"
+    ).toString("base64");
+    const response = await storeService.getStoreInfo(TempStoreId);
 
-    const response = await storeService.getStoreInfo(savedStore.getStore_id);
-    expect(response.store_id).toBe(savedStore.getStore_id);
+    expect(response.store_id).toBe(TempStoreId);
     expect(response.address).toBe(savedStore.getAddress);
     expect(response.name).toBe(savedStore.getName);
     expect(response.phone_number).toBe(savedStore.getPhone_number);
@@ -132,7 +140,7 @@ describe("StoreService", () => {
   it("Should throw NotFoundException if store_id is invalid", async () => {
     expect.assertions(1);
     try {
-      await storeService.getStoreInfo(-1);
+      await storeService.getStoreInfo("SomeWrongTempId");
     } catch (exception) {
       expect(exception).toBeInstanceOf(NotFoundException);
     }
@@ -146,11 +154,11 @@ describe("StoreService", () => {
     updateDto.address = "NEW_ADDRESS";
     updateDto.tables = 100;
     updateDto.phone_number = "01087654321";
-
-    const response = await storeService.updateStoreInfo(
-      savedStore.getStore_id,
-      updateDto
-    );
+    const TempStoreId = Buffer.from(
+      String(savedStore.getStore_id),
+      "binary"
+    ).toString("base64");
+    const response = await storeService.updateStoreInfo(TempStoreId, updateDto);
 
     expect(response).toBeInstanceOf(BasicMessageDto);
 
@@ -166,11 +174,11 @@ describe("StoreService", () => {
 
     const updateDto = new StoreUpdateDto();
     updateDto.name = "NEW_NAME";
-
-    const response = await storeService.updateStoreInfo(
-      savedStore.getStore_id,
-      updateDto
-    );
+    const TempStoreId = Buffer.from(
+      String(savedStore.getStore_id),
+      "binary"
+    ).toString("base64");
+    const response = await storeService.updateStoreInfo(TempStoreId, updateDto);
 
     expect(response).toBeInstanceOf(BasicMessageDto);
 
@@ -183,11 +191,11 @@ describe("StoreService", () => {
 
     const updateDto = new StoreUpdateDto();
     updateDto.address = "NEW_ADDRESS";
-
-    const response = await storeService.updateStoreInfo(
-      savedStore.getStore_id,
-      updateDto
-    );
+    const TempStoreId = Buffer.from(
+      String(savedStore.getStore_id),
+      "binary"
+    ).toString("base64");
+    const response = await storeService.updateStoreInfo(TempStoreId, updateDto);
 
     expect(response).toBeInstanceOf(BasicMessageDto);
 
@@ -200,11 +208,11 @@ describe("StoreService", () => {
 
     const updateDto = new StoreUpdateDto();
     updateDto.tables = 100;
-
-    const response = await storeService.updateStoreInfo(
-      savedStore.getStore_id,
-      updateDto
-    );
+    const TempStoreId = Buffer.from(
+      String(savedStore.getStore_id),
+      "binary"
+    ).toString("base64");
+    const response = await storeService.updateStoreInfo(TempStoreId, updateDto);
 
     expect(response).toBeInstanceOf(BasicMessageDto);
 
@@ -217,11 +225,11 @@ describe("StoreService", () => {
 
     const updateDto = new StoreUpdateDto();
     updateDto.phone_number = "01087654321";
-
-    const response = await storeService.updateStoreInfo(
-      savedStore.getStore_id,
-      updateDto
-    );
+    const TempStoreId = Buffer.from(
+      String(savedStore.getStore_id),
+      "binary"
+    ).toString("base64");
+    const response = await storeService.updateStoreInfo(TempStoreId, updateDto);
 
     expect(response).toBeInstanceOf(BasicMessageDto);
 
@@ -231,8 +239,11 @@ describe("StoreService", () => {
 
   it("Should remove store", async () => {
     const savedStore = await saveStore();
-
-    const response = await storeService.removeStore(savedStore.getStore_id);
+    const TempStoreId = Buffer.from(
+      String(savedStore.getStore_id),
+      "binary"
+    ).toString("base64");
+    const response = await storeService.removeStore(TempStoreId);
     expect(response).toBeInstanceOf(BasicMessageDto);
 
     const store = await storeRepository.findOne(savedStore.getStore_id);

@@ -88,8 +88,9 @@ export class StoreService {
     }
   }
 
-  async getStoreInfo(storeId: number): Promise<StoreInfoResponseDto> {
-    const store = await this.storeRepository.findOne(storeId, {
+  async getStoreInfo(storeId: string): Promise<StoreInfoResponseDto> {
+    const storeRealId = Buffer.from(storeId, "base64").toString("binary");
+    const store = await this.storeRepository.findOne(storeRealId, {
       relations: ["menus", "user"],
     });
     if (!!store) {
@@ -100,13 +101,16 @@ export class StoreService {
   }
 
   async updateStoreInfo(
-    storeId: number,
+    storeId: string,
     dto: StoreUpdateDto
   ): Promise<BasicMessageDto> {
+    const storeRealId = Number(
+      Buffer.from(storeId, "base64").toString("binary")
+    );
     const result = await this.storeRepository
       .createQueryBuilder()
       .update("stores", { ...dto })
-      .where("store_id = :storeId", { storeId })
+      .where("store_id = :storeRealId", { storeRealId })
       .execute();
 
     if (result.affected !== 0) {
@@ -114,8 +118,9 @@ export class StoreService {
     } else throw new NotFoundException();
   }
 
-  async removeStore(storeId: number): Promise<BasicMessageDto> {
-    const result = await this.storeRepository.softDelete(storeId);
+  async removeStore(storeId: string): Promise<BasicMessageDto> {
+    const storeRealId = Buffer.from(storeId, "base64").toString("binary");
+    const result = await this.storeRepository.softDelete(storeRealId);
     if (result.affected !== 0) {
       return new BasicMessageDto("Deleted Successfully.");
     } else throw new NotFoundException();

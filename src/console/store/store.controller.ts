@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Request,
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -49,9 +50,9 @@ export class StoreController {
     type: StoreInfoResponseDto,
   })
   getStoreInfo(
-    @Param("storeId", ParseIntPipe) storeid: number
+    @Param("storeId") storeId: string
   ): Promise<StoreInfoResponseDto> {
-    return this.StoreService.getStoreInfo(storeid);
+    return this.StoreService.getStoreInfo(storeId);
   }
 
   @Put("/:storeId")
@@ -66,7 +67,7 @@ export class StoreController {
     type: BasicMessageDto,
   })
   updateStoreInfo(
-    @Param("storeId", ParseIntPipe) storeId: number,
+    @Param("storeId") storeId: string,
     @Body() dto: StoreUpdateDto
   ): Promise<BasicMessageDto> {
     return this.StoreService.updateStoreInfo(storeId, dto);
@@ -80,7 +81,7 @@ export class StoreController {
   @ApiResponse({
     description: "스토어를 삭제합니다.",
   })
-  removeStore(@Param("storeId", ParseIntPipe) storeId: number) {
+  removeStore(@Param("storeId") storeId: string) {
     return this.StoreService.removeStore(storeId);
   }
 }
