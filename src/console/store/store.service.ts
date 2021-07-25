@@ -55,7 +55,7 @@ export class StoreService {
 
   private storeCreateDtoToEntity = async (
     dto: StoreCreateDto,
-    userid: number
+    userId: number
   ): Promise<Store> => {
     const store = new Store();
     store.setName = dto.name;
@@ -64,13 +64,16 @@ export class StoreService {
     store.setTables = dto.tables;
 
     const someuser = getRepository(User);
-    const someuser_id = await someuser.findOne(userid);
+    const someuser_id = await someuser.findOne(userId);
     store.user = someuser_id;
 
     return store;
   };
 
-  async saveStore(dto: StoreCreateDto, req): Promise<StoreInfoResponseDto> {
+  async saveStore(
+    dto: StoreCreateDto,
+    userId: number
+  ): Promise<StoreInfoResponseDto> {
     if (await this.isStoreNameUsed(dto.name)) {
       throw new ConflictException("Store name is already in use!");
     } else if (await this.isAddressUsed(dto.address)) {
@@ -79,14 +82,15 @@ export class StoreService {
       throw new ConflictException("Store phone_number is already in use!");
     } else {
       const store = await this.storeRepository.save(
-        await this.storeCreateDtoToEntity(dto, req.userId)
+        await this.storeCreateDtoToEntity(dto, userId)
       );
       return new StoreInfoResponseDto(store);
     }
   }
 
-  async getStoreInfo(storeId: number): Promise<StoreInfoResponseDto> {
-    const store = await this.storeRepository.findOne(storeId, {
+  async getStoreInfo(storeId: string): Promise<StoreInfoResponseDto> {
+    const storeRealId = Buffer.from(storeId, "base64").toString("binary");
+    const store = await this.storeRepository.findOne(storeRealId, {
       relations: ["menus", "user"],
     });
     if (!!store) {
@@ -97,13 +101,16 @@ export class StoreService {
   }
 
   async updateStoreInfo(
-    storeId: number,
+    storeId: string,
     dto: StoreUpdateDto
   ): Promise<BasicMessageDto> {
+    const storeRealId = Number(
+      Buffer.from(storeId, "base64").toString("binary")
+    );
     const result = await this.storeRepository
       .createQueryBuilder()
       .update("stores", { ...dto })
-      .where("store_id = :storeId", { storeId })
+      .where("store_id = :storeRealId", { storeRealId })
       .execute();
 
     if (result.affected !== 0) {
@@ -111,8 +118,9 @@ export class StoreService {
     } else throw new NotFoundException();
   }
 
-  async removeStore(storeId: number): Promise<BasicMessageDto> {
-    const result = await this.storeRepository.softDelete(storeId);
+  async removeStore(storeId: string): Promise<BasicMessageDto> {
+    const storeRealId = Buffer.from(storeId, "base64").toString("binary");
+    const result = await this.storeRepository.softDelete(storeRealId);
     if (result.affected !== 0) {
       return new BasicMessageDto("Deleted Successfully.");
     } else throw new NotFoundException();

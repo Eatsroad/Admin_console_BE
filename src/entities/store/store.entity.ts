@@ -1,13 +1,13 @@
-import { 
-  Column, 
-  CreateDateColumn, 
-  DeleteDateColumn, 
-  Entity, 
-  JoinColumn, 
-  ManyToOne, 
-  OneToMany, 
-  PrimaryGeneratedColumn, 
-  UpdateDateColumn
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Category } from "../category/category.entity";
 import { Menu } from "../menu/menu.entity";
@@ -15,54 +15,59 @@ import { Option } from "../option/option.entity";
 import { OptionGroup } from "../option/optionGroup.entity";
 import { User } from "../user/user.entity";
 
-@Entity({name: "stores"})
+@Entity({ name: "stores" })
 export class Store {
   @PrimaryGeneratedColumn()
   private store_id: number;
 
-  @Column({nullable: false})
+  @Column({ nullable: false })
   private name: string;
 
-  @Column({nullable: false})
+  @Column({ nullable: false })
   private address: string;
 
-  @Column({nullable: false})
+  @Column({ nullable: false })
   private phone_number: string;
 
   @CreateDateColumn()
   private created_at: Date;
 
-  @UpdateDateColumn({default: null})
+  @UpdateDateColumn({ default: null })
   private updated_at: Date;
 
-  @DeleteDateColumn({default: null})
+  @DeleteDateColumn({ default: null })
   private deleted_at: Date;
 
-  @Column({nullable : true})
+  @Column({ nullable: true })
   private tables: number;
 
-  @Column({default: false})
+  @Column({ default: false })
   private is_approved: boolean;
-  
-  @ManyToOne(type => User, user => user.getUser_id,{ onDelete : "CASCADE" })
-  @JoinColumn({name: "user_id"})
+
+  @ManyToOne((type) => User, (user) => user.getUser_id, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "user_id" })
   user: User;
 
-  @OneToMany(() => Menu, menu => menu.store_id)
+  @OneToMany(() => Menu, (menu) => menu.store_id)
   menus: Menu[];
 
-  @OneToMany(() => Category, category => category.store)
+  @OneToMany(() => Category, (category) => category.store)
   categories: Category[];
 
-  @OneToMany(() => OptionGroup, optiongroup => optiongroup.store)
+  @OneToMany(() => OptionGroup, (optiongroup) => optiongroup.store)
   optionGroups: OptionGroup[];
 
-  @OneToMany(() => Option, option => option.store)
+  @OneToMany(() => Option, (option) => option.store)
   options: Option[];
 
   get getStore_id(): number {
     return this.store_id;
   }
+
+  get getEncodedStore_id(): string {
+    return Buffer.from(String(this.store_id), "binary").toString("base64");
+  }
+
   get getName(): string {
     return this.name;
   }
@@ -72,10 +77,10 @@ export class Store {
   get getPhone_number(): string {
     return this.phone_number;
   }
-  get getTables(): number{
+  get getTables(): number {
     return this.tables;
   }
-  get getCreated_at():Date {
+  get getCreated_at(): Date {
     return this.created_at;
   }
   get getUpdated_at(): Date {
@@ -108,7 +113,7 @@ export class Store {
   set setPhone_number(phone_number: string) {
     this.phone_number = phone_number;
   }
-  set setTables(tables: number){
+  set setTables(tables: number) {
     this.tables = tables;
   }
   set setDeletedAt(deleted_at: Date) {

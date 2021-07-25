@@ -1,8 +1,8 @@
-import { 
-  BadRequestException, 
-  Injectable, 
-  NestMiddleware, 
-  UnauthorizedException 
+import {
+  BadRequestException,
+  Injectable,
+  NestMiddleware,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { NextFunction } from "express";
 import { Store } from "src/entities/store/store.entity";
@@ -24,25 +24,25 @@ export class UserAuthMiddleware implements NestMiddleware {
     }
   }
 
-  private convert2storeIds(store: Store[]): number[]{
+  private convert2storeIds(store: Store[]): number[] {
     let result: number[] = [];
-    try{
+    try {
       store.forEach((store) => {
-        result.push(store.getStore_id)
+        result.push(store.getStore_id);
       });
       return result;
-    } catch (e){
+    } catch (e) {
       console.log(e);
     }
   }
-
 
   use(req: IUserRequest, res: Response, next: NextFunction) {
     const authorizationHeader = req.headers["authorization"];
     if (!!authorizationHeader) {
       const token = this.checkSchemaAndReturnToken(authorizationHeader);
       req.accessToken = token;
-        next();
+      req.userId = extractUserId(token);
+      next();
     } else throw new BadRequestException("Authorization Header is missing.");
   }
 }

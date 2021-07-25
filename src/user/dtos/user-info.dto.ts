@@ -1,7 +1,7 @@
 import { User } from "../../entities/user/user.entity";
 export interface StorePreviewInfo {
   name: string;
-  store_id: number;
+  store_id: string;
 }
 export class UserInfoResponseDto {
   constructor(user: User) {
