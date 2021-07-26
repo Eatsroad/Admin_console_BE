@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Request, RequestMapping } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
+import IStoreRequest from 'src/interfaces/store-request';
 import { TableInheritance } from 'typeorm';
 import { OptionCreateDto } from './dtos/create-option.dto';
 import { OptionInfoResponseDto } from './dtos/option-info.dto';
@@ -22,8 +23,8 @@ export class OptionController {
         description: '옵션을 생성합니다.',
         type: OptionInfoResponseDto
     })
-    saveOption( @Body() dto:OptionCreateDto,): Promise<OptionInfoResponseDto>{
-        return this.optionService.saveOption(dto);
+    saveOption( @Body() dto:OptionCreateDto, @Request() req: IStoreRequest): Promise<OptionInfoResponseDto>{
+        return this.optionService.saveOption(dto, req.storeId);
     }
 
     @Get('/:option_id')
@@ -48,8 +49,8 @@ export class OptionController {
         description: '요청된 가게id에 해당하는 옵션 전체를 가져옵니다.',
         type: OptionInfoResponseDto
     })
-    getAllOptionList( @Query('store_id', ParseIntPipe) store_id:number):Promise<OptionInfoResponseDto[]>{
-        return this.optionService.getAllOptionList(store_id);
+    getAllOptionList( @Request() req:IStoreRequest):Promise<OptionInfoResponseDto[]>{
+        return this.optionService.getAllOptionList(req.storeId);
     }
 
     @Put('/:opton_id')

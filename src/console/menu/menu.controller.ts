@@ -1,6 +1,5 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Menu } from 'src/entities/menu/menu.entity';
 import IStoreRequest from 'src/interfaces/store-request';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { MenuCreateDto } from './dtos/create-menu.dto';
@@ -26,8 +25,9 @@ export class MenuController {
   })
   saveMenu(
     @Body() dto: MenuCreateDto,
+    @Request() req:IStoreRequest
   ): Promise<MenuInfoResponseDto>{
-    return this.menuService.saveMenu(dto);
+    return this.menuService.saveMenu(dto, req.storeId);
   }
 
   @Get('/:menuId')
@@ -96,8 +96,9 @@ export class MenuController {
   updateMenuInfo(
     @Param('menuId', ParseIntPipe) menuId: number,
     @Body() dto: MenuUpdateDto,
+    @Request() req:IStoreRequest
   ): Promise<BasicMessageDto> {
-    return this.menuService.updateMenuInfo(menuId, dto);
+    return this.menuService.updateMenuInfo(menuId, dto, req.storeId);
   }  
 
   @Patch('/:menuId/optiongroup')

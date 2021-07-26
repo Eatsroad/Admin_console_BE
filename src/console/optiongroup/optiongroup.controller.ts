@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Request } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
+import IStoreRequest from 'src/interfaces/store-request';
 import { MenuUpdateDto } from '../menu/dtos/update-menu.dto';
 import { OptionGroupCreateDto } from './dtos/create-optiongroup.dto';
 import { OptionGroupInfoResponseDto } from './dtos/optiongroup-info.dto';
@@ -23,9 +24,9 @@ export class OptiongroupController {
         type: OptionGroupInfoResponseDto
     })
     saveOptionGroup(
-        @Body() dto: OptionGroupCreateDto,
+        @Body() dto: OptionGroupCreateDto, @Request() req: IStoreRequest,
     ): Promise<OptionGroupInfoResponseDto>{
-        return this.optiongroupService.saveOptionGroup(dto);
+        return this.optiongroupService.saveOptionGroup(dto, req.storeId);
     }
 
     @Get('/:option_group_id')
@@ -50,8 +51,8 @@ export class OptiongroupController {
         description: '요청된 가게id에 해당하는 옵션그룹 전체를 가져옵니다.',
         type: OptionGroupInfoResponseDto
     })
-    getAllOptionGroupList(@Query('store_id', ParseIntPipe) store_id : number): Promise<OptionGroupInfoResponseDto[]>{
-        return this.optiongroupService.getAllOptionGroupList(store_id);
+    getAllOptionGroupList(@Request() req : IStoreRequest): Promise<OptionGroupInfoResponseDto[]>{
+        return this.optiongroupService.getAllOptionGroupList(req.storeId);
     }
 
     @Delete('/:option_group_id')

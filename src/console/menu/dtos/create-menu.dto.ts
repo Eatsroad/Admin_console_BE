@@ -12,8 +12,4 @@ export class MenuCreateDto{
     
     @IsString()
     state: string;
-
-    @IsOptional()
-    @IsString()
-    store_id: string;
 }

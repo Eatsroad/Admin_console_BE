@@ -9,7 +9,4 @@ export class OptionCreateDto{
 
     @IsString()
     state: string;
-
-    @IsNumber()
-    store_id: number;
 }

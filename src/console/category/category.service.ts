@@ -22,14 +22,15 @@ export class CategoryService {
     return await menu.findByIds(menuIdArr);
   }
 
-  private categoryCreateDtoToEntity = async (dto: CategoryCreateDto): Promise<Category> => {
+  private categoryCreateDtoToEntity = async (dto: CategoryCreateDto, storeId:string): Promise<Category> => {
+    const RealStoreId = Number(Buffer.from(storeId, "base64").toString("binary"));
     const category = new Category();
     category.setCategoryName = dto.name;
     category.setCategoryDesc = dto.description;
     category.setCategoryState = dto.state;
     category.menus = await this.convertMenuId2MenuObj(dto.menus);
     category.setCategoryRole = dto.role;
-    category.store = await getRepository(Store).findOne(dto.store_id);
+    category.store = await getRepository(Store).findOne(RealStoreId);
     return category;
   }
 
@@ -44,12 +45,12 @@ export class CategoryService {
     );
   } 
   
-  async saveCategory(dto: CategoryCreateDto): Promise<CategoryInfoResponseDto> {
+  async saveCategory(dto: CategoryCreateDto, storeId: string): Promise<CategoryInfoResponseDto> {
     if (await this.isCategoryNameUnique(dto.name)) {
       throw new ConflictException("Category is already in use!");
     } else {
       const category = await this.categoryRepository.save(
-        await this.categoryCreateDtoToEntity(dto)
+        await this.categoryCreateDtoToEntity(dto, storeId)
       );
       
       return new CategoryInfoResponseDto(category);
@@ -99,11 +100,11 @@ export class CategoryService {
     } else throw new NotFoundException();
   }
 
-  async getAllCategoryWithStoreId(storeId: number): Promise<CategoryInfoResponseDto[]> {
-    console.log(storeId);
+  async getAllCategoryWithStoreId(storeId: string): Promise<CategoryInfoResponseDto[]> {
+    const RealStoreId = Number(Buffer.from(storeId, "base64").toString("binary"));
     const categories = await this.categoryRepository.find({
       where: { 
-        store: storeId 
+        store: RealStoreId 
       }, 
       relations: ['menus'] 
     });
