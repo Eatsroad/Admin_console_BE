@@ -26,7 +26,6 @@ describe('MenuService', () => {
   const PRICE = 5000;
   const DESC= 'vlvmdlvmrkm';
   const STATE= "true";
-  const STOREID = null;
 
   const saveMenu = async (): Promise<Menu> => {
     const savedMenu = new Menu();
@@ -34,7 +33,6 @@ describe('MenuService', () => {
     savedMenu.setMenuPrice = PRICE;
     savedMenu.setMenuDesc = DESC;
     savedMenu.setMenuState = STATE;
-    savedMenu.store_id = STOREID;
     return await menuRepository.save(savedMenu);
   };
 
@@ -90,21 +88,21 @@ describe('MenuService', () => {
     store1.setAddress = "STORE1ADDRESS";
     store1.setPhone_number = "1111";
     await connection.manager.save(store1);
+    const store_code = Buffer.from(String(store1.getStore_id),"binary").toString("base64");
 
     const dto = new MenuCreateDto();
     dto.name = NAME;
     dto.price = PRICE;
     dto.description = DESC;
     dto.state = STATE;
-    dto.store_id = 1;
 
-    const responseDto = await menuService.saveMenu(dto);
+    const responseDto = await menuService.saveMenu(dto, store_code);
 
     expect(responseDto.name).toBe(NAME);
     expect(responseDto.price).toBe(PRICE);
     expect(responseDto.description).toBe(DESC);
     expect(responseDto.state).toBe(STATE);
-
+    
     const savedMenu = await menuService.getMenuInfo(responseDto.menu_id);
     expect(savedMenu.name).toBe(responseDto.name);
     expect(savedMenu.price).toBe(responseDto.price);
@@ -121,6 +119,7 @@ describe('MenuService', () => {
     store1.setPhone_number = "asdfasdf";
     store1.setAddress = "asdfasd";
     await connection.manager.save(store1);
+    const store_code = Buffer.from(String(store1.getStore_id),"binary").toString("base64");
 
     const savedMenu = new Menu();
     savedMenu.setMenuName = NAME;
@@ -135,10 +134,9 @@ describe('MenuService', () => {
     dto.price = PRICE;
     dto.description = DESC;
     dto.state = STATE;
-    dto.store_id = 2;
 
     try {
-      await menuService.saveMenu(dto);
+      await menuService.saveMenu(dto, store_code);
     } catch (exception) {
       expect(exception).toBeInstanceOf(ConflictException);
     }
@@ -176,6 +174,7 @@ describe('MenuService', () => {
     store1.setDeletedAt = null;
     store1.setUpdatedAt = null;
     await connection.manager.save(store1);
+    const store_code = Buffer.from(String(store1.getStore_id),"binary").toString("base64");
 
     const category1 = new Category();
     category1.setCategoryName = "CATEGORY1NAME";
@@ -217,7 +216,7 @@ describe('MenuService', () => {
     savedMenuPreview.description = DESC;
     savedMenuPreview.state = STATE;
 
-    const response = await menuService.getMenuList(savedMenu.store_id.getStore_id);
+    const response = await menuService.getMenuList(store_code);
     expect(response).toStrictEqual([savedMenuPreview]);
   });
 
@@ -236,6 +235,7 @@ describe('MenuService', () => {
     store2.setPhone_number = "2222";
     store2.setAddress = "STORE2ADDRESS";
     await connection.manager.save(store2);
+    const store_code = Buffer.from(String(store2.getStore_id),"binary").toString("base64");
 
     const category2 = new Category();
     category2.setCategoryName = "CATEGORY2NAME";
@@ -279,11 +279,11 @@ describe('MenuService', () => {
     updateDtoInfo.description = "UPDATED DESC";
     updateDtoInfo.price = 10000;
     updateDtoInfo.state = "AVAILABLE";
-    updateDtoInfo.store_id = 4;
 
     const responseInfo = await menuService.updateMenuInfo(
       savedMenu.getMenuId,
-      updateDtoInfo
+      updateDtoInfo,
+      store_code
     );
 
     const updateDto = new MenuUpdateDto();
@@ -324,6 +324,13 @@ describe('MenuService', () => {
   });
 
   it("Should update menu info(MenuName)", async () => {
+    const store2 = new Store();
+    store2.setName = "STORE2NAME";
+    store2.setPhone_number = "2222";
+    store2.setAddress = "STORE2ADDRESS";
+    await connection.manager.save(store2);
+    const store_code = Buffer.from(String(store2.getStore_id),"binary").toString("base64");
+
     const savedMenu = await saveMenu();
 
     const updateDto = new MenuUpdateDto();
@@ -332,7 +339,8 @@ describe('MenuService', () => {
 
     const response = await menuService.updateMenuInfo(
       savedMenu.getMenuId,
-      updateDto
+      updateDto,
+      store_code
     );
     expect(response).toBeInstanceOf(BasicMessageDto);
 
@@ -341,6 +349,13 @@ describe('MenuService', () => {
   });
 
   it("Should update menu info(MenuState)", async () => {
+    const store2 = new Store();
+    store2.setName = "STORE2NAME";
+    store2.setPhone_number = "2222";
+    store2.setAddress = "STORE2ADDRESS";
+    await connection.manager.save(store2);
+    const store_code = Buffer.from(String(store2.getStore_id),"binary").toString("base64");
+
     const savedMenu = await saveMenu();
 
     const updateDto = new MenuUpdateDto();
@@ -349,7 +364,8 @@ describe('MenuService', () => {
 
     const response = await menuService.updateMenuInfo(
       savedMenu.getMenuId,
-      updateDto
+      updateDto,
+      store_code
     );
     expect(response).toBeInstanceOf(BasicMessageDto);
 
@@ -358,6 +374,13 @@ describe('MenuService', () => {
   });
 
   it("Should update menu info(MenuPrice)", async () => {
+    const store2 = new Store();
+    store2.setName = "STORE2NAME";
+    store2.setPhone_number = "2222";
+    store2.setAddress = "STORE2ADDRESS";
+    await connection.manager.save(store2);
+    const store_code = Buffer.from(String(store2.getStore_id),"binary").toString("base64");
+
     const savedMenu = await saveMenu();
 
     const updateDto = new MenuUpdateDto();
@@ -366,7 +389,8 @@ describe('MenuService', () => {
 
     const response = await menuService.updateMenuInfo(
       savedMenu.getMenuId,  
-      updateDto
+      updateDto,
+      store_code
     );
     expect(response).toBeInstanceOf(BasicMessageDto);
 
@@ -375,6 +399,13 @@ describe('MenuService', () => {
   });
 
   it("Should update menu info(MenuDesc)", async () => {
+    const store2 = new Store();
+    store2.setName = "STORE2NAME";
+    store2.setPhone_number = "2222";
+    store2.setAddress = "STORE2ADDRESS";
+    await connection.manager.save(store2);
+    const store_code = Buffer.from(String(store2.getStore_id),"binary").toString("base64");
+
     const savedMenu = await saveMenu();
 
     const updateDto = new MenuUpdateDto();
@@ -383,7 +414,8 @@ describe('MenuService', () => {
 
     const response = await menuService.updateMenuInfo(
       savedMenu.getMenuId,
-      updateDto
+      updateDto,
+      store_code
     );
     expect(response).toBeInstanceOf(BasicMessageDto);
 
@@ -531,11 +563,18 @@ describe('MenuService', () => {
   });
 
   it("Should remove menu(MenuDesc)", async () => {
+    const store2 = new Store();
+    store2.setName = "STORE2NAME";
+    store2.setPhone_number = "2222";
+    store2.setAddress = "STORE2ADDRESS";
+    await connection.manager.save(store2);
+    const store_code = Buffer.from(String(store2.getStore_id),"binary").toString("base64");
+
     const savedMenu = await saveMenu();
     const updateDto = new MenuUpdateDto();
     updateDto.description=null;
 
-    const response = await menuService.updateMenuInfo(savedMenu.getMenuId, updateDto);
+    const response = await menuService.updateMenuInfo(savedMenu.getMenuId, updateDto, store_code);
     expect(response).toBeInstanceOf(BasicMessageDto);
 
     const menu = await menuRepository.findOne(savedMenu.getMenuId);
@@ -543,11 +582,18 @@ describe('MenuService', () => {
   });
 
   it("Should remove menu(MenuState)", async () => {
+    const store2 = new Store();
+    store2.setName = "STORE2NAME";
+    store2.setPhone_number = "2222";
+    store2.setAddress = "STORE2ADDRESS";
+    await connection.manager.save(store2);
+    const store_code = Buffer.from(String(store2.getStore_id),"binary").toString("base64");
+
     const savedMenu = await saveMenu();
     const updateDto = new MenuUpdateDto();
     updateDto.state = null;
 
-    const response = await menuService.updateMenuInfo(savedMenu.getMenuId, updateDto);
+    const response = await menuService.updateMenuInfo(savedMenu.getMenuId, updateDto, store_code);
     expect(response).toBeInstanceOf(BasicMessageDto);
 
     const menu = await menuRepository.findOne(savedMenu.getMenuId);

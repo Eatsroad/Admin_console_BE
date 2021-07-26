@@ -42,22 +42,23 @@ export class OptiongroupService {
         return await menus.findByIds(menu);
     }
 
-    private optiongroupCreateDtoToEntity = async (dto: OptionGroupCreateDto): Promise<OptionGroup>=>{
+    private optiongroupCreateDtoToEntity = async (dto: OptionGroupCreateDto , storeId: string): Promise<OptionGroup>=>{
+        const RealStoreId = Number(Buffer.from(storeId, "base64").toString("binary"));
         const optiongroup = new OptionGroup();
         optiongroup.setOptionGroupName = dto.name;
         optiongroup.setOptionGroupDesc = dto.description;
         optiongroup.setOptionGroupState = dto.state;
-        optiongroup.store = await this.convert2storeObj(dto.store_id);
+        optiongroup.store = await this.convert2storeObj(RealStoreId);
         optiongroup.option_id = await this.convert2OptionObj(dto.option_id);
         return optiongroup;
     }
 
-    async saveOptionGroup(dto: OptionGroupCreateDto): Promise<OptionGroupInfoResponseDto>{
+    async saveOptionGroup(dto: OptionGroupCreateDto, storeId: string): Promise<OptionGroupInfoResponseDto>{
         if( await this.OptionGroupExist(dto.name)){
             throw new ConflictException("Option Group Name is already in use!");
         } else {
             const optiongroup = await this.optiongroupRepository.save(
-                await this.optiongroupCreateDtoToEntity(dto)
+                await this.optiongroupCreateDtoToEntity(dto, storeId)
             );
             return new OptionGroupInfoResponseDto(optiongroup);
         }
@@ -72,10 +73,11 @@ export class OptiongroupService {
         }
     }
 
-    async getAllOptionGroupList (storeId : number) : Promise<OptionGroupInfoResponseDto[]>{
+    async getAllOptionGroupList (storeId : string) : Promise<OptionGroupInfoResponseDto[]>{
+        const RealStoreId = Number(Buffer.from(storeId, "base64").toString("binary"));
         const optionGroups = await this.optiongroupRepository.find({
             where: {
-                store: storeId
+                store: RealStoreId
             },
             relations: ['store','menus','option_id']
         });

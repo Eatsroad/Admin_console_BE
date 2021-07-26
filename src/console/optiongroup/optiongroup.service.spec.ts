@@ -102,15 +102,15 @@ describe('OptiongroupService', () => {
     store1.setAddress = "STOREADDRESS";
     store1.setPhone_number = "0101101010";
     await connection.manager.save(store1);
+    const store_code = Buffer.from(String(store1.getStore_id),"binary").toString("base64");
 
     const dto = new OptionGroupCreateDto();
     dto.name = NAME;
     dto.description = DESC;
     dto.state = STATE;
     dto.option_id = [1,2];
-    dto.store_id = 1;
     
-    const responseDto = await optionGroupService.saveOptionGroup(dto);
+    const responseDto = await optionGroupService.saveOptionGroup(dto, store_code);
     expect(responseDto.name).toBe(NAME);
     expect(responseDto.description).toBe(DESC);
     expect(responseDto.state).toBe(STATE);
@@ -145,6 +145,7 @@ describe('OptiongroupService', () => {
     store1.setAddress = "STOREADDRESS";
     store1.setPhone_number = "0101101010";
     await connection.manager.save(store1);
+    const store_code = Buffer.from(String(store1.getStore_id),"binary").toString("base64");
 
     const savedOptionGroup = new OptionGroup();
     savedOptionGroup.setOptionGroupName = NAME;
@@ -159,10 +160,9 @@ describe('OptiongroupService', () => {
     dto.description = DESC;
     dto.state = STATE;
     dto.option_id = [3,4];
-    dto.store_id = 2;
 
     try {
-      await optionGroupService.saveOptionGroup(dto);
+      await optionGroupService.saveOptionGroup(dto, store_code);
     } catch (exception) {
       expect(exception).toBeInstanceOf(ConflictException);
     }
@@ -227,6 +227,7 @@ describe('OptiongroupService', () => {
     store1.setDeletedAt = null;
     store1.setUpdatedAt = null;
     await connection.manager.save(store1);
+    const store_code = Buffer.from(String(store1.getStore_id),"binary").toString("base64");
 
     const option1 = new Option();
     option1.setOptionName = "NAME";
@@ -272,7 +273,7 @@ describe('OptiongroupService', () => {
     savedOptionGroupPreview.description = DESC;
     savedOptionGroupPreview.state = STATE;
     
-    const response = await optionGroupService.getAllOptionGroupList(savedOptionGroup.store.getStore_id);
+    const response = await optionGroupService.getAllOptionGroupList(store_code);
   
     expect(response[0].name).toBe(savedOptionGroupPreview.name);
     expect(response[0].option_group_id).toBe(savedOptionGroupPreview.option_group_id);

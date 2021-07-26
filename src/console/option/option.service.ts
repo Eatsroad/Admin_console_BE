@@ -35,26 +35,27 @@ export class OptionService{
         return await optiongroups.findByIds(optionGroup);
     }
 
-    private convert2StoreObj = async (store_id: number): Promise<Store> => {
+    private convert2StoreObj = async (store_id: string): Promise<Store> => {
+        const RealStoreId = Number(Buffer.from(store_id, "base64").toString("binary"));
         const store = getRepository(Store);
-        return await store.findOne(store_id);
+        return await store.findOne(RealStoreId);
     }
 
-    private optionCreateDtoToEntity = async(dto:OptionCreateDto): Promise<Option> => {
+    private optionCreateDtoToEntity = async(dto:OptionCreateDto, storeId: string): Promise<Option> => {
         const option = new Option();
         option.setOptionName = dto.name;
         option.setOptionPrice = dto.price;
         option.setOptionState = dto.state;
-        option.store = await this.convert2StoreObj(dto.store_id);
+        option.store = await this.convert2StoreObj(storeId);
         return option;
     }
 
-    async saveOption(dto: OptionCreateDto): Promise<OptionInfoResponseDto>{
+    async saveOption(dto: OptionCreateDto, storeId: string): Promise<OptionInfoResponseDto>{
         if ( await this.OptionExist(dto.name, dto.price)){
             throw new ConflictException("Option Name is already in use!");
         } else {
             const option = await this.optionRepository.save(
-                await this.optionCreateDtoToEntity(dto)
+                await this.optionCreateDtoToEntity(dto, storeId)
             );
             return new OptionInfoResponseDto(option);
         }
@@ -69,10 +70,11 @@ export class OptionService{
         }
     }
 
-    async getAllOptionList(store_id: number) : Promise<OptionInfoResponseDto[]>{
+    async getAllOptionList(store_id: string) : Promise<OptionInfoResponseDto[]>{
+        const RealStoreId = Number(Buffer.from(store_id, "base64").toString("binary"));
         const options = await this.optionRepository.find({
             where:{
-                store: store_id
+                store: RealStoreId
             },
             relations:['store','option_group_id']
         });

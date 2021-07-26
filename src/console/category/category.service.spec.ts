@@ -61,8 +61,15 @@ describe('CategoryService', () => {
     dto.name = CategoryName;
     dto.state = CategoryDefaultState;
     dto.menus = MenuIdsInCategory;
-
-    const responseDto = await categoryService.saveCategory(dto);
+    
+    const store2 = new Store();
+    store2.setName = "STORE2NAME";
+    store2.setPhone_number = "2222";
+    store2.setAddress = "STORE2ADDRESS";
+    await connection.manager.save(store2);
+    const store_code = Buffer.from(String(store2.getStore_id),"binary").toString("base64");
+    
+    const responseDto = await categoryService.saveCategory(dto, store_code);
 
     expect(responseDto.name).toBe(CategoryName);
     expect(responseDto.description).toBe(CategoryDesc);
@@ -84,6 +91,13 @@ describe('CategoryService', () => {
 
     const MenuList = [menu1, menu2];
 
+    const store2 = new Store();
+    store2.setName = "STORE2NAME";
+    store2.setPhone_number = "2222";
+    store2.setAddress = "STORE2ADDRESS";
+    await connection.manager.save(store2);
+    const store_code = Buffer.from(String(store2.getStore_id),"binary").toString("base64");
+
     const dto = new CategoryCreateDto();
 
     dto.description = CategoryDesc;
@@ -91,7 +105,7 @@ describe('CategoryService', () => {
     dto.state = CategoryDefaultState;
     dto.menus = [1, 2];
 
-    const responseDto = await categoryService.saveCategory(dto);
+    const responseDto = await categoryService.saveCategory(dto, store_code);
 
     expect(responseDto.name).toBe(CategoryName);
     expect(responseDto.description).toBe(CategoryDesc);
@@ -109,6 +123,13 @@ describe('CategoryService', () => {
     savedCategory.setCategoryState = CategoryDefaultState;
     await categoryRepoditory.save(savedCategory);
 
+    const store2 = new Store();
+    store2.setName = "STORE2NAME";
+    store2.setPhone_number = "2222";
+    store2.setAddress = "STORE2ADDRESS";
+    await connection.manager.save(store2);
+    const store_code = Buffer.from(String(store2.getStore_id),"binary").toString("base64");
+
     const dto = new CategoryCreateDto();
 
     dto.description = CategoryDesc;
@@ -116,7 +137,7 @@ describe('CategoryService', () => {
     dto.state = CategoryDefaultState;
 
     try {
-      await categoryService.saveCategory(dto);
+      await categoryService.saveCategory(dto,store_code);
     } catch (exception) {
       expect(exception).toBeInstanceOf(ConflictException);
     }

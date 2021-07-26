@@ -91,10 +91,9 @@ describe('OptionService', () => {
     dto.name = NAME;
     dto.price = PRICE;
     dto.state = STATE;
-    dto.store_id = 1;
-
+    const store_code = Buffer.from(String(store1.getStore_id),"binary").toString("base64");
     
-    const responseDto = await optionService.saveOption(dto);
+    const responseDto = await optionService.saveOption(dto,store_code);
     expect(responseDto.name).toBe(NAME);
     expect(responseDto.price).toBe(PRICE);
     expect(responseDto.state).toBe(STATE);
@@ -135,15 +134,14 @@ describe('OptionService', () => {
     store1.setAddress = "STOREADDRESS";
     store1.setPhone_number = "0101101010";
     await connection.manager.save(store1);
-
+    const store_code = Buffer.from(String(store1.getStore_id),"binary").toString("base64");
     const dto = new OptionCreateDto();
     dto.name = NAME;
     dto.price = PRICE;
     dto.state = STATE;
-    dto.store_id = 2;
 
     try {
-      await optionService.saveOption(dto);
+      await optionService.saveOption(dto, store_code);
     
     } catch (exception) {
       expect(exception).toBeInstanceOf(ConflictException);
@@ -195,7 +193,8 @@ describe('OptionService', () => {
     store1.setDeletedAt = null;
     store1.setUpdatedAt = null;
     await connection.manager.save(store1);
-
+    const store_code = Buffer.from(String(store1.getStore_id),"binary").toString("base64");
+    
     const optiongroup1 = new OptionGroup();
     optiongroup1.setOptionGroupName = "NAME";
     optiongroup1.setOptionGroupDesc = "DESC";
@@ -224,7 +223,7 @@ describe('OptionService', () => {
     savedOptionPreview.state = STATE;
     savedOptionPreview.option_group_id = MakeOptionGroupPreview(OPTIONGROUPLIST);
 
-    const response = await optionService.getAllOptionList(savedOption.store.getStore_id);
+    const response = await optionService.getAllOptionList(store_code);
     expect(response[0].name).toBe(savedOptionPreview.name);
     expect(response[0].price).toBe(savedOptionPreview.price);
     expect(response[0].option_group_id).toStrictEqual(savedOptionPreview.option_group_id);

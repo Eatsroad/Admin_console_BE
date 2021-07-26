@@ -37,7 +37,7 @@ export class ConsoleAuthMiddleware implements NestMiddleware {
 
   async use(req: IStoreRequest, res: Response, next: NextFunction) {
     const authorizationHeader = req.headers["authorization"];
-    const TempstoreId = req.headers["store_id"];
+    const TempstoreId = String(req.headers["store_id"]);
     if (!!authorizationHeader) {
       const token = this.checkSchemaAndReturnToken(authorizationHeader);
       req.userId = extractUserId(token);
