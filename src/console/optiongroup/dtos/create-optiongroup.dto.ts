@@ -12,7 +12,4 @@ export class OptionGroupCreateDto {
 
   @IsArray()
   option_id: number[];
-
-  @IsNumber()
-  store_id: number;
 }

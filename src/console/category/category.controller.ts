@@ -7,13 +7,15 @@ import {
   ParseIntPipe, 
   Post, 
   Put,
-  Query
+  Query,
+  Request
 } from '@nestjs/common';
 import { 
   ApiTags, 
   ApiOperation, 
   ApiResponse 
 } from '@nestjs/swagger';
+import IStoreRequest from 'src/interfaces/store-request';
 import { BasicMessageDto } from '../../common/dtos/basic-massage.dto';
 import { CategoryService } from './category.service';
 import { CategoryInfoResponseDto } from './dto/category-info.dto';
@@ -25,14 +27,14 @@ import { CategoryUpdatedto } from './dto/update-category.dto';
 @ApiTags('category API')
 export class CategoryController {
   constructor(
-    private readonly categpryService: CategoryService,
+    private readonly categoryService: CategoryService,
   ) {};
 
   @Get()
   getAllCategory(
-    @Query('storeId') storeId: number
+    @Request() req:IStoreRequest
   ): Promise<CategoryInfoResponseDto[]> {
-    return this.categpryService.getAllCategoryWithStoreId(storeId);
+    return this.categoryService.getAllCategoryWithStoreId(req.storeId);
   };
   
   @Post()
@@ -45,9 +47,9 @@ export class CategoryController {
     type: CategoryInfoResponseDto
   })
   saveCategory(
-    @Body() dto: CategoryCreateDto
+    @Body() dto: CategoryCreateDto, @Request() req:IStoreRequest
   ): Promise<CategoryInfoResponseDto> {
-    return this.categpryService.saveCategory(dto);
+    return this.categoryService.saveCategory(dto, req.storeId);
   };
 
   @Get('/:categoryId')
@@ -62,7 +64,7 @@ export class CategoryController {
   getCategoryInfo(
     @Param('categoryId', ParseIntPipe) categoryId: number,
   ): Promise<CategoryInfoResponseDto> {
-    return this.categpryService.getCategoryInfo(categoryId);
+    return this.categoryService.getCategoryInfo(categoryId);
   };
 
   @Put('/:categoryId/info')
@@ -78,7 +80,7 @@ export class CategoryController {
     @Param('categoryId', ParseIntPipe) cateogryId: number,
     @Body() dto: CategoryUpdatedto
   ): Promise<BasicMessageDto> {
-    return this.categpryService.updateCategoryInfo(cateogryId, dto);
+    return this.categoryService.updateCategoryInfo(cateogryId, dto);
   };
 
   @Put('/:categoryId/menus')
@@ -94,7 +96,7 @@ export class CategoryController {
     @Param('categoryId', ParseIntPipe) cateogryId: number,
     @Body() dto: CategoryMenuUpdateDto
   ): Promise<BasicMessageDto> {
-    return this.categpryService.updateMenuInCategory(cateogryId, dto);
+    return this.categoryService.updateMenuInCategory(cateogryId, dto);
   };
   
   @Delete('/:categoryId')
@@ -108,6 +110,6 @@ export class CategoryController {
   deleteCategory(
     @Param('categoryId', ParseIntPipe) categoryId: number,
   ) {
-    return this.categpryService.removeCategory(categoryId);
+    return this.categoryService.removeCategory(categoryId);
   };
 }
