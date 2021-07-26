@@ -1,10 +1,11 @@
+import { Request } from "@nestjs/common";
 import { Controller, Get, Param, ParseIntPipe, Query } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { CategoryService } from "src/console/category/category.service";
+import IStoreRequest from "src/interfaces/store-request";
 import {
-  MenuboardCategoryResponseDto,
+  MenuboardCategoryAndMenuResponseDto,
   MenuboardMenuDetailResponseDto,
-  MenuboardMenuResponseDto,
   MenuboardOptionResponseDto,
 } from "./dtos/menuboard-info.dto";
 import { MenuboardService } from "./menuboard.service";
@@ -14,34 +15,19 @@ import { MenuboardService } from "./menuboard.service";
 export class MenuboardController {
   constructor(private readonly menuBoardService: MenuboardService) {}
 
-  @Get("/category")
+  @Get("/categoryAndMenu")
   @ApiOperation({
-    summary: "카테고리 정보 API",
-    description: "해당 음식점의 모든 (음식)카테고리를 보여줍니다.",
+    summary: "카테고리, 메뉴 정보 API",
+    description: "해당 음식점의 모든 (음식)카테고리와 해당 메뉴를 보여줍니다.",
   })
   @ApiResponse({
-    description: "해당 음식점의 모든 (음식)카테고리를 보여줍니다.",
-    type: MenuboardCategoryResponseDto,
+    description: "해당 음식점의 모든 (음식)카테고리와 해당 메뉴를 보여줍니다.",
+    type: MenuboardCategoryAndMenuResponseDto,
   })
   getAllCategory(
-    @Query("storeId", ParseIntPipe) storeId: number
-  ): Promise<MenuboardCategoryResponseDto[]> {
-    return this.menuBoardService.getCategoryByStoreId(storeId);
-  }
-
-  @Get("/menu")
-  @ApiOperation({
-    summary: "카테고리 - 음식 API",
-    description: "카테고리에 해당하는 음식을 보여줍니다.",
-  })
-  @ApiResponse({
-    description: "카테고리에 해당하는 음식을 보여줍니다.",
-    type: MenuboardMenuResponseDto,
-  })
-  getAllMenu(
-    @Query("categoryId") categoryId: number
-  ): Promise<MenuboardMenuResponseDto> {
-    return this.menuBoardService.getMenuByCategoryId(categoryId);
+    @Query("storeId") storeId: string
+  ): Promise<MenuboardCategoryAndMenuResponseDto[]> {
+    return this.menuBoardService.getCategoryAndMenuByStoreId(storeId);
   }
 
   @Get("/detail")
@@ -74,3 +60,18 @@ export class MenuboardController {
     return this.menuBoardService.getOptionByOptiongroupId(optiongroupId);
   }
 }
+
+// @Get("/menu")
+// @ApiOperation({
+//   summary: "카테고리 - 음식 API",
+//   description: "카테고리에 해당하는 음식을 보여줍니다.",
+// })
+// @ApiResponse({
+//   description: "카테고리에 해당하는 음식을 보여줍니다.",
+//   type: MenuboardMenuResponseDto,
+// })
+// getAllMenu(
+//   @Query("categoryId") categoryId: number
+// ): Promise<MenuboardMenuResponseDto> {
+//   return this.menuBoardService.getMenuByCategoryId(categoryId);
+// }

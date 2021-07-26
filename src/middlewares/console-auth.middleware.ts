@@ -42,10 +42,11 @@ export class ConsoleAuthMiddleware implements NestMiddleware {
       const token = this.checkSchemaAndReturnToken(authorizationHeader);
       req.userId = extractUserId(token);
       req.accessToken = token;
+
       const storeId = Number(
         Buffer.from(TempstoreId, "base64").toString("binary")
       );
-
+      req.storeId = TempstoreId;
       const user_id = await this.checkUserId(storeId);
 
       if (user_id != req.userId) {

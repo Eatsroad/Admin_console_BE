@@ -5,9 +5,8 @@ import { Menu } from "../../../src/entities/menu/menu.entity";
 import { OptionGroup } from "../../../src/entities/option/optionGroup.entity";
 import { Repository } from "typeorm";
 import {
-  MenuboardCategoryResponseDto,
+  MenuboardCategoryAndMenuResponseDto,
   MenuboardMenuDetailResponseDto,
-  MenuboardMenuResponseDto,
   MenuboardOptionResponseDto,
 } from "./dtos/menuboard-info.dto";
 
@@ -22,29 +21,20 @@ export class MenuboardService {
     private readonly optiongroupRepository: Repository<OptionGroup>
   ) {}
 
-  async getCategoryByStoreId(
-    storeId: number
-  ): Promise<MenuboardCategoryResponseDto[]> {
-    const categories = await this.categoryRepository.find({
-      where: {
-        store: storeId,
-      },
-      //  relations: ["categories", "user_id", "menus"],
-    });
-    return categories.map(
-      (category) => new MenuboardCategoryResponseDto(category)
-    );
-  }
-  async getMenuByCategoryId(
-    categoryId: number
-  ): Promise<MenuboardMenuResponseDto> {
-    const menus = await this.categoryRepository
+  async getCategoryAndMenuByStoreId(
+    storeId: string
+  ): Promise<MenuboardCategoryAndMenuResponseDto[]> {
+    const DecoStoreId = Buffer.from(storeId, "base64").toString("binary");
+
+    const categories = await this.categoryRepository
       .createQueryBuilder("category")
       .innerJoinAndSelect("category.menus", "menu")
-      .where("category.category_id =:categoryId", { categoryId })
-      .getOne();
+      .where("category.store_id =:DecoStoreId", { DecoStoreId })
+      .getMany();
 
-    return new MenuboardMenuResponseDto(menus);
+    return categories.map(
+      (category) => new MenuboardCategoryAndMenuResponseDto(category)
+    );
   }
 
   async getOptionGroupBymenuId(
@@ -69,3 +59,15 @@ export class MenuboardService {
     return new MenuboardOptionResponseDto(optiongroup);
   }
 }
+
+// async getMenuByCategoryId(
+//   categoryId: number
+// ): Promise<MenuboardMenuResponseDto> {
+//   const menus = await this.categoryRepository
+//     .createQueryBuilder("category")
+//     .innerJoinAndSelect("category.menus", "menu")
+//     .where("category.category_id =:categoryId", { categoryId })
+//     .getOne();
+
+//   return new MenuboardMenuResponseDto(menus);
+// }
