@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Menu } from 'src/entities/menu/menu.entity';
+import IStoreRequest from 'src/interfaces/store-request';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
@@ -51,8 +52,8 @@ export class MenuController {
     description: '요청된 가게 id에 해당하는 메뉴 전체를 가져옵니다.',
     type : MenuInfoResponseDto
   })
-  getMenuList( @Query('store_id', ParseIntPipe) store_id: number): Promise<MenuInfoResponseDto[]>{
-    return this.menuService.getMenuList(store_id);
+  getMenuList( @Request() req: IStoreRequest): Promise<MenuInfoResponseDto[]>{
+    return this.menuService.getMenuList(req.storeId);
   }
 
   @Delete('/:menuId')

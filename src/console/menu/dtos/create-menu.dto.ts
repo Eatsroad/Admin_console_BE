@@ -13,6 +13,6 @@ export class MenuCreateDto{
     @IsString()
     state: string;
 
-    @IsNumber()
-    store_id: number;
+    @IsString()
+    store_id: string;
 }

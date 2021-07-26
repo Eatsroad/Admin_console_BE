@@ -18,9 +18,10 @@ export class MenuService {
     @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
     ) {}
 
-    private convert2StoreObj = async (store_id:number): Promise<Store> => {
+    private convert2StoreObj = async (store_id:string): Promise<Store> => {
+      const RealStoreId = Number(Buffer.from(store_id, "base64").toString("binary"));
       const store = getRepository(Store);
-      return await store.findOne(store_id); 
+      return await store.findOne(RealStoreId); 
     }
 
     private convert2CategoryObj = async (category:number[]) : Promise<Category[]> => {
@@ -48,14 +49,15 @@ export class MenuService {
         return menu;
     }
 
-    private MenuExist = async (name: string, store_id: number): Promise<boolean> => {
+    private MenuExist = async (name: string, store_id: string): Promise<boolean> => {
+      const RealStoreId = Number(Buffer.from(store_id, "base64").toString("binary"));
       return (
         (await this.menuRepository
           .createQueryBuilder()
           .select("m.menu_id")
           .from(Menu, "m")
           .where("m.name = :name",{ name })
-          .andWhere("m.store_id = :store_id",{ store_id })
+          .andWhere("m.store_id = :store_id",{ RealStoreId })
           .getOne()) !== undefined
       );
     };
@@ -92,11 +94,12 @@ export class MenuService {
   }
 
 
-  async getMenuList (storeId: number): Promise<MenuInfoResponseDto[]> {
-    if(await this.StoreExist(storeId)){
+  async getMenuList (storeId: string): Promise<MenuInfoResponseDto[]> {
+    const RealStoreId = Number(Buffer.from(storeId, "base64").toString("binary"));
+    if(await this.StoreExist(RealStoreId)){
     const result = await this.menuRepository.find({
       where :{
-        store_id: storeId,
+        store_id: RealStoreId,
       },
       relations:['store_id','categories','optionGroups'],
     });
