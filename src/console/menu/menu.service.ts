@@ -57,7 +57,7 @@ export class MenuService {
           .select("m.menu_id")
           .from(Menu, "m")
           .where("m.name = :name",{ name })
-          .andWhere("m.store_id = :store_id",{ RealStoreId })
+          .andWhere("m.store_id = :RealStoreId",{ RealStoreId })
           .getOne()) !== undefined
       );
     };
@@ -114,6 +114,8 @@ export class MenuService {
     if(await this.MenuExist(dto.name, dto.store_id)){
       throw new ConflictException("Menu is already in use!");
   } else {
+    // const RealStoreId = Number(Buffer.from(dto.store_id, "base64").toString("binary"));
+
     const result = await this.menuRepository
     .createQueryBuilder()
     .update( "menus", { ...dto })
