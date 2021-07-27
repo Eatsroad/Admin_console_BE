@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { BasicMessageDto } from "../../../src/common/dtos/basic-massage.dto";
 import { Store } from "../../../src/entities/store/store.entity";
-import { getRepository, Repository } from "typeorm";
+import { getRepository, Repository, Transaction } from "typeorm";
 import { StoreCreateDto } from "./dtos/create-store.dto";
 import { StoreInfoResponseDto } from "./dtos/store-info-dto";
 import { StoreUpdateDto } from "./dtos/update-store.dto";

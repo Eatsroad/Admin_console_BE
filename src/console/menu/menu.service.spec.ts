@@ -71,7 +71,7 @@ describe('MenuService', () => {
   beforeAll(async () => {
     connection = await createMemoryDB([Menu, User, Store, Category, OptionGroup, Option, EnableTime]);
     menuRepository = await connection.getRepository(Menu);
-    menuService = new MenuService(menuRepository);
+    menuService = new MenuService(menuRepository,connection,);
   });
 
   afterAll(async () => {

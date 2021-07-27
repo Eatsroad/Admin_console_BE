@@ -1,8 +1,8 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { Menu } from '../../../src/entities/menu/menu.entity';
-import { getRepository, Repository } from 'typeorm';
+import { Connection, getConnection, getRepository, QueryRunner, Repository, Transaction, TransactionRepository } from 'typeorm';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
@@ -16,6 +16,8 @@ import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
 export class MenuService {
     constructor(
     @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
+    @InjectConnection() private readonly connection: Connection,
+    private readonly queryRunner = connection.createQueryRunner(),
     ) {}
 
     private convert2StoreObj = async (store_id:string): Promise<Store> => {
@@ -74,25 +76,48 @@ export class MenuService {
     };
 
   async saveMenu(dto: MenuCreateDto, storeId: string): Promise<MenuInfoResponseDto> {
-    if( await this.MenuExist(dto.name, storeId)) {
-      throw new ConflictException("Menu is already in use!");
-    } else {
-      const menu = await this.menuRepository.save(
-        await this.menuCreateDtoToEntity(dto, storeId)
-      );
-      return new MenuInfoResponseDto(menu);
+    
+    
+    await this.queryRunner.connect();
+    await this.queryRunner.startTransaction();
+    
+    try{
+      if (await this.MenuExist(dto.name, storeId)) {
+        throw new ConflictException("Menu is already in use!");
+      } else {
+        const menu = await this.menuRepository.save(
+          await this.menuCreateDtoToEntity(dto, storeId)
+        );
+
+        await this.queryRunner.commitTransaction();
+        
+        return new MenuInfoResponseDto(menu);
+      }
+    } catch (err){
+      await this.queryRunner.rollbackTransaction();
+    } finally{
+      await this.queryRunner.release();
     }
+    
   }
     
-  async getMenuInfo(menuId: number): Promise<MenuInfoResponseDto> {
+  async getMenuInfo(menuId: number): Promise<MenuInfoResponseDto> {    
+    await this.queryRunner.connect();
+    await this.queryRunner.startTransaction();
+    try {
     const menu = await this.menuRepository.findOne(menuId,{relations:["store_id","categories","optionGroups","enable_time"]});
+    await this.queryRunner.commitTransaction();
     if (!!menu) {
       return new MenuInfoResponseDto(menu);
     } else {
       throw new NotFoundException();
     }
+  } catch (err) {
+    await this.queryRunner.rollbackTransaction();
+  } finally {
+    await this.queryRunner.release();
   }
-
+  }
 
   async getMenuList (storeId: string): Promise<MenuInfoResponseDto[]> {
     const RealStoreId = Number(Buffer.from(storeId, "base64").toString("binary"));
