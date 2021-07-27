@@ -18,23 +18,38 @@ export class MenuboardCategoryAndMenuResponseDto {
   role: string;
   menus: Menu[];
 }
-export class MenuboardMenuDetailResponseDto {
-  constructor(menu: Menu) {
-    this.name = menu.getMenuName;
-    this.optiongroups = menu.optionGroups;
-  }
-  name: string;
-  optiongroups: OptionGroup[];
-}
 
-export class MenuboardOptionResponseDto {
+export class OptiongroupOptionDto {
   constructor(optiongroup: OptionGroup) {
-    this.option_group_id = optiongroup.getOptionGroupId;
+    this.name = optiongroup.getOptionGroupName;
+    this.description = optiongroup.getOptionGroupDesc;
+    this.state = optiongroup.getOptionGroupState;
     this.option = optiongroup.option_id;
   }
-  option_group_id: number;
+
+  name: string;
+  description: string;
+  state: string;
   option: Option[];
 }
+
+// export class MenuboardMenuDetailResponseDto {
+//   constructor(menu: Menu) {
+//     this.optiongroups = menu.optionGroups.map(
+//       (optiongroup) => new OptiongroupOptionDto(optiongroup)
+//     );
+//   }
+//   optiongroups: OptiongroupOptionDto[];
+//}
+
+// export class MenuboardOptionResponseDto {
+//   constructor(optiongroup: OptionGroup) {
+//     this.option_group_id = optiongroup.getOptionGroupId;
+//     this.option = optiongroup.option_id;
+//   }
+//   option_group_id: number;
+//   option: Option[];
+// }
 
 // export class MenuboardMenuResponseDto {
 //   constructor(category: Category) {

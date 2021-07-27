@@ -5,8 +5,7 @@ import { CategoryService } from "src/console/category/category.service";
 import IStoreRequest from "src/interfaces/store-request";
 import {
   MenuboardCategoryAndMenuResponseDto,
-  MenuboardMenuDetailResponseDto,
-  MenuboardOptionResponseDto,
+  OptiongroupOptionDto,
 } from "./dtos/menuboard-info.dto";
 import { MenuboardService } from "./menuboard.service";
 
@@ -30,36 +29,36 @@ export class MenuboardController {
     return this.menuBoardService.getCategoryAndMenuByStoreId(storeId);
   }
 
-  @Get("/detail")
+  @Get("/optiongroupAndOption")
   @ApiOperation({
-    summary: "음식 - 옵션그룹 API",
-    description: "메뉴에 해당하는 옵션그룹을 보여줍니다.",
+    summary: "옵션그룹, 옵션 API",
+    description: "해당 메뉴의 옵션그룹과 옵션을 보여줍니다.",
   })
   @ApiResponse({
-    description: "메뉴에 해당하는 옵션그룹을 보여줍니다.",
-    type: MenuboardMenuDetailResponseDto,
-  })
-  getAllOptiongroup(
-    @Query("menuId") menuId: number
-  ): Promise<MenuboardMenuDetailResponseDto> {
-    return this.menuBoardService.getOptionGroupBymenuId(menuId);
-  }
-
-  @Get("/option")
-  @ApiOperation({
-    summary: "옵션그룹 - 옵션 API",
-    description: "옵션그룹에 해당하는 옵션들을 보여줍니다",
-  })
-  @ApiResponse({
-    description: "옵션그룹에 해당하는 옵션들을 보여줍니다.",
-    type: MenuboardOptionResponseDto,
+    description: "해당 메뉴의 옵션그룹과 옵션을 보여줍니다.",
+    type: OptiongroupOptionDto,
   })
   getAllOptionByOptiongroupId(
-    @Query("optiongroupId") optiongroupId: number
-  ): Promise<MenuboardOptionResponseDto> {
-    return this.menuBoardService.getOptionByOptiongroupId(optiongroupId);
+    @Query("menuId") menuId: number
+  ): Promise<OptiongroupOptionDto[]> {
+    return this.menuBoardService.getOptionGroupAndOptionBymenuId(menuId);
   }
 }
+
+// @Get("/detail")
+// @ApiOperation({
+//   summary: "음식 - 옵션그룹 API",
+//   description: "메뉴에 해당하는 옵션그룹을 보여줍니다.",
+// })
+// @ApiResponse({
+//   description: "메뉴에 해당하는 옵션그룹을 보여줍니다.",
+//   type: MenuboardMenuDetailResponseDto,
+// })
+// getAllOptiongroup(
+//   @Query("menuId") menuId: number
+// ): Promise<MenuboardMenuDetailResponseDto> {
+//   return this.menuBoardService.getOptionGroupBymenuId(menuId);
+// }
 
 // @Get("/menu")
 // @ApiOperation({
