@@ -64,9 +64,10 @@ export class OptionController {
     })
     updateOptionInfo(
         @Param('option_id', ParseIntPipe) option_id:number,
-        @Body() dto:OptionUpdateDto
+        @Body() dto:OptionUpdateDto,
+        @Request() req:IStoreRequest
     ): Promise<BasicMessageDto> {
-        return this.optionService.updateOptionInfo(option_id,dto);
+        return this.optionService.updateOptionInfo(option_id, dto, req.storeId);
     }
 
     @Patch('/:option_id/optiongroup')

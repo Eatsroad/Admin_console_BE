@@ -80,8 +80,9 @@ export class OptiongroupController {
     updateOptiongroupInfo(
         @Param('option_group_id', ParseIntPipe) option_group_id: number,
         @Body() dto: OptionGroupUpdateDto,
+        @Request() req:IStoreRequest
     ):Promise<BasicMessageDto>{
-        return this.optiongroupService.updateOptiongroupInfo(option_group_id,dto);
+        return this.optiongroupService.updateOptiongroupInfo(option_group_id, dto, req.storeId);
     }
 
 
@@ -104,10 +105,10 @@ export class OptiongroupController {
     @Patch('/:option_group_id/menu')
     @ApiOperation({
         summary:'옵션 그룹의 메뉴 수정 API',
-        description: '요청된 옵션그룹id에 해당하는 옵션그룹의 메뉴정보를 수정합니다.'
+        description: '요청된 옵션그룹id에 해당하는 옵션그룹의 메뉴정보만을 수정합니다.'
     })
     @ApiResponse({
-        description: '요청된 옵션그룹id에 해당하는 옵션그룹의 메뉴정보를 수정합니다.',
+        description: '요청된 옵션그룹id에 해당하는 옵션그룹의 메뉴정보만을 수정합니다.',
         type: BasicMessageDto
     })
     updateMenuInOptionGroup(

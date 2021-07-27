@@ -6,4 +6,8 @@ export class OptionGroupUpdateDto extends PartialType(OptionGroupCreateDto) {
     @IsOptional()
     @IsArray()
     menus : number[];
+
+    @IsOptional()
+    @IsArray()
+    option_id: number[];
 }

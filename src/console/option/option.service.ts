@@ -18,7 +18,8 @@ export class OptionService{
         @InjectRepository(Option) private readonly optionRepository : Repository<Option>,
     ) {}
 
-    private OptionExist = async (name: string, price:number) : Promise<boolean> => {
+    private OptionExist = async (name: string, price:number, storeId:string) : Promise<boolean> => {
+        const RealStoreId = Number(Buffer.from(storeId, "base64").toString("binary"));
         return (
             (await this.optionRepository
                 .createQueryBuilder()
@@ -26,6 +27,7 @@ export class OptionService{
                 .from(Option, "o")
                 .where("o.name =:name",{ name })
                 .andWhere("o.price =:price",{ price })
+                .andWhere("o.store_id =:RealStoreId", { RealStoreId })
                 .getOne()) !== undefined
         );
     };
@@ -51,7 +53,7 @@ export class OptionService{
     }
 
     async saveOption(dto: OptionCreateDto, storeId: string): Promise<OptionInfoResponseDto>{
-        if ( await this.OptionExist(dto.name, dto.price)){
+        if ( await this.OptionExist(dto.name, dto.price, storeId)){
             throw new ConflictException("Option Name is already in use!");
         } else {
             const option = await this.optionRepository.save(
@@ -84,8 +86,9 @@ export class OptionService{
     async updateOptionInfo(
         option_id:number,
         dto: OptionUpdateDto,
+        storeId: string
     ): Promise<BasicMessageDto> {
-        if(await this.OptionExist(dto.name, dto.price)){
+        if(await this.OptionExist(dto.name, dto.price, storeId)){
             throw new ConflictException("Option is already in use!");
         } else {
             const option = await this.optionRepository

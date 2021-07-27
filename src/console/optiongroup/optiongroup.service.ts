@@ -16,13 +16,15 @@ export class OptiongroupService {
         @InjectRepository(OptionGroup) private readonly optiongroupRepository: Repository<OptionGroup>,
     ) {}
 
-    private OptionGroupExist = async (name: string): Promise<boolean> => {
+    private OptionGroupExist = async (name: string, storeId: string): Promise<boolean> => {
+        const RealStoreId = Number(Buffer.from(storeId, "base64").toString("binary"));
         return (
             (await this.optiongroupRepository
             .createQueryBuilder()
             .select("og.description")
             .from(OptionGroup,"og")
             .where("og.name = :name",{ name })
+            .andWhere("og.store_id = :RealStoreId", { RealStoreId })
             .getOne()) !== undefined
         );
     };
@@ -49,12 +51,11 @@ export class OptiongroupService {
         optiongroup.setOptionGroupDesc = dto.description;
         optiongroup.setOptionGroupState = dto.state;
         optiongroup.store = await this.convert2storeObj(RealStoreId);
-        optiongroup.option_id = await this.convert2OptionObj(dto.option_id);
         return optiongroup;
     }
 
     async saveOptionGroup(dto: OptionGroupCreateDto, storeId: string): Promise<OptionGroupInfoResponseDto>{
-        if( await this.OptionGroupExist(dto.name)){
+        if( await this.OptionGroupExist(dto.name,storeId)){
             throw new ConflictException("Option Group Name is already in use!");
         } else {
             const optiongroup = await this.optiongroupRepository.save(
@@ -86,9 +87,10 @@ export class OptiongroupService {
 
     async updateOptiongroupInfo(
         option_group_id: number,
-        dto: OptionGroupUpdateDto
+        dto: OptionGroupUpdateDto,
+        storeId: string
     ): Promise<BasicMessageDto>{
-        if(await this.OptionGroupExist(dto.name)){
+        if(await this.OptionGroupExist(dto.name, storeId)){
             throw new ConflictException("Option Group Name is already in use!");
         } else {
             const result = await this.optiongroupRepository

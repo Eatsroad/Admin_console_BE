@@ -10,6 +10,5 @@ export class OptionGroupCreateDto {
   @IsString()
   state: string;
 
-  @IsArray()
-  option_id: number[];
+  
 }
