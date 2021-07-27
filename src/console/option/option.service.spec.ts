@@ -108,6 +108,13 @@ describe('OptionService', () => {
   it("Should not save option and throw ConflictException", async () => {
     expect.assertions(1);
 
+    const store1 = new Store();
+    store1.setName = "STORENAME";
+    store1.setAddress = "STOREADDRESS";
+    store1.setPhone_number = "0101101010";
+    await connection.manager.save(store1);
+    const store_code = Buffer.from(String(store1.getStore_id),"binary").toString("base64");
+
     const optiongroup1 = new OptionGroup();
     optiongroup1.setOptionGroupName = "NAME";
     optiongroup1.setOptionGroupDesc = "DESC";
@@ -127,14 +134,9 @@ describe('OptionService', () => {
     savedOption.setOptionPrice = PRICE;
     savedOption.setOptionState = STATE;
     savedOption.option_group_id = OPTIONGROUPLIST;
+    savedOption.store = store1;
     await optionRepository.save(savedOption);
-
-    const store1 = new Store();
-    store1.setName = "STORENAME";
-    store1.setAddress = "STOREADDRESS";
-    store1.setPhone_number = "0101101010";
-    await connection.manager.save(store1);
-    const store_code = Buffer.from(String(store1.getStore_id),"binary").toString("base64");
+    
     const dto = new OptionCreateDto();
     dto.name = NAME;
     dto.price = PRICE;
@@ -241,6 +243,15 @@ describe('OptionService', () => {
   });
 
   it("Should update option info(All)", async () => {
+    const store1 = new Store();
+    store1.setName = "STORE1NAME";
+    store1.setAddress = "STORE1ADDRESS";
+    store1.setPhone_number = "1111";
+    store1.setDeletedAt = null;
+    store1.setUpdatedAt = null;
+    await connection.manager.save(store1);
+    const store_code = Buffer.from(String(store1.getStore_id),"binary").toString("base64");
+
     const optiongroup1 = new OptionGroup();
     optiongroup1.setOptionGroupName = "NAME";
     optiongroup1.setOptionGroupDesc = "DESC";
@@ -268,7 +279,8 @@ describe('OptionService', () => {
 
     const responseInfo = await optionService.updateOptionInfo(
       savedOption.getOptionId,
-      updateDtoInfo
+      updateDtoInfo,
+      store_code
     );
 
     const updateDto = new OptionUpdateDto();
@@ -290,6 +302,15 @@ describe('OptionService', () => {
   });
 
   it("Should update option info(OptionName)", async () => {
+    const store1 = new Store();
+    store1.setName = "STORE1NAME";
+    store1.setAddress = "STORE1ADDRESS";
+    store1.setPhone_number = "1111";
+    store1.setDeletedAt = null;
+    store1.setUpdatedAt = null;
+    await connection.manager.save(store1);
+    const store_code = Buffer.from(String(store1.getStore_id),"binary").toString("base64");
+
     const savedMenu = await saveOption();
 
     const updateDto = new OptionUpdateDto();
@@ -298,7 +319,8 @@ describe('OptionService', () => {
 
     const response = await optionService.updateOptionInfo(
       savedMenu.getOptionId,
-      updateDto
+      updateDto,
+      store_code
     );
     expect(response).toBeInstanceOf(BasicMessageDto);
 
@@ -307,6 +329,15 @@ describe('OptionService', () => {
   });
 
   it("Should update option info(OptionPrice)", async () => {
+    const store1 = new Store();
+    store1.setName = "STORE1NAME";
+    store1.setAddress = "STORE1ADDRESS";
+    store1.setPhone_number = "1111";
+    store1.setDeletedAt = null;
+    store1.setUpdatedAt = null;
+    await connection.manager.save(store1);
+    const store_code = Buffer.from(String(store1.getStore_id),"binary").toString("base64");
+
     const savedMenu = await saveOption();
 
     const updateDto = new OptionUpdateDto();
@@ -315,7 +346,8 @@ describe('OptionService', () => {
 
     const response = await optionService.updateOptionInfo(
       savedMenu.getOptionId,
-      updateDto
+      updateDto,
+      store_code
     );
     expect(response).toBeInstanceOf(BasicMessageDto);
 
@@ -324,6 +356,15 @@ describe('OptionService', () => {
   });
 
   it("Should update option info(OptionState)", async () => {
+    const store1 = new Store();
+    store1.setName = "STORE1NAME";
+    store1.setAddress = "STORE1ADDRESS";
+    store1.setPhone_number = "1111";
+    store1.setDeletedAt = null;
+    store1.setUpdatedAt = null;
+    await connection.manager.save(store1);
+    const store_code = Buffer.from(String(store1.getStore_id),"binary").toString("base64");
+
     const savedMenu = await saveOption();
 
     const updateDto = new OptionUpdateDto();
@@ -332,13 +373,14 @@ describe('OptionService', () => {
 
     const response = await optionService.updateOptionInfo(
       savedMenu.getOptionId,
-      updateDto
+      updateDto,
+      store_code
     );
     expect(response).toBeInstanceOf(BasicMessageDto);
 
     const updatedOption = await optionRepository.findOne(savedMenu.getOptionId);
     expect(updatedOption.getOptionState).toBe("NEW_STATE");
-  });
+    });
 
   it("Should update option info(OptionGroup)", async () => {
     const optiongroup1 = new OptionGroup();
