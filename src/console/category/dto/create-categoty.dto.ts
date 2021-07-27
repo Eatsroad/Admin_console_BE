@@ -15,7 +15,4 @@ export class CategoryCreateDto {
 
   @IsString()
   role: string;
-
-  @IsNumber()
-  store_id: number;
 }
