@@ -44,33 +44,3 @@ export class MenuboardController {
     return this.menuBoardService.getOptionGroupAndOptionBymenuId(menuId);
   }
 }
-
-// @Get("/detail")
-// @ApiOperation({
-//   summary: "음식 - 옵션그룹 API",
-//   description: "메뉴에 해당하는 옵션그룹을 보여줍니다.",
-// })
-// @ApiResponse({
-//   description: "메뉴에 해당하는 옵션그룹을 보여줍니다.",
-//   type: MenuboardMenuDetailResponseDto,
-// })
-// getAllOptiongroup(
-//   @Query("menuId") menuId: number
-// ): Promise<MenuboardMenuDetailResponseDto> {
-//   return this.menuBoardService.getOptionGroupBymenuId(menuId);
-// }
-
-// @Get("/menu")
-// @ApiOperation({
-//   summary: "카테고리 - 음식 API",
-//   description: "카테고리에 해당하는 음식을 보여줍니다.",
-// })
-// @ApiResponse({
-//   description: "카테고리에 해당하는 음식을 보여줍니다.",
-//   type: MenuboardMenuResponseDto,
-// })
-// getAllMenu(
-//   @Query("categoryId") categoryId: number
-// ): Promise<MenuboardMenuResponseDto> {
-//   return this.menuBoardService.getMenuByCategoryId(categoryId);
-// }
