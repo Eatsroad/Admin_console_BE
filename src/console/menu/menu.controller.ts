@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Request, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import IStoreRequest from 'src/interfaces/store-request';
 import { Connection, QueryRunner, TransactionManager } from 'typeorm';
@@ -8,6 +8,7 @@ import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
 import { MenuService } from './menu.service' 
 import {getConnection} from "typeorm";
+import { TransactionInterceptor } from 'src/interceptor/transaction.interceptor';
 
 
 
@@ -27,6 +28,7 @@ export class MenuController {
     description: '메뉴를 생성합니다.',
     type: MenuInfoResponseDto
   })
+  @UseInterceptors(TransactionInterceptor)
   saveMenu(
     @Body() dto: MenuCreateDto,
     @Request() req:IStoreRequest

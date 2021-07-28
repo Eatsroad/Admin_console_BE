@@ -2,7 +2,7 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { Menu } from '../../../src/entities/menu/menu.entity';
-import { Connection, getConnection, getRepository, QueryRunner, Repository, Transaction, TransactionRepository } from 'typeorm';
+import { Connection, getRepository, QueryRunner, Repository, Transaction, TransactionRepository } from 'typeorm';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
@@ -76,8 +76,6 @@ export class MenuService {
     };
 
   async saveMenu(dto: MenuCreateDto, storeId: string): Promise<MenuInfoResponseDto> {
-    
-    
     await this.queryRunner.connect();
     await this.queryRunner.startTransaction();
     
@@ -90,7 +88,6 @@ export class MenuService {
         );
 
         await this.queryRunner.commitTransaction();
-        
         return new MenuInfoResponseDto(menu);
       }
     } catch (err){
@@ -102,9 +99,6 @@ export class MenuService {
   }
     
   async getMenuInfo(menuId: number): Promise<MenuInfoResponseDto> {    
-    await this.queryRunner.connect();
-    await this.queryRunner.startTransaction();
-    try {
     const menu = await this.menuRepository.findOne(menuId,{relations:["store_id","categories","optionGroups","enable_time"]});
     await this.queryRunner.commitTransaction();
     if (!!menu) {
@@ -112,24 +106,25 @@ export class MenuService {
     } else {
       throw new NotFoundException();
     }
-  } catch (err) {
-    await this.queryRunner.rollbackTransaction();
-  } finally {
-    await this.queryRunner.release();
-  }
+  
   }
 
   async getMenuList (storeId: string): Promise<MenuInfoResponseDto[]> {
+    
     const RealStoreId = Number(Buffer.from(storeId, "base64").toString("binary"));
-    if(await this.StoreExist(RealStoreId)){
-    const result = await this.menuRepository.find({
-      where :{
-        store_id: RealStoreId,
-      },
-      relations:['store_id','categories','optionGroups'],
-    });
-    return await result.map((result) => new MenuInfoResponseDto(result));
-  } else throw new NotFoundException();   
+    
+      if(await this.StoreExist(RealStoreId)){
+      const result = await this.menuRepository.find({
+        where :{
+          store_id: RealStoreId,
+        },
+        relations:['store_id','categories','optionGroups'],
+      });
+      await this.queryRunner.commitTransaction();
+      return await result.map((result) => new MenuInfoResponseDto(result));
+    }
+     else throw new NotFoundException(); 
+   
   }
 
   async updateMenuInfo(
@@ -137,28 +132,49 @@ export class MenuService {
     dto: MenuUpdateDto,
     storeId: string
   ): Promise<BasicMessageDto> {
-    if(await this.MenuExist(dto.name, storeId)){
-      throw new ConflictException("Menu is already in use!");
-  } else {
-    const result = await this.menuRepository
-    .createQueryBuilder()
-    .update( "menus", { ...dto })
-    .where("menu_id = :menuId", { menuId })
-    .execute();
-    if(result.affected !== 0) {
-      return new BasicMessageDto("Updated Successfully.");
-    } else throw new NotFoundException();
-  }
+    await this.queryRunner.connect();
+    await this.queryRunner.startTransaction();
+    try{
+      if(await this.MenuExist(dto.name, storeId)){
+        throw new ConflictException("Menu is already in use!");
+      } else {
+      const result = await this.menuRepository
+      .createQueryBuilder()
+      .update( "menus", { ...dto })
+      .where("menu_id = :menuId", { menuId })
+      .execute();
+
+      if(result.affected !== 0) {
+        await this.queryRunner.commitTransaction();
+        return new BasicMessageDto("Updated Successfully.");
+      } else throw new NotFoundException();
+    }
+    } catch (err){
+      await this.queryRunner.rollbackTransaction();
+    } finally{
+      await this.queryRunner.release();
+    }
+    
   }
 
   async updateCategoryInMenu(menuId : number,
     dto: MenuUpdateDto
     ): Promise<BasicMessageDto> {
-      const menu = await this.menuRepository.findOne(menuId);
-      menu.categories = await this.convert2CategoryObj(dto.categories);
-
-      const result = await this.menuRepository.save(menu);
-      return new BasicMessageDto("Category Updated successfully!");
+      await this.queryRunner.connect();
+      await this.queryRunner.startTransaction();
+      try{
+        const menu = await this.menuRepository.findOne(menuId);
+        menu.categories = await this.convert2CategoryObj(dto.categories);
+  
+        const result = await this.menuRepository.save(menu);
+        await this.queryRunner.commitTransaction();
+        return new BasicMessageDto("Category Updated successfully!");
+      } catch (err){
+        await this.queryRunner.rollbackTransaction();
+      } finally{
+        await this.queryRunner.release();
+      }
+      
     }
 
   async updateOptionGroupInMenu(menuId: number,
