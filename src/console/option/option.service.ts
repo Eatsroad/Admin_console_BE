@@ -53,6 +53,7 @@ export class OptionService{
     }
 
     async saveOption(dto: OptionCreateDto, storeId: string): Promise<OptionInfoResponseDto>{
+       try{
         if ( await this.OptionExist(dto.name, dto.price, storeId)){
             throw new ConflictException("Option Name is already in use!");
         } else {
@@ -61,6 +62,9 @@ export class OptionService{
             );
             return new OptionInfoResponseDto(option);
         }
+    } catch(e){
+        console.log(e);
+    }
     }
 
     async getOptionInfo(option_id: number): Promise<OptionInfoResponseDto> {
@@ -88,6 +92,7 @@ export class OptionService{
         dto: OptionUpdateDto,
         storeId: string
     ): Promise<BasicMessageDto> {
+        try{
         if(await this.OptionExist(dto.name, dto.price, storeId)){
             throw new ConflictException("Option is already in use!");
         } else {
@@ -99,6 +104,9 @@ export class OptionService{
             if(option.affected !== 0){
                 return new BasicMessageDto("Updated Successfully");
             } else throw new NotFoundException();
+        }
+        } catch(e){
+            console.log(e);
         }
     }
 
@@ -112,7 +120,11 @@ export class OptionService{
         const result = await this.optionRepository.save(option);
         if(!!result){
             return new BasicMessageDto("OptionGroups are Updated Successfully in Option.");
-        } else throw new NotFoundException();
+        } else try{
+            throw new NotFoundException();
+        } catch (e){
+            console.log(e);
+        }
     }
 
     async removeOption(option_id: number) {

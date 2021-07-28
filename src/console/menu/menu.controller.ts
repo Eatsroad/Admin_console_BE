@@ -99,6 +99,7 @@ export class MenuController {
     description: '메뉴의 이름, 가격, 설명, (일시적)상태를 업데이트합니다.',
     type: BasicMessageDto
   })
+  @UseInterceptors(TransactionInterceptor)
   updateMenuInfo(
     @Param('menuId', ParseIntPipe) menuId: number,
     @Body() dto: MenuUpdateDto,
@@ -116,6 +117,7 @@ export class MenuController {
     description: '메뉴의 옵션그룹만을 업데이트합니다.',
     type: BasicMessageDto
   })
+  @UseInterceptors(TransactionInterceptor)
   updateOptiongroup(
     @Param('menuId') menuId: number,
     @Body() menu:MenuUpdateDto,  
@@ -132,6 +134,7 @@ export class MenuController {
     description: '메뉴의 카테고리만을 업데이트합니다.',
     type: BasicMessageDto
   })
+  @UseInterceptors(TransactionInterceptor)
   updateCategory(
     @Param('menuId') menuId: number,
     @Body() menu:MenuUpdateDto, 
@@ -148,6 +151,7 @@ export class MenuController {
     description: '메뉴의 정기적인 판매가능시간만을 업데이트합니다.',
     type: BasicMessageDto
   })
+  @UseInterceptors(TransactionInterceptor)
   updateEnableTime(
     @Param('menuId') menuId: number,
     @Body() menu:MenuUpdateDto, 

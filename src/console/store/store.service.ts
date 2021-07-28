@@ -74,18 +74,23 @@ export class StoreService {
     dto: StoreCreateDto,
     userId: number
   ): Promise<StoreInfoResponseDto> {
-    if (await this.isStoreNameUsed(dto.name)) {
-      throw new ConflictException("Store name is already in use!");
-    } else if (await this.isAddressUsed(dto.address)) {
-      throw new ConflictException("Store address is already in use!");
-    } else if (await this.isPhoneNumberUsed(dto.phone_number)) {
-      throw new ConflictException("Store phone_number is already in use!");
-    } else {
-      const store = await this.storeRepository.save(
-        await this.storeCreateDtoToEntity(dto, userId)
-      );
-      return new StoreInfoResponseDto(store);
+    try{
+      if (await this.isStoreNameUsed(dto.name)) {
+        throw new ConflictException("Store name is already in use!");
+      } else if (await this.isAddressUsed(dto.address)) {
+        throw new ConflictException("Store address is already in use!");
+      } else if (await this.isPhoneNumberUsed(dto.phone_number)) {
+        throw new ConflictException("Store phone_number is already in use!");
+      } else {
+        const store = await this.storeRepository.save(
+          await this.storeCreateDtoToEntity(dto, userId)
+        );
+        return new StoreInfoResponseDto(store);
+      }
+    } catch(e){
+      console.log(e);
     }
+    
   }
 
   async getStoreInfo(storeId: string): Promise<StoreInfoResponseDto> {
@@ -115,7 +120,11 @@ export class StoreService {
 
     if (result.affected !== 0) {
       return new BasicMessageDto("Updated Successfully.");
-    } else throw new NotFoundException();
+    } else try{
+      throw new NotFoundException();
+    } catch(e){
+      console.log(e);
+    }
   }
 
   async removeStore(storeId: string): Promise<BasicMessageDto> {

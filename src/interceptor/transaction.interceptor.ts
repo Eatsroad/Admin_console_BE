@@ -1,29 +1,33 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
-import { InjectConnection, InjectRepository } from "@nestjs/typeorm";
+import { InjectConnection } from "@nestjs/typeorm";
 import { Observable } from "rxjs";
-import { Menu } from "src/entities/menu/menu.entity";
-import { Connection, Repository } from "typeorm";
+import { Connection } from "typeorm";
 import { map } from 'rxjs/operators';
 
 @Injectable()
 export class TransactionInterceptor implements NestInterceptor {
     constructor(
-        @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
         @InjectConnection() private readonly connection: Connection,
-        private readonly queryRunner = connection.createQueryRunner(),
         ) {}
 
     async intercept(context: ExecutionContext, next: CallHandler) : Promise<Observable<any>>{
-        await this.queryRunner.connect();
-        await this.queryRunner.startTransaction();
+        const queryRunner = this.connection.createQueryRunner();
+
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
         return next
             .handle()
             .pipe(
-                map(async (data)=>
+                map(async (data) => 
                 {
-                    console.log(data); 
-                    await this.queryRunner.commitTransaction();
-                    await this.queryRunner.release();
+                    if(data instanceof Error){
+                        await queryRunner.rollbackTransaction();
+                        console.log("오류로 인해 데이터가 등록되지않았습니다.");
+                    } else {
+                        await queryRunner.commitTransaction();
+                        console.log("데이터베이스에 정상적으로 등록되었습니다.");
+                        await queryRunner.release();
+                    }
                 }),
             );
 

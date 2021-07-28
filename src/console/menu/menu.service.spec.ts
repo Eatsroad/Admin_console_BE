@@ -1,4 +1,4 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { CallHandler, ConflictException, ExecutionContext, Injectable, InternalServerErrorException, NotFoundException, UseInterceptors } from '@nestjs/common';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { Category } from '../../../src/entities/category/category.entity';
 import { Menu } from '../../../src/entities/menu/menu.entity';
@@ -15,12 +15,18 @@ import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
 import { CategoryPreviewInfo } from '../category/dto/category-info.dto';
 import { OptionGroupPreviewInfo } from '../optiongroup/dtos/optiongroup-info.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
-
+import { Observable } from 'rxjs';
+import { error } from 'console';
+import { map } from 'rxjs/operators';
+import { TransactionInterceptor } from 'src/interceptor/transaction.interceptor';
 
 describe('MenuService', () => {
   let menuService: MenuService;
   let connection: Connection;
   let menuRepository: Repository<Menu>;
+  let interceptor : TransactionInterceptor;
+
+  const queryRunner = connection.createQueryRunner();
 
   const NAME= 'NAME';
   const PRICE = 5000;
@@ -67,11 +73,11 @@ describe('MenuService', () => {
       console.log(e);
     }
   } 
-  
+
   beforeAll(async () => {
     connection = await createMemoryDB([Menu, User, Store, Category, OptionGroup, Option, EnableTime]);
     menuRepository = await connection.getRepository(Menu);
-    menuService = new MenuService(menuRepository,connection,);
+    menuService = new MenuService(menuRepository);
   });
 
   afterAll(async () => {
@@ -165,6 +171,75 @@ describe('MenuService', () => {
     expect(response.description).toBe(savedMenu.getMenuDesc);
     expect(response.state).toBe(savedMenu.getMenuState);
   });
+
+
+  it("Should get menu pre-info and update menu after", async () => {
+    const store2 = new Store();
+    store2.setName = "STORE2NAME";
+    store2.setPhone_number = "2222";
+    store2.setAddress = "STORE2ADDRESS";
+    await connection.manager.save(store2);
+    const store_code = Buffer.from(String(store2.getStore_id),"binary").toString("base64");
+
+    const category2 = new Category();
+    category2.setCategoryName = "CATEGORY2NAME";
+    await connection.manager.save(category2);
+
+    const category3 = new Category();
+    category3.setCategoryName = "CATEGORY3NAME";
+    await connection.manager.save(category3);
+
+    const CategoryList = [category2, category3];
+
+    const optiongroup2 = new OptionGroup();
+    optiongroup2.setOptionGroupName = "OPTIONGROUP2";
+    await connection.manager.save(optiongroup2);
+
+    const optiongroup3 = new OptionGroup();
+    optiongroup3.setOptionGroupName = "OPTIONGROUP3";
+    await connection.manager.save(optiongroup3);
+
+    const OptionGroupList = [optiongroup2, optiongroup3];
+
+    const enabletime1 = new EnableTime();
+    enabletime1.setEnableTimeDesc = "ENABLETIMEDESC";
+    enabletime1.setStartTime = null;
+    await connection.manager.save(enabletime1);
+
+    const savedMenu = new Menu();
+    savedMenu.setMenuName = NAME;
+    savedMenu.setMenuPrice = PRICE;
+    savedMenu.setMenuDesc = DESC;
+    savedMenu.setMenuState = STATE;
+    savedMenu.store_id = store2;
+    savedMenu.categories = CategoryList;
+    savedMenu.optionGroups = OptionGroupList;
+    savedMenu.enable_time = enabletime1;
+    
+    await menuRepository.save(savedMenu);
+
+    const updateDtoInfo = new MenuUpdateDto();
+    updateDtoInfo.name = "UPDATED NAME";
+    updateDtoInfo.description = "UPDATED DESC";
+    updateDtoInfo.price = 10000;
+    updateDtoInfo.state = "AVAILABLE";
+
+    
+    const response = await menuService.getMenuInfo(savedMenu.getMenuId);
+   
+    const responseInfo = await menuService.updateMenuInfo(
+      savedMenu.getMenuId,
+      updateDtoInfo,
+      store_code
+    );
+    
+    expect(response.name).toBe(savedMenu.getMenuName);
+    expect(response.price).toBe(savedMenu.getMenuPrice);
+    expect(response.description).toBe(savedMenu.getMenuDesc);
+    expect(response.state).toBe(savedMenu.getMenuState);
+  });
+
+ 
 
   it("Should get menu List correctly", async () => {
     const store1 = new Store();

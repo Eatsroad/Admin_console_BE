@@ -9,10 +9,12 @@ import {
   Put,
   Query,
   Request,
+  UseInterceptors,
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { request } from "express";
 import { BasicMessageDto } from "src/common/dtos/basic-massage.dto";
+import { TransactionInterceptor } from "src/interceptor/transaction.interceptor";
 import IStoreRequest from "src/interfaces/store-request";
 import { StoreCreateDto } from "./dtos/create-store.dto";
 import { StoreInfoResponseDto } from "./dtos/store-info-dto";
@@ -33,6 +35,7 @@ export class StoreController {
     description: "스토어를 생성합니다.",
     type: StoreInfoResponseDto,
   })
+  @UseInterceptors(TransactionInterceptor)
   saveStore(
     @Body() dto: StoreCreateDto,
     @Request() req: IStoreRequest
@@ -66,6 +69,7 @@ export class StoreController {
       "스토어 이름, 주소, 스토어 전화번호, 테이블 수를 업데이트합니다.",
     type: BasicMessageDto,
   })
+  @UseInterceptors(TransactionInterceptor)
   updateStoreInfo(
     @Param("storeId") storeId: string,
     @Body() dto: StoreUpdateDto

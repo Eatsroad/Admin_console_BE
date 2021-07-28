@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, UseInterceptors } from '@nestjs/common';
 import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { Menu } from '../../../src/entities/menu/menu.entity';
@@ -10,14 +10,14 @@ import { OptionGroup } from '../../../src/entities/option/optionGroup.entity';
 import { Category } from '../../../src/entities/category/category.entity';
 import { Store } from '../../../src/entities/store/store.entity';
 import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
+import { TransactionInterceptor } from 'src/interceptor/transaction.interceptor';
 
 
 @Injectable()
 export class MenuService {
     constructor(
     @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
-    @InjectConnection() private readonly connection: Connection,
-    private readonly queryRunner = connection.createQueryRunner(),
+    
     ) {}
 
     private convert2StoreObj = async (store_id:string): Promise<Store> => {
@@ -76,31 +76,22 @@ export class MenuService {
     };
 
   async saveMenu(dto: MenuCreateDto, storeId: string): Promise<MenuInfoResponseDto> {
-    await this.queryRunner.connect();
-    await this.queryRunner.startTransaction();
-    
-    try{
-      if (await this.MenuExist(dto.name, storeId)) {
+      try{
+        if (await this.MenuExist(dto.name, storeId)) {
         throw new ConflictException("Menu is already in use!");
       } else {
         const menu = await this.menuRepository.save(
           await this.menuCreateDtoToEntity(dto, storeId)
         );
-
-        await this.queryRunner.commitTransaction();
         return new MenuInfoResponseDto(menu);
-      }
-    } catch (err){
-      await this.queryRunner.rollbackTransaction();
-    } finally{
-      await this.queryRunner.release();
-    }
-    
+      } 
+      } catch(e){
+        return e;
+      } 
   }
     
   async getMenuInfo(menuId: number): Promise<MenuInfoResponseDto> {    
     const menu = await this.menuRepository.findOne(menuId,{relations:["store_id","categories","optionGroups","enable_time"]});
-    await this.queryRunner.commitTransaction();
     if (!!menu) {
       return new MenuInfoResponseDto(menu);
     } else {
@@ -120,7 +111,6 @@ export class MenuService {
         },
         relations:['store_id','categories','optionGroups'],
       });
-      await this.queryRunner.commitTransaction();
       return await result.map((result) => new MenuInfoResponseDto(result));
     }
      else throw new NotFoundException(); 
@@ -132,9 +122,7 @@ export class MenuService {
     dto: MenuUpdateDto,
     storeId: string
   ): Promise<BasicMessageDto> {
-    await this.queryRunner.connect();
-    await this.queryRunner.startTransaction();
-    try{
+  try{
       if(await this.MenuExist(dto.name, storeId)){
         throw new ConflictException("Menu is already in use!");
       } else {
@@ -145,35 +133,23 @@ export class MenuService {
       .execute();
 
       if(result.affected !== 0) {
-        await this.queryRunner.commitTransaction();
         return new BasicMessageDto("Updated Successfully.");
       } else throw new NotFoundException();
     }
-    } catch (err){
-      await this.queryRunner.rollbackTransaction();
-    } finally{
-      await this.queryRunner.release();
-    }
+  } catch(e){
+    return e;
+  }
+    
     
   }
 
   async updateCategoryInMenu(menuId : number,
     dto: MenuUpdateDto
     ): Promise<BasicMessageDto> {
-      await this.queryRunner.connect();
-      await this.queryRunner.startTransaction();
-      try{
         const menu = await this.menuRepository.findOne(menuId);
         menu.categories = await this.convert2CategoryObj(dto.categories);
-  
         const result = await this.menuRepository.save(menu);
-        await this.queryRunner.commitTransaction();
         return new BasicMessageDto("Category Updated successfully!");
-      } catch (err){
-        await this.queryRunner.rollbackTransaction();
-      } finally{
-        await this.queryRunner.release();
-      }
       
     }
 
@@ -206,6 +182,7 @@ export class MenuService {
   ): Promise<BasicMessageDto> {
    const menu = await this.menuRepository.findOne(menuId);
    menu.enable_time = null;
+
    const result = await this.menuRepository.save(menu);
    if(result.enable_time == null){
    return new BasicMessageDto("EnableTime Deleted Successfully.");

@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Request, RequestMapping } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Request, RequestMapping, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
+import { TransactionInterceptor } from 'src/interceptor/transaction.interceptor';
 import IStoreRequest from 'src/interfaces/store-request';
 import { TableInheritance } from 'typeorm';
 import { OptionCreateDto } from './dtos/create-option.dto';
@@ -23,6 +24,7 @@ export class OptionController {
         description: '옵션을 생성합니다.',
         type: OptionInfoResponseDto
     })
+    @UseInterceptors(TransactionInterceptor)
     saveOption( @Body() dto:OptionCreateDto, @Request() req: IStoreRequest): Promise<OptionInfoResponseDto>{
         return this.optionService.saveOption(dto, req.storeId);
     }
@@ -62,6 +64,7 @@ export class OptionController {
         description: '요청된 옵션id에 해당하는 옵션을(이름,가격,상태) 업데이트합니다.',
         type: BasicMessageDto
     })
+    @UseInterceptors(TransactionInterceptor)
     updateOptionInfo(
         @Param('option_id', ParseIntPipe) option_id:number,
         @Body() dto:OptionUpdateDto,
@@ -79,6 +82,7 @@ export class OptionController {
         description: '요청된 옵션id에 해당하는 옵션의 옵션그룹만을 업데이트합니다.',
         type: BasicMessageDto
     })
+    @UseInterceptors(TransactionInterceptor)
     updateOptionGroupInMenu(
         @Param('option_id', ParseIntPipe) option_id: number,
         @Body() dto:OptionUpdateDto
