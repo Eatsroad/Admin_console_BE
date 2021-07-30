@@ -86,7 +86,7 @@ export class MenuService {
         return new MenuInfoResponseDto(menu);
       } 
       } catch(e){
-        return e;
+        throw e;
       } 
   }
     
@@ -136,7 +136,7 @@ export class MenuService {
         return new BasicMessageDto("Updated Successfully.");
       } else throw new NotFoundException();
     }
-  } catch(e){
+  }catch(e){
     return e;
   }
     

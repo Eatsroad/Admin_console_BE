@@ -1,4 +1,4 @@
-import { CallHandler, ConflictException, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
 import { InjectConnection } from "@nestjs/typeorm";
 import { Observable } from "rxjs";
 import { Connection } from "typeorm";

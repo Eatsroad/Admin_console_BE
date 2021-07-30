@@ -155,6 +155,7 @@ describe('MenuService', () => {
     try {
       await menuService.saveMenu(dto, store_code);
     } catch (exception) {
+      console.log(exception);
       expect(exception).toBeInstanceOf(ConflictException);
     }
   });

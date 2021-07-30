@@ -117,14 +117,14 @@ export class OptiongroupService {
         option_group_id:number,
         dto:OptionGroupUpdateDto
     ): Promise<BasicMessageDto>{
-    try{
-        const optiongroup = await this.optiongroupRepository.findOne(option_group_id);
-        optiongroup.option_id = await this.convert2OptionObj(dto.option_id);
+        try{
+            const optiongroup = await this.optiongroupRepository.findOne(option_group_id);
+            optiongroup.option_id = await this.convert2OptionObj(dto.option_id);
 
-        const result = await this.optiongroupRepository.save(optiongroup);
-        if(!!result){
-            return new BasicMessageDto("Options are Updated Successfully in OptionGroup.");
-        } else throw new NotFoundException();
+            const result = await this.optiongroupRepository.save(optiongroup);
+            if(!!result){
+                return new BasicMessageDto("Options are Updated Successfully in OptionGroup.");
+            } else throw new NotFoundException();
         } catch (e){
             return e;
         }
