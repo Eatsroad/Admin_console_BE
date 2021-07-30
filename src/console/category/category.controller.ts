@@ -50,7 +50,8 @@ export class CategoryController {
   })
   @UseInterceptors(TransactionInterceptor)
   saveCategory(
-    @Body() dto: CategoryCreateDto, @Request() req:IStoreRequest
+    @Body() dto: CategoryCreateDto,
+    @Request() req:IStoreRequest
   ): Promise<CategoryInfoResponseDto> {
     return this.categoryService.saveCategory(dto, req.storeId);
   };

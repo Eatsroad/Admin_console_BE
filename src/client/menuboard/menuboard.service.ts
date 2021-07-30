@@ -5,10 +5,8 @@ import { Menu } from "../../../src/entities/menu/menu.entity";
 import { OptionGroup } from "../../../src/entities/option/optionGroup.entity";
 import { Repository } from "typeorm";
 import {
-  MenuboardCategoryResponseDto,
-  MenuboardMenuDetailResponseDto,
-  MenuboardMenuResponseDto,
-  MenuboardOptionResponseDto,
+  MenuboardCategoryAndMenuResponseDto,
+  OptiongroupOptionDto,
 } from "./dtos/menuboard-info.dto";
 
 @Injectable()
@@ -22,50 +20,41 @@ export class MenuboardService {
     private readonly optiongroupRepository: Repository<OptionGroup>
   ) {}
 
-  async getCategoryByStoreId(
-    storeId: number
-  ): Promise<MenuboardCategoryResponseDto[]> {
-    const categories = await this.categoryRepository.find({
-      where: {
-        store: storeId,
-      },
-      //  relations: ["categories", "user_id", "menus"],
-    });
-    return categories.map(
-      (category) => new MenuboardCategoryResponseDto(category)
-    );
-  }
-  async getMenuByCategoryId(
-    categoryId: number
-  ): Promise<MenuboardMenuResponseDto> {
-    const menus = await this.categoryRepository
+  async getCategoryAndMenuByStoreId(
+    storeId: string
+  ): Promise<MenuboardCategoryAndMenuResponseDto[]> {
+    const DecoStoreId = Buffer.from(storeId, "base64").toString("binary");
+    const categories = await this.categoryRepository
       .createQueryBuilder("category")
       .innerJoinAndSelect("category.menus", "menu")
-      .where("category.category_id =:categoryId", { categoryId })
-      .getOne();
-
-    return new MenuboardMenuResponseDto(menus);
+      .where("category.store_id =:DecoStoreId", { DecoStoreId })
+      .getMany();
+    return categories.map(
+      (category) => new MenuboardCategoryAndMenuResponseDto(category)
+    );
   }
 
-  async getOptionGroupBymenuId(
+  async getOptionGroupAndOptionBymenuId(
     menuId: number
-  ): Promise<MenuboardMenuDetailResponseDto> {
+  ): Promise<OptiongroupOptionDto[]> {
     const menuDetail = await this.menuRepository
       .createQueryBuilder("menu")
       .innerJoinAndSelect("menu.optionGroups", "option_groups")
       .where("menu.menu_id =:menuId", { menuId })
       .getOne();
-    return new MenuboardMenuDetailResponseDto(menuDetail);
-  }
+    const optiongroups: OptiongroupOptionDto[] = [];
+    for (var i = 0; i < menuDetail.optionGroups.length; i++) {
+      const optiongroupId = menuDetail.optionGroups[i].getOptionGroupId;
+      const tempOptiongroup = await this.optiongroupRepository
+        .createQueryBuilder("optiongroup")
+        .innerJoinAndSelect("optiongroup.option_id", "options")
+        .where("optiongroup.option_group_id =:optiongroupId", {
+          optiongroupId,
+        })
+        .getOne();
+      optiongroups.push(new OptiongroupOptionDto(tempOptiongroup));
+    }
 
-  async getOptionByOptiongroupId(
-    optiongroupId: number
-  ): Promise<MenuboardOptionResponseDto> {
-    const optiongroup = await this.optiongroupRepository
-      .createQueryBuilder("optiongroup")
-      .innerJoinAndSelect("optiongroup.option_id", "options")
-      .where("optiongroup.option_group_id =:optiongroupId", { optiongroupId })
-      .getOne();
-    return new MenuboardOptionResponseDto(optiongroup);
+    return optiongroups;
   }
 }

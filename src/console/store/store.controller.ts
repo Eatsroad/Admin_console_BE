@@ -43,7 +43,7 @@ export class StoreController {
     return this.StoreService.saveStore(dto, req.userId);
   }
 
-  @Get("/:storeId")
+  @Get()
   @ApiOperation({
     summary: "스토어 정보 API",
     description: "요청된 스토어 id에 해당하는 스토어를 가져옵니다.",
@@ -52,13 +52,11 @@ export class StoreController {
     description: "요청된 스토어 id에 해당하는 스토어를 가져옵니다.",
     type: StoreInfoResponseDto,
   })
-  getStoreInfo(
-    @Param("storeId") storeId: string
-  ): Promise<StoreInfoResponseDto> {
-    return this.StoreService.getStoreInfo(storeId);
+  getStoreInfo(@Request() req: IStoreRequest): Promise<StoreInfoResponseDto> {
+    return this.StoreService.getStoreInfo(req.storeId);
   }
 
-  @Put("/:storeId")
+  @Put()
   @ApiOperation({
     summary: "스토어 업데이트 API",
     description:
@@ -71,13 +69,13 @@ export class StoreController {
   })
   @UseInterceptors(TransactionInterceptor)
   updateStoreInfo(
-    @Param("storeId") storeId: string,
+    @Request() req: IStoreRequest,
     @Body() dto: StoreUpdateDto
   ): Promise<BasicMessageDto> {
-    return this.StoreService.updateStoreInfo(storeId, dto);
+    return this.StoreService.updateStoreInfo(req.storeId, dto);
   }
 
-  @Delete("/:storeId")
+  @Delete()
   @ApiOperation({
     summary: "스토어 삭제 API",
     description: "스토어를 삭제합니다.",
@@ -85,7 +83,7 @@ export class StoreController {
   @ApiResponse({
     description: "스토어를 삭제합니다.",
   })
-  removeStore(@Param("storeId") storeId: string) {
-    return this.StoreService.removeStore(storeId);
+  removeStore(@Request() req: IStoreRequest) {
+    return this.StoreService.removeStore(req.storeId);
   }
 }
