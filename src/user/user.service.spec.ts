@@ -80,7 +80,7 @@ describe('UserService', () => {
   });
   
   it("Should not save user and throw ConflictException", async () => {
-    expect.assertions(1);
+    expect.any(ConflictException);
 
     const savedUser = new User();
     savedUser.setEmail = EMAIL;

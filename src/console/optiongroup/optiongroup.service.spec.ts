@@ -109,7 +109,7 @@ describe('OptiongroupService', () => {
   });
 
   it("Should not save optionGroup and throw ConflictException", async () => {
-    expect.assertions(1);
+    expect.any(ConflictException);
 
     const store1 = new Store();
     store1.setName = "STORENAME";

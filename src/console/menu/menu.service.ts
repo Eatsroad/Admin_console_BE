@@ -86,7 +86,7 @@ export class MenuService {
         return new MenuInfoResponseDto(menu);
       } 
       } catch(e){
-        throw e;
+        return e;
       } 
   }
     

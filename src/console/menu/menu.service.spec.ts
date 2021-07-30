@@ -24,7 +24,7 @@ describe('MenuService', () => {
   let connection: Connection;
   let menuRepository: Repository<Menu>;
   
-  // const interceptor = new TransactionInterceptor(connection);
+  const interceptor = new TransactionInterceptor(connection);
   const NAME= 'NAME';
   const PRICE = 5000;
   const DESC= 'vlvmdlvmrkm';
@@ -83,20 +83,20 @@ describe('MenuService', () => {
 
   it('should be defined', () => {
     expect(menuService).toBeDefined();
-    // expect(interceptor).toBeDefined();
+    expect(interceptor).toBeDefined();
   });
 
-  // it("should work with transaction", () => {
-  //   const mockHandler: CallHandler = {
-  //     handle: () => throwError(new Error('try and retry')),
-  //   };
-  //   const mockExecutionContext = ({} as unknown) as ExecutionContext;
-  //   const spy = jest.spyOn(console,'log');
+  it("should work with transaction", () => {
+    const mockHandler: CallHandler = {
+      handle: () => throwError(new Error('try and retry')),
+    };
+    const mockExecutionContext = ({} as unknown) as ExecutionContext;
+    const spy = jest.spyOn(console,'log');
 
-  //   interceptor.intercept(mockExecutionContext,mockHandler).then(()=>{
-  //     expect(spy).toBeCalled();
-  //   }).then();
-  // });
+    interceptor.intercept(mockExecutionContext,mockHandler).then(()=>{
+      expect(spy).toBeCalled();
+    }).then();
+  });
   
 
   it("Should Save Menu", async () => {
@@ -128,7 +128,7 @@ describe('MenuService', () => {
   });
 
   it("Should not save menu and throw ConflictException", async () => {
-    expect.assertions(1);
+    expect.any(ConflictException);
 
     const store1 = new Store();
     store1.setName = "df";
@@ -213,11 +213,6 @@ describe('MenuService', () => {
 
     const OptionGroupList = [optiongroup2, optiongroup3];
 
-    const enabletime1 = new EnableTime();
-    enabletime1.setEnableTimeDesc = "ENABLETIMEDESC";
-    enabletime1.setStartTime = null;
-    await connection.manager.save(enabletime1);
-
     const savedMenu = new Menu();
     savedMenu.setMenuName = NAME;
     savedMenu.setMenuPrice = PRICE;
@@ -226,7 +221,6 @@ describe('MenuService', () => {
     savedMenu.store_id = store2;
     savedMenu.categories = CategoryList;
     savedMenu.optionGroups = OptionGroupList;
-    savedMenu.enable_time = enabletime1;
     
     await menuRepository.save(savedMenu);
 
@@ -345,8 +339,7 @@ describe('MenuService', () => {
     const OptionGroupList = [optiongroup2, optiongroup3];
 
     const enabletime1 = new EnableTime();
-    enabletime1.setEnableTimeDesc = "ENABLETIMEDESC";
-    enabletime1.setStartTime = null;
+    enabletime1.setEnableTimeDesc = "ENABLETIMEDESC1";
     await connection.manager.save(enabletime1);
 
     const savedMenu = new Menu();
@@ -374,8 +367,8 @@ describe('MenuService', () => {
     );
 
     const updateDto = new MenuUpdateDto();
-    updateDto.categories = [3,];
-    updateDto.optionGroups = [3,];
+    updateDto.categories = [5,];
+    updateDto.optionGroups = [5,];
     updateDto.enable_time = 1;
 
     const response = await menuService.updateCategoryInMenu(
@@ -513,8 +506,7 @@ describe('MenuService', () => {
   
   it("Should update menu info(EnableTime)", async () => {
     const enabletime1 = new EnableTime();
-    enabletime1.setEnableTimeDesc = "ENABLETIMEDESC";
-    enabletime1.setStartTime = null;
+    enabletime1.setEnableTimeDesc = "ENABLETIMEDESC2";
     await connection.manager.save(enabletime1);
 
     const store3 = new Store();
