@@ -15,19 +15,16 @@ import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
 import { CategoryPreviewInfo } from '../category/dto/category-info.dto';
 import { OptionGroupPreviewInfo } from '../optiongroup/dtos/optiongroup-info.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
-import { Observable } from 'rxjs';
-import { error } from 'console';
-import { map } from 'rxjs/operators';
-import { TransactionInterceptor } from 'src/interceptor/transaction.interceptor';
+import { throwError } from 'rxjs';
+import { TransactionInterceptor } from '../../../src/interceptor/transaction.interceptor';
+import { doesNotReject } from 'assert';
 
 describe('MenuService', () => {
   let menuService: MenuService;
   let connection: Connection;
   let menuRepository: Repository<Menu>;
-  let interceptor : TransactionInterceptor;
-
-  const queryRunner = connection.createQueryRunner();
-
+  
+  // const interceptor = new TransactionInterceptor(connection);
   const NAME= 'NAME';
   const PRICE = 5000;
   const DESC= 'vlvmdlvmrkm';
@@ -86,7 +83,21 @@ describe('MenuService', () => {
 
   it('should be defined', () => {
     expect(menuService).toBeDefined();
+    // expect(interceptor).toBeDefined();
   });
+
+  // it("should work with transaction", () => {
+  //   const mockHandler: CallHandler = {
+  //     handle: () => throwError(new Error('try and retry')),
+  //   };
+  //   const mockExecutionContext = ({} as unknown) as ExecutionContext;
+  //   const spy = jest.spyOn(console,'log');
+
+  //   interceptor.intercept(mockExecutionContext,mockHandler).then(()=>{
+  //     expect(spy).toBeCalled();
+  //   }).then();
+  // });
+  
 
   it("Should Save Menu", async () => {
     const store1 = new Store();
@@ -567,7 +578,7 @@ describe('MenuService', () => {
     await menuRepository.save(savedMenu);
 
     const updateDtoInfo = new MenuUpdateDto();
-    updateDtoInfo.categories = [5,];
+    updateDtoInfo.categories = [7,];
 
     const responseInfo = await menuService.updateCategoryInMenu(
       savedMenu.getMenuId,
@@ -612,7 +623,7 @@ describe('MenuService', () => {
     await menuRepository.save(savedMenu);
 
     const updateDtoInfo = new MenuUpdateDto();
-    updateDtoInfo.optionGroups = [5,];
+    updateDtoInfo.optionGroups = [7,];
 
     const responseInfo = await menuService.updateOptionGroupInMenu(
     savedMenu.getMenuId,
