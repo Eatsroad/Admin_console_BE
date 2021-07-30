@@ -63,7 +63,7 @@ export class OptionService{
             return new OptionInfoResponseDto(option);
         }
     } catch(e){
-        console.log(e);
+        return e;
     }
     }
 
@@ -106,7 +106,7 @@ export class OptionService{
             } else throw new NotFoundException();
         }
         } catch(e){
-            console.log(e);
+            return e;
         }
     }
 
@@ -123,7 +123,7 @@ export class OptionService{
         } else try{
             throw new NotFoundException();
         } catch (e){
-            console.log(e);
+            return e;
         }
     }
 

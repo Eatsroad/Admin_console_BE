@@ -55,7 +55,7 @@ export class OptionController {
         return this.optionService.getAllOptionList(req.storeId);
     }
 
-    @Put('/:opton_id')
+    @Put('/:option_id')
     @ApiOperation({
         summary:'옵션 업데이트 API',
         description: '요청된 옵션id에 해당하는 옵션을(이름,가격,상태) 업데이트합니다.'

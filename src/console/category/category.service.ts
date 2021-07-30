@@ -56,7 +56,7 @@ export class CategoryService {
       return new CategoryInfoResponseDto(category);
     }
   } catch(e){
-    console.log(e);
+    return e;
   }
   }
 
@@ -95,7 +95,7 @@ export class CategoryService {
     } else try{
       throw new NotFoundException();
     } catch(e){
-      console.log(e);
+        return e;
     }
   };
 

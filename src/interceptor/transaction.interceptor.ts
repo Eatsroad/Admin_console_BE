@@ -1,4 +1,4 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
+import { CallHandler, ConflictException, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
 import { InjectConnection } from "@nestjs/typeorm";
 import { Observable } from "rxjs";
 import { Connection } from "typeorm";
@@ -22,11 +22,13 @@ export class TransactionInterceptor implements NestInterceptor {
                 {
                     if(data instanceof Error){
                         await queryRunner.rollbackTransaction();
-                        console.log("오류로 인해 데이터가 등록되지않았습니다.");
+                        console.log("오류로 인하여 데이터가 등록되지 않았습니다.");
+                        throw data;
                     } else {
                         await queryRunner.commitTransaction();
                         console.log("데이터베이스에 정상적으로 등록되었습니다.");
                         await queryRunner.release();
+                        return data;
                     }
                 }),
             );

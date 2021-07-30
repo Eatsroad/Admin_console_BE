@@ -29,6 +29,7 @@ export class StoreService {
         .getOne()) !== undefined
     );
   };
+
   private isPhoneNumberUsed = async (
     phone_number: string
   ): Promise<boolean> => {
@@ -88,7 +89,7 @@ export class StoreService {
         return new StoreInfoResponseDto(store);
       }
     } catch(e){
-      console.log(e);
+      return e;
     }
     
   }
@@ -123,7 +124,7 @@ export class StoreService {
     } else try{
       throw new NotFoundException();
     } catch(e){
-      console.log(e);
+      return e;
     }
   }
 

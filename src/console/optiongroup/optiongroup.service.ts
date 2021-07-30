@@ -65,7 +65,7 @@ export class OptiongroupService {
             return new OptionGroupInfoResponseDto(optiongroup);
         }
     } catch(e){
-        console.log(e);
+        return e;
     }
     }
 
@@ -109,7 +109,7 @@ export class OptiongroupService {
 
         }
     } catch (e){
-        console.log(e);
+        return e;
     }
     }
 
@@ -117,16 +117,16 @@ export class OptiongroupService {
         option_group_id:number,
         dto:OptionGroupUpdateDto
     ): Promise<BasicMessageDto>{
+    try{
         const optiongroup = await this.optiongroupRepository.findOne(option_group_id);
         optiongroup.option_id = await this.convert2OptionObj(dto.option_id);
 
         const result = await this.optiongroupRepository.save(optiongroup);
         if(!!result){
             return new BasicMessageDto("Options are Updated Successfully in OptionGroup.");
-        } else try{
-            throw new NotFoundException();
+        } else throw new NotFoundException();
         } catch (e){
-            console.log(e);
+            return e;
         }
 }
 
@@ -142,7 +142,7 @@ export class OptiongroupService {
         } else try{ 
             throw new NotFoundException();
         } catch(e){
-            console.log(e);
+            return e;
         }
     }
 

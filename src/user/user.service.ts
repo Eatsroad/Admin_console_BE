@@ -49,7 +49,7 @@ export class UserService {
       return new UserInfoResponseDto(user);
     }
   } catch(e){
-    console.log(e);
+    return e;
   }
   }
 
@@ -76,7 +76,7 @@ export class UserService {
     } else try{
       throw new NotFoundException();
     } catch(e){
-      console.log(e);
+      return e;
     }
   }
 
