@@ -24,7 +24,6 @@ describe('MenuService', () => {
   let connection: Connection;
   let menuRepository: Repository<Menu>;
   
-  const interceptor = new TransactionInterceptor(connection);
   const NAME= 'NAME';
   const PRICE = 5000;
   const DESC= 'vlvmdlvmrkm';
@@ -83,22 +82,8 @@ describe('MenuService', () => {
 
   it('should be defined', () => {
     expect(menuService).toBeDefined();
-    expect(interceptor).toBeDefined();
-  });
-
-  it("should work with transaction", () => {
-    const mockHandler: CallHandler = {
-      handle: () => throwError(new Error('try and retry')),
-    };
-    const mockExecutionContext = ({} as unknown) as ExecutionContext;
-    const spy = jest.spyOn(console,'log');
-
-    interceptor.intercept(mockExecutionContext,mockHandler).then(()=>{
-      expect(spy).toBeCalled();
-    }).then();
   });
   
-
   it("Should Save Menu", async () => {
     const store1 = new Store();
     store1.setName = "STORE1NAME";
