@@ -1,7 +1,7 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
+import { CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor, Logger } from "@nestjs/common";
 import { InjectConnection } from "@nestjs/typeorm";
 import { Observable } from "rxjs";
-import { Connection } from "typeorm";
+import { Connection, Transaction } from "typeorm";
 import { map } from 'rxjs/operators';
 
 @Injectable()
@@ -22,6 +22,8 @@ export class TransactionInterceptor implements NestInterceptor {
                 {
                     if(data instanceof Error){
                         await queryRunner.rollbackTransaction();
+                        // Logger.error("오류로 인하여 데이터가 동록되지 않았습니다.");
+                        
                         console.log("오류로 인하여 데이터가 등록되지 않았습니다.");
                         throw data;
                     } else {
