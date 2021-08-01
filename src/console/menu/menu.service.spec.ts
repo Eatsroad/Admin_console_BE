@@ -169,69 +169,6 @@ describe('MenuService', () => {
     expect(response.state).toBe(savedMenu.getMenuState);
   });
 
-
-  it("Should get menu pre-info and update menu after", async () => {
-    const store2 = new Store();
-    store2.setName = "STORE2NAME";
-    store2.setPhone_number = "2222";
-    store2.setAddress = "STORE2ADDRESS";
-    await connection.manager.save(store2);
-    const store_code = Buffer.from(String(store2.getStore_id),"binary").toString("base64");
-
-    const category2 = new Category();
-    category2.setCategoryName = "CATEGORY2NAME";
-    await connection.manager.save(category2);
-
-    const category3 = new Category();
-    category3.setCategoryName = "CATEGORY3NAME";
-    await connection.manager.save(category3);
-
-    const CategoryList = [category2, category3];
-
-    const optiongroup2 = new OptionGroup();
-    optiongroup2.setOptionGroupName = "OPTIONGROUP2";
-    await connection.manager.save(optiongroup2);
-
-    const optiongroup3 = new OptionGroup();
-    optiongroup3.setOptionGroupName = "OPTIONGROUP3";
-    await connection.manager.save(optiongroup3);
-
-    const OptionGroupList = [optiongroup2, optiongroup3];
-
-    const savedMenu = new Menu();
-    savedMenu.setMenuName = NAME;
-    savedMenu.setMenuPrice = PRICE;
-    savedMenu.setMenuDesc = DESC;
-    savedMenu.setMenuState = STATE;
-    savedMenu.store_id = store2;
-    savedMenu.categories = CategoryList;
-    savedMenu.optionGroups = OptionGroupList;
-    
-    await menuRepository.save(savedMenu);
-
-    const updateDtoInfo = new MenuUpdateDto();
-    updateDtoInfo.name = "UPDATED NAME";
-    updateDtoInfo.description = "UPDATED DESC";
-    updateDtoInfo.price = 10000;
-    updateDtoInfo.state = "AVAILABLE";
-
-    
-    const response = await menuService.getMenuInfo(savedMenu.getMenuId);
-   
-    const responseInfo = await menuService.updateMenuInfo(
-      savedMenu.getMenuId,
-      updateDtoInfo,
-      store_code
-    );
-    
-    expect(response.name).toBe(savedMenu.getMenuName);
-    expect(response.price).toBe(savedMenu.getMenuPrice);
-    expect(response.description).toBe(savedMenu.getMenuDesc);
-    expect(response.state).toBe(savedMenu.getMenuState);
-  });
-
- 
-
   it("Should get menu List correctly", async () => {
     const store1 = new Store();
     store1.setName = "STORE1NAME";

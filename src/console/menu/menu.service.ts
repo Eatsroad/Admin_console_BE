@@ -10,7 +10,6 @@ import { OptionGroup } from '../../../src/entities/option/optionGroup.entity';
 import { Category } from '../../../src/entities/category/category.entity';
 import { Store } from '../../../src/entities/store/store.entity';
 import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
-import { TransactionInterceptor } from 'src/interceptor/transaction.interceptor';
 
 
 @Injectable()
@@ -148,7 +147,7 @@ export class MenuService {
     ): Promise<BasicMessageDto> {
         const menu = await this.menuRepository.findOne(menuId);
         menu.categories = await this.convert2CategoryObj(dto.categories);
-        const result = await this.menuRepository.save(menu);
+        await this.menuRepository.save(menu);
         return new BasicMessageDto("Category Updated successfully!");
       
     }

@@ -75,8 +75,7 @@ export class CategoryService {
   ): Promise<BasicMessageDto> {
     const category = await this.categoryRepository.findOne(categoryId);
     category.menus = await this.convertMenuId2MenuObj(dto.menus);
-
-    const result = await this.categoryRepository.save(category);
+    await this.categoryRepository.save(category);
     return new BasicMessageDto("Update menus");
   }
 
