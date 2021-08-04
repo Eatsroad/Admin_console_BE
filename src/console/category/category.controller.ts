@@ -8,13 +8,15 @@ import {
   Post, 
   Put,
   Query,
-  Request
+  Request,
+  UseInterceptors
 } from '@nestjs/common';
 import { 
   ApiTags, 
   ApiOperation, 
   ApiResponse 
 } from '@nestjs/swagger';
+import { TransactionInterceptor } from 'src/interceptor/transaction.interceptor';
 import IStoreRequest from 'src/interfaces/store-request';
 import { BasicMessageDto } from '../../common/dtos/basic-massage.dto';
 import { CategoryService } from './category.service';
@@ -46,6 +48,7 @@ export class CategoryController {
     description: "카테고리를 생성합니다.",
     type: CategoryInfoResponseDto
   })
+  @UseInterceptors(TransactionInterceptor)
   saveCategory(
     @Body() dto: CategoryCreateDto,
     @Request() req:IStoreRequest
@@ -77,6 +80,7 @@ export class CategoryController {
     description: "카테고리를 이름, 설명, 상태를 업데이트합니다.",
     type: BasicMessageDto
   })
+  @UseInterceptors(TransactionInterceptor)
   updateCategoryInfo(
     @Param('categoryId', ParseIntPipe) cateogryId: number,
     @Body() dto: CategoryUpdatedto
@@ -93,6 +97,7 @@ export class CategoryController {
     description: "카테고리를 연결된 메뉴들을 업데이트합니다.",
     type: BasicMessageDto
   })
+  @UseInterceptors(TransactionInterceptor)
   updateMenuInCategory(
     @Param('categoryId', ParseIntPipe) cateogryId: number,
     @Body() dto: CategoryMenuUpdateDto

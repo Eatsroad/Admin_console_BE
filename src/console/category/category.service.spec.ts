@@ -115,7 +115,7 @@ describe('CategoryService', () => {
   });
 
   it("Should not Save category and throw ConfilctExeception", async () => {
-    expect.assertions(1);
+    expect.any(ConflictException);
 
     const savedCategory = new Category();
     savedCategory.setCategoryName = CategoryName;

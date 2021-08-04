@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { BasicMessageDto } from "../../../src/common/dtos/basic-massage.dto";
 import { Store } from "../../../src/entities/store/store.entity";
-import { getRepository, Repository } from "typeorm";
+import { getRepository, Repository, Transaction } from "typeorm";
 import { StoreCreateDto } from "./dtos/create-store.dto";
 import { StoreInfoResponseDto } from "./dtos/store-info-dto";
 import { StoreUpdateDto } from "./dtos/update-store.dto";
@@ -29,6 +29,7 @@ export class StoreService {
         .getOne()) !== undefined
     );
   };
+
   private isPhoneNumberUsed = async (
     phone_number: string
   ): Promise<boolean> => {
@@ -74,18 +75,23 @@ export class StoreService {
     dto: StoreCreateDto,
     userId: number
   ): Promise<StoreInfoResponseDto> {
-    if (await this.isStoreNameUsed(dto.name)) {
-      throw new ConflictException("Store name is already in use!");
-    } else if (await this.isAddressUsed(dto.address)) {
-      throw new ConflictException("Store address is already in use!");
-    } else if (await this.isPhoneNumberUsed(dto.phone_number)) {
-      throw new ConflictException("Store phone_number is already in use!");
-    } else {
-      const store = await this.storeRepository.save(
-        await this.storeCreateDtoToEntity(dto, userId)
-      );
-      return new StoreInfoResponseDto(store);
+    try{
+      if (await this.isStoreNameUsed(dto.name)) {
+        throw new ConflictException("Store name is already in use!");
+      } else if (await this.isAddressUsed(dto.address)) {
+        throw new ConflictException("Store address is already in use!");
+      } else if (await this.isPhoneNumberUsed(dto.phone_number)) {
+        throw new ConflictException("Store phone_number is already in use!");
+      } else {
+        const store = await this.storeRepository.save(
+          await this.storeCreateDtoToEntity(dto, userId)
+        );
+        return new StoreInfoResponseDto(store);
+      }
+    } catch(e){
+      return e;
     }
+    
   }
 
   async getStoreInfo(storeId: string): Promise<StoreInfoResponseDto> {
@@ -115,7 +121,11 @@ export class StoreService {
 
     if (result.affected !== 0) {
       return new BasicMessageDto("Updated Successfully.");
-    } else throw new NotFoundException();
+    } else try{
+      throw new NotFoundException();
+    } catch(e){
+      return e;
+    }
   }
 
   async removeStore(storeId: string): Promise<BasicMessageDto> {

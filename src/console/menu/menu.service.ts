@@ -1,8 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { ConflictException, Injectable, Logger, NotFoundException, UseInterceptors } from '@nestjs/common';
+import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { Menu } from '../../../src/entities/menu/menu.entity';
-import { getRepository, Repository } from 'typeorm';
+import { Connection, getRepository, QueryRunner, Repository, Transaction, TransactionRepository } from 'typeorm';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
@@ -16,6 +16,7 @@ import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
 export class MenuService {
     constructor(
     @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
+    
     ) {}
 
     private convert2StoreObj = async (store_id:string): Promise<Store> => {
@@ -74,37 +75,45 @@ export class MenuService {
     };
 
   async saveMenu(dto: MenuCreateDto, storeId: string): Promise<MenuInfoResponseDto> {
-    if( await this.MenuExist(dto.name, storeId)) {
-      throw new ConflictException("Menu is already in use!");
-    } else {
-      const menu = await this.menuRepository.save(
-        await this.menuCreateDtoToEntity(dto, storeId)
-      );
-      return new MenuInfoResponseDto(menu);
-    }
+      try{
+        if (await this.MenuExist(dto.name, storeId)) {
+        throw new ConflictException("Menu is already in use!");
+      } else {
+        const menu = await this.menuRepository.save(
+          await this.menuCreateDtoToEntity(dto, storeId)
+        );
+        return new MenuInfoResponseDto(menu);
+      } 
+      } catch(e){
+        return e;
+      } 
   }
     
-  async getMenuInfo(menuId: number): Promise<MenuInfoResponseDto> {
+  async getMenuInfo(menuId: number): Promise<MenuInfoResponseDto> {    
     const menu = await this.menuRepository.findOne(menuId,{relations:["store_id","categories","optionGroups","enable_time"]});
     if (!!menu) {
       return new MenuInfoResponseDto(menu);
     } else {
       throw new NotFoundException();
     }
+  
   }
 
-
   async getMenuList (storeId: string): Promise<MenuInfoResponseDto[]> {
+    
     const RealStoreId = Number(Buffer.from(storeId, "base64").toString("binary"));
-    if(await this.StoreExist(RealStoreId)){
-    const result = await this.menuRepository.find({
-      where :{
-        store_id: RealStoreId,
-      },
-      relations:['store_id','categories','optionGroups'],
-    });
-    return await result.map((result) => new MenuInfoResponseDto(result));
-  } else throw new NotFoundException();   
+    
+      if(await this.StoreExist(RealStoreId)){
+      const result = await this.menuRepository.find({
+        where :{
+          store_id: RealStoreId,
+        },
+        relations:['store_id','categories','optionGroups'],
+      });
+      return await result.map((result) => new MenuInfoResponseDto(result));
+    }
+     else throw new NotFoundException(); 
+   
   }
 
   async updateMenuInfo(
@@ -112,28 +121,35 @@ export class MenuService {
     dto: MenuUpdateDto,
     storeId: string
   ): Promise<BasicMessageDto> {
-    if(await this.MenuExist(dto.name, storeId)){
-      throw new ConflictException("Menu is already in use!");
-  } else {
-    const result = await this.menuRepository
-    .createQueryBuilder()
-    .update( "menus", { ...dto })
-    .where("menu_id = :menuId", { menuId })
-    .execute();
-    if(result.affected !== 0) {
-      return new BasicMessageDto("Updated Successfully.");
-    } else throw new NotFoundException();
+  try{
+      if(await this.MenuExist(dto.name, storeId)){
+        throw new ConflictException("Menu is already in use!");
+      } else {
+      const result = await this.menuRepository
+      .createQueryBuilder()
+      .update( "menus", { ...dto })
+      .where("menu_id = :menuId", { menuId })
+      .execute();
+
+      if(result.affected !== 0) {
+        return new BasicMessageDto("Updated Successfully.");
+      } else throw new NotFoundException();
+    }
+  }catch(e){
+    return e;
   }
+    
+    
   }
 
   async updateCategoryInMenu(menuId : number,
     dto: MenuUpdateDto
     ): Promise<BasicMessageDto> {
-      const menu = await this.menuRepository.findOne(menuId);
-      menu.categories = await this.convert2CategoryObj(dto.categories);
-
-      const result = await this.menuRepository.save(menu);
-      return new BasicMessageDto("Category Updated successfully!");
+        const menu = await this.menuRepository.findOne(menuId);
+        menu.categories = await this.convert2CategoryObj(dto.categories);
+        await this.menuRepository.save(menu);
+        return new BasicMessageDto("Category Updated successfully!");
+      
     }
 
   async updateOptionGroupInMenu(menuId: number,
@@ -165,6 +181,7 @@ export class MenuService {
   ): Promise<BasicMessageDto> {
    const menu = await this.menuRepository.findOne(menuId);
    menu.enable_time = null;
+
    const result = await this.menuRepository.save(menu);
    if(result.enable_time == null){
    return new BasicMessageDto("EnableTime Deleted Successfully.");

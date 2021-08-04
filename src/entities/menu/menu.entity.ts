@@ -36,7 +36,10 @@ export class Menu {
   @JoinColumn({name: "store_id"})
   store_id : Store;
 
-  @OneToOne(() => EnableTime, enableTime => enableTime.menu_id)
+  @OneToOne(() => EnableTime, enableTime => enableTime.menu_id,{ 
+    nullable: true
+  }
+   )
   @JoinColumn({name: "enable_time"})
   enable_time: EnableTime;
 
