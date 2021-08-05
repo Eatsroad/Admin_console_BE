@@ -55,6 +55,7 @@ export class OptiongroupService {
     }
 
     async saveOptionGroup(dto: OptionGroupCreateDto, storeId: string): Promise<OptionGroupInfoResponseDto>{
+        try{
         if( await this.OptionGroupExist(dto.name,storeId)){
             throw new ConflictException("Option Group Name is already in use!");
         } else {
@@ -63,6 +64,9 @@ export class OptiongroupService {
             );
             return new OptionGroupInfoResponseDto(optiongroup);
         }
+    } catch(e){
+        return e;
+    }
     }
 
     async getOptiongroupInfo(option_group_id: number): Promise<OptionGroupInfoResponseDto>{
@@ -90,6 +94,7 @@ export class OptiongroupService {
         dto: OptionGroupUpdateDto,
         storeId: string
     ): Promise<BasicMessageDto>{
+        try{
         if(await this.OptionGroupExist(dto.name, storeId)){
             throw new ConflictException("Option Group Name is already in use!");
         } else {
@@ -103,20 +108,27 @@ export class OptiongroupService {
             } else throw new NotFoundException();
 
         }
+    } catch (e){
+        return e;
+    }
     }
 
     async updateOptionInOptionGroup(
         option_group_id:number,
         dto:OptionGroupUpdateDto
     ): Promise<BasicMessageDto>{
-        const optiongroup = await this.optiongroupRepository.findOne(option_group_id);
-        optiongroup.option_id = await this.convert2OptionObj(dto.option_id);
+        try{
+            const optiongroup = await this.optiongroupRepository.findOne(option_group_id);
+            optiongroup.option_id = await this.convert2OptionObj(dto.option_id);
 
-        const result = await this.optiongroupRepository.save(optiongroup);
-        if(!!result){
-            return new BasicMessageDto("Options are Updated Successfully in OptionGroup.");
-        } else throw new NotFoundException();
-    }
+            const result = await this.optiongroupRepository.save(optiongroup);
+            if(!!result){
+                return new BasicMessageDto("Options are Updated Successfully in OptionGroup.");
+            } else throw new NotFoundException();
+        } catch (e){
+            return e;
+        }
+}
 
     async updateMenuInOptionGroup(
         option_group_id: number,
@@ -127,7 +139,11 @@ export class OptiongroupService {
         const result = await this.optiongroupRepository.save(optiongroup);
         if(!!result){
             return new BasicMessageDto("Menus are Updated Successfully in OptionGroup.");
-        } else throw new NotFoundException();
+        } else try{ 
+            throw new NotFoundException();
+        } catch(e){
+            return e;
+        }
     }
 
     async removeOptiongroup(option_group_id: number): Promise<BasicMessageDto>{

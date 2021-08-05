@@ -92,7 +92,7 @@ describe("StoreService", () => {
   });
 
   it("Should not save Store and throw ConflictException", async () => {
-    expect.assertions(1);
+    expect.any(ConflictException);
 
     const savedStore = new Store();
     savedStore.setName = NAME;

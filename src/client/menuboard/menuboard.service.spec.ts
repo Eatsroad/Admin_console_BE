@@ -130,6 +130,7 @@ describe("MenuboardService", () => {
     optionService = new OptionService(optionRepository);
 
     menuboardService = new MenuboardService(
+      storeRepository,
       categoryRepoditory,
       menuRepository,
       optionGroupRepository

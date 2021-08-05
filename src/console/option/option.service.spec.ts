@@ -106,7 +106,7 @@ describe('OptionService', () => {
   });
 
   it("Should not save option and throw ConflictException", async () => {
-    expect.assertions(1);
+    expect.any(ConflictException);
 
     const store1 = new Store();
     store1.setName = "STORENAME";

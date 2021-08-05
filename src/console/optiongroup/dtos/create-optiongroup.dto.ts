@@ -9,6 +9,4 @@ export class OptionGroupCreateDto {
 
   @IsString()
   state: string;
-
-  
 }

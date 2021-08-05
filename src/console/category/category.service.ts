@@ -46,15 +46,18 @@ export class CategoryService {
   } 
   
   async saveCategory(dto: CategoryCreateDto, storeId: string): Promise<CategoryInfoResponseDto> {
+    try{
     if (await this.isCategoryNameUnique(dto.name)) {
       throw new ConflictException("Category is already in use!");
     } else {
       const category = await this.categoryRepository.save(
         await this.categoryCreateDtoToEntity(dto, storeId)
       );
-      
       return new CategoryInfoResponseDto(category);
     }
+  } catch(e){
+    return e;
+  }
   }
 
   async getCategoryInfo(categoryId: number): Promise<CategoryInfoResponseDto> {
@@ -72,9 +75,7 @@ export class CategoryService {
   ): Promise<BasicMessageDto> {
     const category = await this.categoryRepository.findOne(categoryId);
     category.menus = await this.convertMenuId2MenuObj(dto.menus);
-
     await this.categoryRepository.save(category);
-
     return new BasicMessageDto("Update menus");
   }
 
@@ -90,7 +91,11 @@ export class CategoryService {
 
     if (result.affected !== 0) {
       return new BasicMessageDto("Updated Successfully.");
-    } else throw new NotFoundException();
+    } else try{
+      throw new NotFoundException();
+    } catch(e){
+        return e;
+    }
   };
 
   async removeCategory(categoryId: number): Promise<BasicMessageDto> {
