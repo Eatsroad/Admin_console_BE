@@ -39,6 +39,7 @@ export class UserService {
   };
 
   async saveUser(dto: UserCreateDto): Promise<UserInfoResponseDto> {
+    try{
     if (await this.isEmailUsed(dto.email)) {
       throw new ConflictException("Email is already in use!");
     } else {
@@ -47,6 +48,9 @@ export class UserService {
       );
       return new UserInfoResponseDto(user);
     }
+  } catch(e){
+    return e;
+  }
   }
 
   async getUserInfo(userId: number): Promise<UserInfoResponseDto> {
@@ -69,7 +73,11 @@ export class UserService {
       .execute();
     if (result.affected !== 0) {
       return new BasicMessageDto("Updated Successfully.");
-    } else throw new NotFoundException();
+    } else try{
+      throw new NotFoundException();
+    } catch(e){
+      return e;
+    }
   }
 
   async removeUser(userId: number): Promise<BasicMessageDto> {

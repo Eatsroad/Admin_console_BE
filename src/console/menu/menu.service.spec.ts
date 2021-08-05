@@ -1,4 +1,4 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { CallHandler, ConflictException, ExecutionContext, Injectable, InternalServerErrorException, NotFoundException, UseInterceptors } from '@nestjs/common';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { Category } from '../../../src/entities/category/category.entity';
 import { Menu } from '../../../src/entities/menu/menu.entity';
@@ -15,13 +15,15 @@ import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
 import { CategoryPreviewInfo } from '../category/dto/category-info.dto';
 import { OptionGroupPreviewInfo } from '../optiongroup/dtos/optiongroup-info.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
-
+import { throwError } from 'rxjs';
+import { TransactionInterceptor } from '../../../src/interceptor/transaction.interceptor';
+import { doesNotReject } from 'assert';
 
 describe('MenuService', () => {
   let menuService: MenuService;
   let connection: Connection;
   let menuRepository: Repository<Menu>;
-
+  
   const NAME= 'NAME';
   const PRICE = 5000;
   const DESC= 'vlvmdlvmrkm';
@@ -67,7 +69,7 @@ describe('MenuService', () => {
       console.log(e);
     }
   } 
-  
+
   beforeAll(async () => {
     connection = await createMemoryDB([Menu, User, Store, Category, OptionGroup, Option, EnableTime]);
     menuRepository = await connection.getRepository(Menu);
@@ -81,7 +83,7 @@ describe('MenuService', () => {
   it('should be defined', () => {
     expect(menuService).toBeDefined();
   });
-
+  
   it("Should Save Menu", async () => {
     const store1 = new Store();
     store1.setName = "STORE1NAME";
@@ -111,7 +113,7 @@ describe('MenuService', () => {
   });
 
   it("Should not save menu and throw ConflictException", async () => {
-    expect.assertions(1);
+    expect.any(ConflictException);
 
     const store1 = new Store();
     store1.setName = "df";
@@ -138,6 +140,7 @@ describe('MenuService', () => {
     try {
       await menuService.saveMenu(dto, store_code);
     } catch (exception) {
+      console.log(exception);
       expect(exception).toBeInstanceOf(ConflictException);
     }
   });
@@ -258,8 +261,7 @@ describe('MenuService', () => {
     const OptionGroupList = [optiongroup2, optiongroup3];
 
     const enabletime1 = new EnableTime();
-    enabletime1.setEnableTimeDesc = "ENABLETIMEDESC";
-    enabletime1.setStartTime = null;
+    enabletime1.setEnableTimeDesc = "ENABLETIMEDESC1";
     await connection.manager.save(enabletime1);
 
     const savedMenu = new Menu();
@@ -287,8 +289,8 @@ describe('MenuService', () => {
     );
 
     const updateDto = new MenuUpdateDto();
-    updateDto.categories = [3,];
-    updateDto.optionGroups = [3,];
+    updateDto.categories = [5,];
+    updateDto.optionGroups = [5,];
     updateDto.enable_time = 1;
 
     const response = await menuService.updateCategoryInMenu(
@@ -426,8 +428,7 @@ describe('MenuService', () => {
   
   it("Should update menu info(EnableTime)", async () => {
     const enabletime1 = new EnableTime();
-    enabletime1.setEnableTimeDesc = "ENABLETIMEDESC";
-    enabletime1.setStartTime = null;
+    enabletime1.setEnableTimeDesc = "ENABLETIMEDESC2";
     await connection.manager.save(enabletime1);
 
     const store3 = new Store();
@@ -492,7 +493,7 @@ describe('MenuService', () => {
     await menuRepository.save(savedMenu);
 
     const updateDtoInfo = new MenuUpdateDto();
-    updateDtoInfo.categories = [5,];
+    updateDtoInfo.categories = [7,];
 
     const responseInfo = await menuService.updateCategoryInMenu(
       savedMenu.getMenuId,
@@ -537,7 +538,7 @@ describe('MenuService', () => {
     await menuRepository.save(savedMenu);
 
     const updateDtoInfo = new MenuUpdateDto();
-    updateDtoInfo.optionGroups = [5,];
+    updateDtoInfo.optionGroups = [7,];
 
     const responseInfo = await menuService.updateOptionGroupInMenu(
     savedMenu.getMenuId,

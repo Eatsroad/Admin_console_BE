@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseInterceptors,
 } from "@nestjs/common";
 import { BasicMessageDto } from "../../src/common/dtos/basic-massage.dto";
 import { UserCreateDto } from "./dtos/create-user.dto";
@@ -18,6 +19,7 @@ import { UserService } from "./user.service";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import IUserRequest from "src/interfaces/user-request";
 import { Request } from "@nestjs/common";
+import { TransactionInterceptor } from "src/interceptor/transaction.interceptor";
 
 @Controller("user")
 @ApiTags("user API")
@@ -33,6 +35,7 @@ export class UserController {
     description: "유저를 생성합니다.",
     type: UserInfoResponseDto,
   })
+  @UseInterceptors(TransactionInterceptor)
   saveUser(@Body() dto: UserCreateDto): Promise<UserInfoResponseDto> {
     return this.userService.saveUser(dto);
   }
@@ -43,6 +46,7 @@ export class UserController {
   }
 
   @Put()
+  @UseInterceptors(TransactionInterceptor)
   updateUserInfo(
     @Request() req: IUserRequest,
     @Body() dto: UserUpdateDto
@@ -54,6 +58,7 @@ export class UserController {
   removeUser(@Request() req: IUserRequest) {
     return this.userService.removeUser(req.userId);
   }
+
 
   @Post("/signin")
   login(@Body() dto: UserLoginRequestDto): Promise<UserLoginResponseDto> {

@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Request } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Request, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { BasicMessageDto } from 'src/common/dtos/basic-massage.dto';
+import { TransactionInterceptor } from 'src/interceptor/transaction.interceptor';
 import IStoreRequest from 'src/interfaces/store-request';
 import { MenuUpdateDto } from '../menu/dtos/update-menu.dto';
 import { OptionGroupCreateDto } from './dtos/create-optiongroup.dto';
@@ -23,6 +24,7 @@ export class OptiongroupController {
         description: '옵션 그룹을 생성합니다.',
         type: OptionGroupInfoResponseDto
     })
+    @UseInterceptors(TransactionInterceptor)
     saveOptionGroup(
         @Body() dto: OptionGroupCreateDto, @Request() req: IStoreRequest,
     ): Promise<OptionGroupInfoResponseDto>{
@@ -77,6 +79,7 @@ export class OptiongroupController {
         description: '요청된 옵션그룹id에 해당하는 옵션그룹을(이름,설명,상태) 수정합니다.',
         type: OptionGroupInfoResponseDto
     })
+    @UseInterceptors(TransactionInterceptor)
     updateOptiongroupInfo(
         @Param('option_group_id', ParseIntPipe) option_group_id: number,
         @Body() dto: OptionGroupUpdateDto,
@@ -95,6 +98,7 @@ export class OptiongroupController {
         description: '요청된 옵션그룹id에 해당하는 옵션그룹의 옵션만을 수정합니다.',
         type: BasicMessageDto
     })
+    @UseInterceptors(TransactionInterceptor)
     updateOptionInOptionGroup(
         @Param('option_group_id', ParseIntPipe) option_group_id: number,
         @Body() dto: OptionGroupUpdateDto,
@@ -111,6 +115,7 @@ export class OptiongroupController {
         description: '요청된 옵션그룹id에 해당하는 옵션그룹의 메뉴정보만을 수정합니다.',
         type: BasicMessageDto
     })
+    @UseInterceptors(TransactionInterceptor)
     updateMenuInOptionGroup(
         @Param('option_group_id', ParseIntPipe) option_group_id: number,
         @Body() dto: OptionGroupUpdateDto,
