@@ -6,12 +6,17 @@ import { OptionGroup } from "../../../src/entities/option/optionGroup.entity";
 import { Repository } from "typeorm";
 import {
   MenuboardCategoryAndMenuResponseDto,
+  MenuSummaryDto,
   OptiongroupOptionDto,
+  StoreSummaryDto,
 } from "./dtos/menuboard-info.dto";
+import { Store } from "../../../src/entities/store/store.entity";
 
 @Injectable()
 export class MenuboardService {
   constructor(
+    @InjectRepository(Store)
+    private readonly storeRepository: Repository<Store>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
     @InjectRepository(Menu)
@@ -56,5 +61,23 @@ export class MenuboardService {
     }
 
     return optiongroups;
+  }
+
+  async getMenuSummaryByMenuId(menuId: number): Promise<MenuSummaryDto> {
+    const menu = await this.menuRepository
+      .createQueryBuilder("menu")
+      .where("menu.menu_id =:menuId", { menuId })
+      .getOne();
+
+    return new MenuSummaryDto(menu);
+  }
+
+  async getStoreSummaryByMenuId(storeId: number): Promise<StoreSummaryDto> {
+    const store = await this.storeRepository
+      .createQueryBuilder("store")
+      .where("store.store_id =:storeId", { storeId })
+      .getOne();
+
+    return new StoreSummaryDto(store);
   }
 }
