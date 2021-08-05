@@ -1,3 +1,4 @@
+import { IsString } from "class-validator";
 import { User } from "../../../src/entities/user/user.entity";
 
 export class UserLoginResponseDto {
@@ -12,4 +13,5 @@ export class UserLoginResponseDto {
   email: string;
   schema: string;
   accessToken: string;
+  refreshTokenIndex: number;
 }

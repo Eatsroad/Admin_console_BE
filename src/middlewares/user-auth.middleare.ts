@@ -40,7 +40,7 @@ export class UserAuthMiddleware implements NestMiddleware {
     const authorizationHeader = req.headers["authorization"];
     if (!!authorizationHeader) {
       const token = this.checkSchemaAndReturnToken(authorizationHeader);
-      req.accessToken = token;
+      req.Token = token;
       req.userId = extractUserId(token);
       next();
     } else throw new BadRequestException("Authorization Header is missing.");

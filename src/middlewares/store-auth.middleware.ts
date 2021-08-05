@@ -28,7 +28,7 @@ export class StoreAuthMiddleware implements NestMiddleware {
     if (!!authorizationHeader) {
       const token = this.checkSchemaAndReturnToken(authorizationHeader);
       req.userId = extractUserId(token);
-      req.accessToken = token;
+      req.Token = token;
       next();
     } else throw new BadRequestException("Authorization Header is missing.");
   }
