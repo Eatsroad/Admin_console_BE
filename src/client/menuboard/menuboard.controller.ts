@@ -5,7 +5,9 @@ import { CategoryService } from "src/console/category/category.service";
 import IStoreRequest from "src/interfaces/store-request";
 import {
   MenuboardCategoryAndMenuResponseDto,
+  MenuSummaryDto,
   OptiongroupOptionDto,
+  StoreSummaryDto,
 } from "./dtos/menuboard-info.dto";
 import { MenuboardService } from "./menuboard.service";
 
@@ -42,5 +44,35 @@ export class MenuboardController {
     @Query("menuId") menuId: number
   ): Promise<OptiongroupOptionDto[]> {
     return this.menuBoardService.getOptionGroupAndOptionBymenuId(menuId);
+  }
+
+  @Get("/menuSummary")
+  @ApiOperation({
+    summary: "메뉴 요약 API",
+    description: "메뉴 요약내용을 보여줍니다.",
+  })
+  @ApiResponse({
+    description: "메뉴 요약내용을 보여줍니다.",
+    type: MenuSummaryDto,
+  })
+  getMenuSummaryByMenuId(
+    @Query("menuId") menuId: number
+  ): Promise<MenuSummaryDto> {
+    return this.menuBoardService.getMenuSummaryByMenuId(menuId);
+  }
+
+  @Get("/storeSummary")
+  @ApiOperation({
+    summary: "가게 요약 API",
+    description: "가게 요약내용을 보여줍니다.",
+  })
+  @ApiResponse({
+    description: "가게 요약내용을 보여줍니다.",
+    type: StoreSummaryDto,
+  })
+  getStoreSummaryByMenuId(
+    @Query("storeId") storeId: number
+  ): Promise<StoreSummaryDto> {
+    return this.menuBoardService.getStoreSummaryByMenuId(storeId);
   }
 }
