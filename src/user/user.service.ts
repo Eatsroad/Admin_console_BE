@@ -19,7 +19,7 @@ import {
 } from "../utils/auth/jwt-token-util";
 import { RefreshTokenDto } from "./dtos/user-refreshToken.dto";
 import { RegenerateAccessTokenDto } from "../refresh/dtos/user-regenerateAccessToken.dto";
-import { RefreshToken } from "src/entities/token/token.entity";
+import { RefreshToken } from "../../src/entities/token/token.entity";
 import { async } from "rxjs";
 
 @Injectable()
@@ -52,18 +52,18 @@ export class UserService {
   };
 
   async saveUser(dto: UserCreateDto): Promise<UserInfoResponseDto> {
-    try{
-    if (await this.isEmailUsed(dto.email)) {
-      throw new ConflictException("Email is already in use!");
-    } else {
-      const user = await this.userRepository.save(
-        this.userCreateDtoToEntity(dto)
-      );
-      return new UserInfoResponseDto(user);
+    try {
+      if (await this.isEmailUsed(dto.email)) {
+        throw new ConflictException("Email is already in use!");
+      } else {
+        const user = await this.userRepository.save(
+          this.userCreateDtoToEntity(dto)
+        );
+        return new UserInfoResponseDto(user);
+      }
+    } catch (e) {
+      return e;
     }
-  } catch(e){
-    return e;
-  }
   }
 
   async getUserInfo(userId: number): Promise<UserInfoResponseDto> {
@@ -88,11 +88,12 @@ export class UserService {
       .execute();
     if (result.affected !== 0) {
       return new BasicMessageDto("Updated Successfully.");
-    } else try{
-      throw new NotFoundException();
-    } catch(e){
-      return e;
-    }
+    } else
+      try {
+        throw new NotFoundException();
+      } catch (e) {
+        return e;
+      }
   }
 
   async removeUser(userId: number): Promise<BasicMessageDto> {

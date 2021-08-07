@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { RefreshToken } from "src/entities/token/token.entity";
+import { RefreshToken } from "../../src/entities/token/token.entity";
 import { UserLoginResponseDto } from "src/user/dtos/user-login-response.dto";
 import {
   generateAccessToken,
   generateRefreshToken,
   regenerateAccessToekn,
-} from "src/utils/auth/jwt-token-util";
+} from "../../src/utils/auth/jwt-token-util";
 import { Repository } from "typeorm";
 import { RegenerateAccessTokenDto } from "./dtos/user-regenerateAccessToken.dto";
 

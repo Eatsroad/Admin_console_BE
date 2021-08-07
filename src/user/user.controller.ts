@@ -21,11 +21,8 @@ import { UserService } from "./user.service";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import IUserRequest from "src/interfaces/user-request";
 import { Request } from "@nestjs/common";
-<<<<<<< HEAD
 import { RefreshTokenDto } from "./dtos/user-refreshToken.dto";
-=======
 import { TransactionInterceptor } from "src/interceptor/transaction.interceptor";
->>>>>>> develop
 
 @Controller("user")
 @ApiTags("user API")
@@ -64,7 +61,6 @@ export class UserController {
   removeUser(@Request() req: IUserRequest) {
     return this.userService.removeUser(req.userId);
   }
-
 
   @Post("/signin")
   login(@Body() dto: UserLoginRequestDto): Promise<UserLoginResponseDto> {
