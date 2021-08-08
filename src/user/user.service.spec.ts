@@ -1,30 +1,32 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
-import { BasicMessageDto } from '../common/dtos/basic-massage.dto';
-import { createMemoryDB } from '../utils/connections/create-memory-db';
-import { Connection, Repository } from 'typeorm';
-import { UserCreateDto } from './dtos/create-user.dto';
-import { UserService } from './user.service';
-import { User } from '../entities/user/user.entity';
-import { Store } from '../../src/entities/store/store.entity';
-import { Menu } from '../../src/entities/menu/menu.entity';
-import { Option } from '../../src/entities/option/option.entity';
-import { OptionGroup } from '../../src/entities/option/optionGroup.entity';
-import { Category } from '../../src/entities/category/category.entity';
-import { EnableTime } from '../../src/entities/menu/enableTime.entity';
-import { UserUpdateDto } from './dtos/update-user.dto';
-import { connected } from 'process';
+import { ConflictException, NotFoundException } from "@nestjs/common";
+import { BasicMessageDto } from "../common/dtos/basic-massage.dto";
+import { createMemoryDB } from "../utils/connections/create-memory-db";
+import { Connection, Repository } from "typeorm";
+import { UserCreateDto } from "./dtos/create-user.dto";
+import { UserService } from "./user.service";
+import { User } from "../entities/user/user.entity";
+import { Store } from "../../src/entities/store/store.entity";
+import { Menu } from "../../src/entities/menu/menu.entity";
+import { Option } from "../../src/entities/option/option.entity";
+import { OptionGroup } from "../../src/entities/option/optionGroup.entity";
+import { Category } from "../../src/entities/category/category.entity";
+import { EnableTime } from "../../src/entities/menu/enableTime.entity";
+import { UserUpdateDto } from "./dtos/update-user.dto";
+import { connected } from "process";
+import { RefreshToken } from "../../src/entities/token/token.entity";
 
-describe('UserService', () => {
+describe("UserService", () => {
   let userService: UserService;
   let connection: Connection;
   let userRepository: Repository<User>;
+  let refreshRepository: Repository<RefreshToken>;
 
-  const NAME = 'NAME';
-  const EMAIL = 'test@test.com';
-  const PASSWORD = '1234abc5';
-  const PHONE_NUMBER = '010-7725-1929';
+  const NAME = "NAME";
+  const EMAIL = "test@test.com";
+  const PASSWORD = "1234abc5";
+  const PHONE_NUMBER = "010-7725-1929";
   const USER_ROLE = "USER";
-  
+
   const saveUser = async (): Promise<User> => {
     const savedUser = new User();
 
@@ -38,9 +40,19 @@ describe('UserService', () => {
   };
 
   beforeAll(async () => {
-    connection = await createMemoryDB([User, Store, Menu, Option, OptionGroup, Category, EnableTime]);
+    connection = await createMemoryDB([
+      User,
+      Store,
+      Menu,
+      Option,
+      OptionGroup,
+      Category,
+      EnableTime,
+      RefreshToken,
+    ]);
     userRepository = await connection.getRepository(User);
-    userService = new UserService(userRepository);
+    refreshRepository = await connection.getRepository(RefreshToken);
+    userService = new UserService(userRepository, refreshRepository);
   });
 
   afterAll(async () => {
@@ -78,7 +90,7 @@ describe('UserService', () => {
     expect(savedUser.getPassword).toBe(PASSWORD);
     expect(savedUser.getPhone_number).toBe(responseDto.phone_number);
   });
-  
+
   it("Should not save user and throw ConflictException", async () => {
     expect.any(ConflictException);
 
@@ -111,13 +123,13 @@ describe('UserService', () => {
     savedUser.setPhone_number = PHONE_NUMBER;
     savedUser.setUserRole = USER_ROLE;
     savedUser = await userRepository.save(savedUser);
-  
+
     const response = await userService.getUserInfo(savedUser.getUser_id);
     expect(response.user_id).toBe(savedUser.getUser_id);
     expect(response.email).toBe(savedUser.getEmail);
     expect(response.name).toBe(savedUser.getName);
   });
-  
+
   it("Should throw NotFoundException if user_id is invalid", async () => {
     expect.assertions(1);
     try {

@@ -15,6 +15,7 @@ import IUserRequest from "src/interfaces/user-request";
 import {
   checkExpDateRefresh,
   extractUserId,
+  extractUserIdForRefresh,
 } from "src/utils/auth/jwt-token-util";
 import { getRepository, Repository } from "typeorm";
 import * as jwt from "jsonwebtoken";
@@ -54,15 +55,32 @@ export class RefreshAuthMiddleware implements NestMiddleware {
     const refreshtokenIndex = req.headers["refreshtoken_index"];
     if (!!authorizationHeader) {
       const token = this.checkSchemaAndReturnToken(authorizationHeader);
-
-      req.userId = extractUserId(token);
+      console.log(1);
+      console.log(token);
+      req.userId = extractUserIdForRefresh(token);
+      console.log(1234);
       const targettoken = await this.refreshtokenRepository
         .createQueryBuilder()
         .select("r")
         .from(RefreshToken, "r")
         .where("r.token_id =:refreshtokenIndex", { refreshtokenIndex })
         .getOne();
-
+      console.log(1);
+      if (targettoken === undefined) {
+        const user_id = req.userId;
+        const targettoken1 = await this.refreshtokenRepository
+          .createQueryBuilder()
+          .select("r")
+          .from(RefreshToken, "r")
+          .where("r.user_id =:user_id", { user_id })
+          .getOne();
+        try {
+          await this.refreshtokenRepository.delete(targettoken1);
+          throw new BadRequestException("Don't try bad things bixxx");
+        } catch (e) {
+          throw new BadRequestException("Don't try bad things bixxx");
+        }
+      }
       const refreshtoken = targettoken.getrefreshtoken;
 
       const decodedToken = jwt.verify(
@@ -83,8 +101,9 @@ export class RefreshAuthMiddleware implements NestMiddleware {
         try {
           await this.refreshtokenRepository.delete(targettoken1);
         } catch (e) {
-          return new BasicMessageDto("Fuxxx");
+          throw new BadRequestException("Don't try bad things bixxx");
         }
+        throw new BadRequestException("Don't try bad things bixxx");
       } else {
         try {
           await this.refreshtokenRepository.delete(targettoken);

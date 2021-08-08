@@ -14,7 +14,6 @@ export const generateAccessToken = (userId: number): string => {
 };
 
 export const generateRefreshToken = (userId: number): string => {
-  //const refreshtokenNew =
   return jwt.sign(
     {
       userId: userId,
@@ -22,16 +21,10 @@ export const generateRefreshToken = (userId: number): string => {
     },
     `${process.env.REFRESH_TOKEN_SECRET}`
   );
-
-  // const refreshtokenTemp = new RefreshToken();
-  // refreshtokenTemp.setrefreshtoken = refreshtokenNew
-
-  // const refreshtoken = await
 };
 
 export function checkExpDate(exp: number): void {
   try {
-    console.log(exp - Date.now() / 1000);
     if (exp < Date.now() / 1000) {
       throw new UnauthorizedException("JWT Token has been expired.");
     }
@@ -66,6 +59,22 @@ export function extractUserId(token: string): number {
   }
 }
 
+export function extractUserIdForRefresh(token: string): number {
+  try {
+    console.log(23);
+    const decodedToken = jwt.verify(token, `${process.env.JWT_SERCET_KEY}`) as {
+      userId: number;
+      exp: number;
+    };
+    console.log(2345);
+    console.log(decodedToken);
+    return decodedToken.userId;
+  } catch (exception) {
+    console.log(exception);
+    throw new UnauthorizedException("This must be not happen");
+  }
+}
+
 export function regenerateAccessToekn(token: string): string {
   try {
     const decodedToken = jwt.verify(
@@ -89,16 +98,3 @@ export function regenerateAccessToekn(token: string): string {
     );
   }
 }
-
-// export const generateRefreshToken = (user: User, expiresIn: number): Promise<string> {
-//   const token = await this.tokens.createRefreshToken(user, expiresIn)
-
-//   const opts: SignOptions = {
-//     ...BASE_OPTIONS,
-//     expiresIn,
-//     subject: String(user.id),
-//     jwtid: String(token.id),
-//   }
-
-//   return jwt.signAsync({}, opts)
-// }
