@@ -55,17 +55,13 @@ export class RefreshAuthMiddleware implements NestMiddleware {
     const refreshtokenIndex = req.headers["refreshtoken_index"];
     if (!!authorizationHeader) {
       const token = this.checkSchemaAndReturnToken(authorizationHeader);
-      console.log(1);
-      console.log(token);
       req.userId = extractUserIdForRefresh(token);
-      console.log(1234);
       const targettoken = await this.refreshtokenRepository
         .createQueryBuilder()
         .select("r")
         .from(RefreshToken, "r")
         .where("r.token_id =:refreshtokenIndex", { refreshtokenIndex })
         .getOne();
-      console.log(1);
       if (targettoken === undefined) {
         const user_id = req.userId;
         const targettoken1 = await this.refreshtokenRepository
