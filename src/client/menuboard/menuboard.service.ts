@@ -11,6 +11,7 @@ import {
   StoreSummaryDto,
 } from "./dtos/menuboard-info.dto";
 import { Store } from "../../../src/entities/store/store.entity";
+import { BasicMessageDto } from "src/common/dtos/basic-massage.dto";
 
 @Injectable()
 export class MenuboardService {
@@ -48,18 +49,21 @@ export class MenuboardService {
       .where("menu.menu_id =:menuId", { menuId })
       .getOne();
     const optiongroups: OptiongroupOptionDto[] = [];
-    for (var i = 0; i < menuDetail.optionGroups.length; i++) {
-      const optiongroupId = menuDetail.optionGroups[i].getOptionGroupId;
-      const tempOptiongroup = await this.optiongroupRepository
-        .createQueryBuilder("optiongroup")
-        .innerJoinAndSelect("optiongroup.option_id", "options")
-        .where("optiongroup.option_group_id =:optiongroupId", {
-          optiongroupId,
-        })
-        .getOne();
-      optiongroups.push(new OptiongroupOptionDto(tempOptiongroup));
+    try {
+      for (var i = 0; i < menuDetail.optionGroups.length; i++) {
+        const optiongroupId = menuDetail.optionGroups[i].getOptionGroupId;
+        const tempOptiongroup = await this.optiongroupRepository
+          .createQueryBuilder("optiongroup")
+          .innerJoinAndSelect("optiongroup.option_id", "options")
+          .where("optiongroup.option_group_id =:optiongroupId", {
+            optiongroupId,
+          })
+          .getOne();
+        optiongroups.push(new OptiongroupOptionDto(tempOptiongroup));
+      }
+    } catch {
+      return null;
     }
-
     return optiongroups;
   }
 
