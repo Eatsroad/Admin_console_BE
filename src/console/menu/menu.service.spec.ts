@@ -289,8 +289,8 @@ describe('MenuService', () => {
     );
 
     const updateDto = new MenuUpdateDto();
-    updateDto.categories = [5,];
-    updateDto.optionGroups = [5,];
+    updateDto.categories = [3,];
+    updateDto.optionGroups = [3,];
     updateDto.enable_time = 1;
 
     const response = await menuService.updateCategoryInMenu(
@@ -315,6 +315,8 @@ describe('MenuService', () => {
   
     
     const updatedMenu = await menuService.getMenuInfo(savedMenu.getMenuId);
+    console.log(updatedMenu);
+    
     expect(updatedMenu.name).toBe("UPDATED NAME");
     expect(updatedMenu.price).toBe(10000);
     expect(updatedMenu.description).toBe("UPDATED DESC");
@@ -493,7 +495,7 @@ describe('MenuService', () => {
     await menuRepository.save(savedMenu);
 
     const updateDtoInfo = new MenuUpdateDto();
-    updateDtoInfo.categories = [7,];
+    updateDtoInfo.categories = [5,];
 
     const responseInfo = await menuService.updateCategoryInMenu(
       savedMenu.getMenuId,
@@ -538,7 +540,7 @@ describe('MenuService', () => {
     await menuRepository.save(savedMenu);
 
     const updateDtoInfo = new MenuUpdateDto();
-    updateDtoInfo.optionGroups = [7,];
+    updateDtoInfo.optionGroups = [5,];
 
     const responseInfo = await menuService.updateOptionGroupInMenu(
     savedMenu.getMenuId,
