@@ -1,4 +1,4 @@
 export default interface IUserRequest extends Request {
-  accessToken: string;
+  Token: string;
   userId: number;
 }

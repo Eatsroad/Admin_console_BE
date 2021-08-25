@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
+  Headers,
   Param,
   ParseIntPipe,
   Post,
@@ -19,6 +21,7 @@ import { UserService } from "./user.service";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import IUserRequest from "src/interfaces/user-request";
 import { Request } from "@nestjs/common";
+import { RefreshTokenDto } from "./dtos/user-refreshToken.dto";
 import { TransactionInterceptor } from "src/interceptor/transaction.interceptor";
 
 @Controller("user")
@@ -59,12 +62,18 @@ export class UserController {
     return this.userService.removeUser(req.userId);
   }
 
-
   @Post("/signin")
   login(@Body() dto: UserLoginRequestDto): Promise<UserLoginResponseDto> {
     return this.userService.login(dto);
   }
 
+  // @Post("/refresh")
+  // refresh(
+  //   @Headers("authorization") authorization: string,
+  //   @Headers("refreshtoken_index") refreshtoken_index: string
+  // ) {
+  //   return this.userService.refresh(authorization, refreshtoken_index);
+  // }
   // @Post('/board/:userId')
   // saveBoard(
   //   @Body() dto: BoardCreateDto,

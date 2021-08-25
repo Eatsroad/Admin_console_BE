@@ -6,12 +6,18 @@ import { OptionGroup } from "../../../src/entities/option/optionGroup.entity";
 import { Repository } from "typeorm";
 import {
   MenuboardCategoryAndMenuResponseDto,
+  MenuSummaryDto,
   OptiongroupOptionDto,
+  StoreSummaryDto,
 } from "./dtos/menuboard-info.dto";
+import { Store } from "../../../src/entities/store/store.entity";
+import { BasicMessageDto } from "src/common/dtos/basic-massage.dto";
 
 @Injectable()
 export class MenuboardService {
   constructor(
+    @InjectRepository(Store)
+    private readonly storeRepository: Repository<Store>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
     @InjectRepository(Menu)
@@ -43,18 +49,39 @@ export class MenuboardService {
       .where("menu.menu_id =:menuId", { menuId })
       .getOne();
     const optiongroups: OptiongroupOptionDto[] = [];
-    for (var i = 0; i < menuDetail.optionGroups.length; i++) {
-      const optiongroupId = menuDetail.optionGroups[i].getOptionGroupId;
-      const tempOptiongroup = await this.optiongroupRepository
-        .createQueryBuilder("optiongroup")
-        .innerJoinAndSelect("optiongroup.option_id", "options")
-        .where("optiongroup.option_group_id =:optiongroupId", {
-          optiongroupId,
-        })
-        .getOne();
-      optiongroups.push(new OptiongroupOptionDto(tempOptiongroup));
+    try {
+      for (var i = 0; i < menuDetail.optionGroups.length; i++) {
+        const optiongroupId = menuDetail.optionGroups[i].getOptionGroupId;
+        const tempOptiongroup = await this.optiongroupRepository
+          .createQueryBuilder("optiongroup")
+          .innerJoinAndSelect("optiongroup.option_id", "options")
+          .where("optiongroup.option_group_id =:optiongroupId", {
+            optiongroupId,
+          })
+          .getOne();
+        optiongroups.push(new OptiongroupOptionDto(tempOptiongroup));
+      }
+    } catch {
+      return null;
     }
-
     return optiongroups;
+  }
+
+  async getMenuSummaryByMenuId(menuId: number): Promise<MenuSummaryDto> {
+    const menu = await this.menuRepository
+      .createQueryBuilder("menu")
+      .where("menu.menu_id =:menuId", { menuId })
+      .getOne();
+
+    return new MenuSummaryDto(menu);
+  }
+
+  async getStoreSummaryByMenuId(storeId: number): Promise<StoreSummaryDto> {
+    const store = await this.storeRepository
+      .createQueryBuilder("store")
+      .where("store.store_id =:storeId", { storeId })
+      .getOne();
+
+    return new StoreSummaryDto(store);
   }
 }

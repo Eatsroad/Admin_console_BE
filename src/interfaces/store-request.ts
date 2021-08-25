@@ -1,7 +1,7 @@
 import internal from "stream";
 
 export default interface IStoreRequest extends Request {
-  accessToken: string;
+  Token: string;
   storeId: string;
   userId: number;
 }
