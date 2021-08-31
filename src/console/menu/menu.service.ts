@@ -86,7 +86,7 @@ export class MenuService {
     };
 
     async uploadFile(file : Express.Multer.File):Promise<BasicMessageDto>{
-      
+      const url = process.env.FILE_LOCATION;
       return new BasicMessageDto("Image update successfully!");
     }
 
@@ -155,9 +155,7 @@ export class MenuService {
     }
   }catch(e){
     return e;
-  }
-    
-    
+  } 
   }
 
   async updateCategoryInMenu(menuId : number,
@@ -187,6 +185,16 @@ export class MenuService {
     await this.menuRepository.save(menu);
     return new BasicMessageDto("EnableTime Updated Successfully.");
   }
+
+  async updateFileInMenu(url: string,
+    menuId : number
+    ): Promise<BasicMessageDto> {
+        const menu = await this.menuRepository.findOne(menuId);
+        menu.setImage = url;
+        await this.menuRepository.save(menu);
+        return new BasicMessageDto("Image Updated successfully!");
+      
+    }
 
   async removeMenu(menuId : number): Promise<BasicMessageDto> {
     const result = await this.menuRepository.delete(menuId);

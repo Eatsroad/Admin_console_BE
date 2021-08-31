@@ -78,7 +78,7 @@ export class MenuController {
   fileUpload(@UploadedFiles() file: Express.Multer.File, @Param('menuId', ParseIntPipe) menuId:number):Promise<BasicMessageDto>{
     console.log(file);
     return this.menuService.uploadFile(file);
-    
+    return this.menuService.updateFileInMenu(file.fieldname, menuId);
   }
 
 
