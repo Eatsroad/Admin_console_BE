@@ -65,13 +65,20 @@ export class MenuController {
       s3: s3,
       bucket: process.env.AWS_S3_BUCKET_NAME,
       acl: 'public-read',
+      resize: {
+        width: 400,
+        height: 400
+      },
+      max: true,
       key: function(req, file, cb) {
         cb(null, file.originalname)
       }
     })
   }))
-  fileUpload(@UploadedFiles() file: Express.Multer.File){
-      this.menuService.fileUpload(file);
+  fileUpload(@UploadedFiles() file: Express.Multer.File, @Param('menuId', ParseIntPipe) menuId:number){
+    const UploadedFile = this.menuService.uploadFile(file);
+    const result = this.menuService.updateFileInMenu(UploadedFile, menuId);
+    return result;
   }
 
 
