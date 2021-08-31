@@ -85,8 +85,9 @@ export class MenuService {
       )
     };
 
-    async uploadFile(file : Express.Multer.File){
-      console.log("SUCCESS");
+    async uploadFile(file : Express.Multer.File):Promise<BasicMessageDto>{
+      
+      return new BasicMessageDto("Image update successfully!");
     }
 
 

@@ -60,7 +60,7 @@ export class MenuController {
   }
 
   @Post('/:menuId/image')
-  @UseInterceptors(FilesInterceptor('images', 3, {
+  @UseInterceptors(FilesInterceptor('image',1,{
     storage: multerS3({
       s3: s3,
       bucket: process.env.AWS_S3_BUCKET_NAME,
@@ -75,10 +75,10 @@ export class MenuController {
       }
     })
   }))
-  fileUpload(@UploadedFiles() file: Express.Multer.File, @Param('menuId', ParseIntPipe) menuId:number){
-    const UploadedFile = this.menuService.uploadFile(file);
-    const result = this.menuService.updateFileInMenu(UploadedFile, menuId);
-    return result;
+  fileUpload(@UploadedFiles() file: Express.Multer.File, @Param('menuId', ParseIntPipe) menuId:number):Promise<BasicMessageDto>{
+    console.log(file);
+    return this.menuService.uploadFile(file);
+    
   }
 
 
