@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Req, Request, Res, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Req, Request, Res, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import IStoreRequest from 'src/interfaces/store-request';
 import { Connection, QueryRunner, TransactionManager } from 'typeorm';
@@ -10,8 +10,17 @@ import { MenuService } from './menu.service'
 import {getConnection} from "typeorm";
 import { TransactionInterceptor } from 'src/interceptor/transaction.interceptor';
 import { request } from 'express';
-
-
+import { FilesInterceptor } from '@nestjs/platform-express';
+import * as multer from 'multer';
+import * as AWS from 'aws-sdk';
+import * as multerS3 from 'multer-s3';
+import * as dotenv from 'dotenv';
+dotenv.config();
+const s3 = new AWS.S3();
+AWS.config.update({
+  accessKeyId:process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY,
+});
 
 @Controller('menu')
 @ApiTags('menu API')
@@ -51,8 +60,18 @@ export class MenuController {
   }
 
   @Post('/:menuId/image')
-  fileUpload(@Req() request, @Res() response){
-      this.menuService.fileUpload(request, response);
+  @UseInterceptors(FilesInterceptor('images', 3, {
+    storage: multerS3({
+      s3: s3,
+      bucket: process.env.AWS_S3_BUCKET_NAME,
+      acl: 'public-read',
+      key: function(req, file, cb) {
+        cb(null, file.originalname)
+      }
+    })
+  }))
+  fileUpload(@UploadedFiles() file: Express.Multer.File){
+      this.menuService.fileUpload(file);
   }
 
 

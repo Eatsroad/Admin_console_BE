@@ -13,6 +13,8 @@ import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
 import * as multer from 'multer';
 import * as AWS from 'aws-sdk';
 import * as multerS3 from 'multer-s3';
+import * as dotenv from 'dotenv';
+dotenv.config();
 const AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 
 const s3 = new AWS.S3();
@@ -85,13 +87,13 @@ export class MenuService {
 
     async fileUpload(@Req() req, @Res() res){
       await this.upload;
-    
+      
     }
 
     upload = multer({
       storage: multerS3({
         s3: s3,
-        bucket: AWS_S3_BUCKET_NAME,
+        bucket: process.env.AWS_S3_BUCKET_NAME,
         acl:'public-read',
         key:function(request, file, cb){
           cb(null, `${Date.now().toString()} - ${file.originalname}`);
