@@ -85,21 +85,11 @@ export class MenuService {
       )
     };
 
-    async fileUpload(@Req() req, @Res() res){
-      await this.upload;
+    async fileUpload(file : Express.Multer.File){
+      
       
     }
 
-    upload = multer({
-      storage: multerS3({
-        s3: s3,
-        bucket: process.env.AWS_S3_BUCKET_NAME,
-        acl:'public-read',
-        key:function(request, file, cb){
-          cb(null, `${Date.now().toString()} - ${file.originalname}`);
-        },
-      }),
-    })
 
    
   async saveMenu(dto: MenuCreateDto, storeId: string): Promise<MenuInfoResponseDto> {
