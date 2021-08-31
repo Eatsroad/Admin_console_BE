@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, Logger, NotFoundException, UseInterceptors } from '@nestjs/common';
+import { ConflictException, Injectable, Logger, NotFoundException, Req, Res, UseInterceptors } from '@nestjs/common';
 import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { Menu } from '../../../src/entities/menu/menu.entity';
@@ -10,7 +10,16 @@ import { OptionGroup } from '../../../src/entities/option/optionGroup.entity';
 import { Category } from '../../../src/entities/category/category.entity';
 import { Store } from '../../../src/entities/store/store.entity';
 import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
+import * as multer from 'multer';
+import * as AWS from 'aws-sdk';
+import * as multerS3 from 'multer-s3';
+const AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 
+const s3 = new AWS.S3();
+AWS.config.update({
+  accessKeyId:process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY,
+});
 
 @Injectable()
 export class MenuService {
@@ -74,6 +83,23 @@ export class MenuService {
       )
     };
 
+    async fileUpload(@Req() req, @Res() res){
+      await this.upload;
+    
+    }
+
+    upload = multer({
+      storage: multerS3({
+        s3: s3,
+        bucket: AWS_S3_BUCKET_NAME,
+        acl:'public-read',
+        key:function(request, file, cb){
+          cb(null, `${Date.now().toString()} - ${file.originalname}`);
+        },
+      }),
+    })
+
+   
   async saveMenu(dto: MenuCreateDto, storeId: string): Promise<MenuInfoResponseDto> {
       try{
         if (await this.MenuExist(dto.name, storeId)) {

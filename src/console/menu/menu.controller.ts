@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Request, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Req, Request, Res, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import IStoreRequest from 'src/interfaces/store-request';
 import { Connection, QueryRunner, TransactionManager } from 'typeorm';
@@ -9,6 +9,7 @@ import { MenuUpdateDto } from './dtos/update-menu.dto';
 import { MenuService } from './menu.service' 
 import {getConnection} from "typeorm";
 import { TransactionInterceptor } from 'src/interceptor/transaction.interceptor';
+import { request } from 'express';
 
 
 
@@ -48,6 +49,12 @@ export class MenuController {
   getMenuInfo(@Param('menuId', ParseIntPipe) menuId: number,): Promise<MenuInfoResponseDto>{
     return this.menuService.getMenuInfo(menuId);
   }
+
+  @Post('/:menuId/image')
+  fileUpload(@Req() request, @Res() response){
+      this.menuService.fileUpload(request, response);
+  }
+
 
   @Get()
   @ApiOperation({
