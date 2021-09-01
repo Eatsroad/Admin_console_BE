@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Req, Request, Res, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Options, Param, ParseIntPipe, Patch, Post, Put, Query, Req, Request, Res, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import IStoreRequest from 'src/interfaces/store-request';
 import { Connection, QueryRunner, TransactionManager } from 'typeorm';
@@ -10,11 +10,15 @@ import { MenuService } from './menu.service'
 import {getConnection} from "typeorm";
 import { TransactionInterceptor } from 'src/interceptor/transaction.interceptor';
 import { request } from 'express';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
 import * as AWS from 'aws-sdk';
-import * as multerS3 from 'multer-s3';
+import * as multerS3 from 'multer-s3-transform';
 import * as dotenv from 'dotenv';
+import s3Storage from 'multer-sharp-s3';
+import * as sharp from 'sharp';
+ 
+
 dotenv.config();
 const s3 = new AWS.S3();
 AWS.config.update({
@@ -65,20 +69,24 @@ export class MenuController {
       s3: s3,
       bucket: process.env.AWS_S3_BUCKET_NAME,
       acl: 'public-read',
-      resize: {
-        width: 400,
-        height: 400
+      shouldTransform: function (req, file, cb) {
+        cb(null, /^image/i.test(file.mimetype))
       },
-      max: true,
-      key: function(req, file, cb) {
-        cb(null, file.originalname)
-      }
-    })
+      transforms: [ {
+        id: 'thumbnail',
+        key: function (req, file, cb) {
+          cb(null, `${file.originalname}`)
+        },
+        transform: function (req, file, cb) {
+          cb(null, sharp().resize(100, 100))
+        }
+      }]
+    }),
   }))
   fileUpload(@UploadedFiles() file: Express.Multer.File, @Param('menuId', ParseIntPipe) menuId:number):Promise<BasicMessageDto>{
-    console.log(file);
-    return this.menuService.uploadFile(file);
-    return this.menuService.updateFileInMenu(file.fieldname, menuId);
+    console.log(file[0].transforms);
+
+    return this.menuService.updateFileInMenu(file, menuId);
   }
 
 
