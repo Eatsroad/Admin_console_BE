@@ -10,18 +10,7 @@ import { OptionGroup } from '../../../src/entities/option/optionGroup.entity';
 import { Category } from '../../../src/entities/category/category.entity';
 import { Store } from '../../../src/entities/store/store.entity';
 import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
-import * as multer from 'multer';
-import * as AWS from 'aws-sdk';
-import * as multerS3 from 'multer-s3';
-import * as dotenv from 'dotenv';
-// dotenv.config();
-// const AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
-
-// const s3 = new AWS.S3();
-// AWS.config.update({
-//   accessKeyId:process.env.AWS_ACCESS_KEY_ID,
-//   secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY,
-// });
+import { Transform } from 'class-transformer';
 
 @Injectable()
 export class MenuService {
@@ -84,15 +73,6 @@ export class MenuService {
         .getOne()) !== undefined
       )
     };
-
-    private uploadFile(file : Express.Multer.File) : string{
-      console.log(file);
-      console.log(file.originalname);
-      const url = process.env.FILE_LOCATION;
-      return `${url}/${file.originalname}`;
-    }
-
-
    
   async saveMenu(dto: MenuCreateDto, storeId: string): Promise<MenuInfoResponseDto> {
       try{
