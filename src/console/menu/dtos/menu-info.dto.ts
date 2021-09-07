@@ -19,6 +19,7 @@ export class MenuInfoResponseDto {
         this.categories = menu.getCategoryPreviewInfo;
         this.optionGroups = menu.getOptionGroupsPreviewInfo;
         this.enable_time = menu.enable_time;
+        this.image = menu.getImage
     }
     menu_id: number;
     name: string;
@@ -28,4 +29,5 @@ export class MenuInfoResponseDto {
     categories: CategoryPreviewInfo[];
     optionGroups: OptionGroupPreviewInfo[];
     enable_time: EnableTime;
+    image: string;
 }
