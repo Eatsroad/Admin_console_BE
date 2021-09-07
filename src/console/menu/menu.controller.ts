@@ -1,16 +1,25 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Request, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Req, Request, Res, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import IStoreRequest from 'src/interfaces/store-request';
-import { Connection, QueryRunner, TransactionManager } from 'typeorm';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { MenuCreateDto } from './dtos/create-menu.dto';
 import { MenuInfoResponseDto } from './dtos/menu-info.dto';
 import { MenuUpdateDto } from './dtos/update-menu.dto';
 import { MenuService } from './menu.service' 
-import {getConnection} from "typeorm";
 import { TransactionInterceptor } from 'src/interceptor/transaction.interceptor';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import * as AWS from 'aws-sdk';
+import * as multerS3 from 'multer-s3-transform';
+import * as dotenv from 'dotenv';
+import * as sharp from 'sharp';
+ 
 
-
+dotenv.config();
+const s3 = new AWS.S3();
+AWS.config.update({
+  accessKeyId:process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY,
+});
 
 @Controller('menu')
 @ApiTags('menu API')
@@ -48,6 +57,31 @@ export class MenuController {
   getMenuInfo(@Param('menuId', ParseIntPipe) menuId: number,): Promise<MenuInfoResponseDto>{
     return this.menuService.getMenuInfo(menuId);
   }
+
+  @Post('/:menuId/image')
+  @UseInterceptors(FilesInterceptor('image',1,{
+    storage: multerS3({
+      s3: s3,
+      bucket: process.env.AWS_S3_BUCKET_NAME,
+      acl: 'public-read',
+      shouldTransform: function (req, file, cb) {
+        cb(null, /^image/i.test(file.mimetype))
+      },
+      transforms: [ {
+        id: 'thumbnail',
+        key: function (req, file, cb) {
+          cb(null, `${file.originalname}`)
+        },
+        transform: function (req, file, cb) {
+          cb(null, sharp().resize(100, 100))
+        }
+      }]
+    }),
+  }))
+  fileUpload(@UploadedFiles() file: Express.Multer.File, @Param('menuId', ParseIntPipe) menuId:number):Promise<BasicMessageDto>{
+    return this.menuService.updateFileInMenu(file, menuId);
+  }
+
 
   @Get()
   @ApiOperation({

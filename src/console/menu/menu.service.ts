@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, Logger, NotFoundException, UseInterceptors } from '@nestjs/common';
+import { ConflictException, Injectable, Logger, NotFoundException, Req, Res, UseInterceptors } from '@nestjs/common';
 import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
 import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
 import { Menu } from '../../../src/entities/menu/menu.entity';
@@ -10,7 +10,7 @@ import { OptionGroup } from '../../../src/entities/option/optionGroup.entity';
 import { Category } from '../../../src/entities/category/category.entity';
 import { Store } from '../../../src/entities/store/store.entity';
 import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
-
+import { Transform } from 'class-transformer';
 
 @Injectable()
 export class MenuService {
@@ -73,7 +73,7 @@ export class MenuService {
         .getOne()) !== undefined
       )
     };
-
+   
   async saveMenu(dto: MenuCreateDto, storeId: string): Promise<MenuInfoResponseDto> {
       try{
         if (await this.MenuExist(dto.name, storeId)) {
@@ -137,9 +137,7 @@ export class MenuService {
     }
   }catch(e){
     return e;
-  }
-    
-    
+  } 
   }
 
   async updateCategoryInMenu(menuId : number,
@@ -169,6 +167,15 @@ export class MenuService {
     await this.menuRepository.save(menu);
     return new BasicMessageDto("EnableTime Updated Successfully.");
   }
+
+  async updateFileInMenu(file: Express.Multer.File,
+    menuId : number
+    ): Promise<BasicMessageDto> {
+        const menu = await this.menuRepository.findOne(menuId);
+        menu.setImage = file[0].transforms[0].location;
+        await this.menuRepository.save(menu);
+        return new BasicMessageDto("Image Updated successfully!");
+    }
 
   async removeMenu(menuId : number): Promise<BasicMessageDto> {
     const result = await this.menuRepository.delete(menuId);
