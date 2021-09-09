@@ -32,6 +32,9 @@ export class Menu {
   @Column({nullable: true})
   private state: string;
 
+  @Column({nullable:true})
+  private image : string;
+
   @ManyToOne(() => Store, store => store.menus)
   @JoinColumn({name: "store_id"})
   store_id : Store;
@@ -92,6 +95,10 @@ export class Menu {
     return this.state;
   }
 
+  get getImage():string{
+    return this.image;
+  }
+
   get getCategoryPreviewInfo(): CategoryPreviewInfo[] {
     let result: CategoryPreviewInfo[] = [];
     try {
@@ -140,6 +147,8 @@ export class Menu {
   set setMenuState(state: string) {
     this.state = state;
   }
-
+  set setImage(image : string){
+    this.image = image;
+  }
   
 }
