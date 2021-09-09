@@ -41,6 +41,7 @@ export class MenuSummaryDto {
     this.state = menu.getMenuState;
     this.description = menu.getMenuDesc;
     this.menuId = menu.getMenuId;
+    this.image = menu.getImage;
   }
 
   name: string;
@@ -48,6 +49,7 @@ export class MenuSummaryDto {
   state: string;
   description: string;
   menuId: number;
+  image: string;
 }
 
 export class StoreSummaryDto {

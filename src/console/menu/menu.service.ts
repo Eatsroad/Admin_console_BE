@@ -1,9 +1,10 @@
-<<<<<<< HEAD
 import {
   ConflictException,
   Injectable,
   Logger,
   NotFoundException,
+  Req,
+  Res,
   UseInterceptors,
 } from "@nestjs/common";
 import { InjectConnection, InjectRepository } from "@nestjs/typeorm";
@@ -24,21 +25,7 @@ import { OptionGroup } from "../../../src/entities/option/optionGroup.entity";
 import { Category } from "../../../src/entities/category/category.entity";
 import { Store } from "../../../src/entities/store/store.entity";
 import { EnableTime } from "../../../src/entities/menu/enableTime.entity";
-=======
-import { ConflictException, Injectable, Logger, NotFoundException, Req, Res, UseInterceptors } from '@nestjs/common';
-import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
-import { BasicMessageDto } from '../../../src/common/dtos/basic-massage.dto';
-import { Menu } from '../../../src/entities/menu/menu.entity';
-import { Connection, getRepository, QueryRunner, Repository, Transaction, TransactionRepository } from 'typeorm';
-import { MenuCreateDto } from './dtos/create-menu.dto';
-import { MenuInfoResponseDto } from './dtos/menu-info.dto';
-import { MenuUpdateDto } from './dtos/update-menu.dto';
-import { OptionGroup } from '../../../src/entities/option/optionGroup.entity';
-import { Category } from '../../../src/entities/category/category.entity';
-import { Store } from '../../../src/entities/store/store.entity';
-import { EnableTime } from '../../../src/entities/menu/enableTime.entity';
-import { Transform } from 'class-transformer';
->>>>>>> 3653f2b12519c91cba985b2a5626e01dd58d560f
+import { Transform } from "class-transformer";
 
 @Injectable()
 export class MenuService {
@@ -114,7 +101,6 @@ export class MenuService {
         .from(Menu, "m")
         .where("m.store_id =:storeId", { storeId })
         .getOne()) !== undefined
-<<<<<<< HEAD
     );
   };
 
@@ -124,14 +110,6 @@ export class MenuService {
   ): Promise<MenuInfoResponseDto> {
     try {
       if (await this.MenuExist(dto.name, storeId)) {
-=======
-      )
-    };
-   
-  async saveMenu(dto: MenuCreateDto, storeId: string): Promise<MenuInfoResponseDto> {
-      try{
-        if (await this.MenuExist(dto.name, storeId)) {
->>>>>>> 3653f2b12519c91cba985b2a5626e01dd58d560f
         throw new ConflictException("Menu is already in use!");
       } else {
         const menu = await this.menuRepository.save(
@@ -193,12 +171,6 @@ export class MenuService {
     } catch (e) {
       return e;
     }
-<<<<<<< HEAD
-=======
-  }catch(e){
-    return e;
-  } 
->>>>>>> 3653f2b12519c91cba985b2a5626e01dd58d560f
   }
 
   async updateCategoryInMenu(
@@ -231,20 +203,17 @@ export class MenuService {
     return new BasicMessageDto("EnableTime Updated Successfully.");
   }
 
-<<<<<<< HEAD
-  async removeMenu(menuId: number): Promise<BasicMessageDto> {
-=======
-  async updateFileInMenu(file: Express.Multer.File,
-    menuId : number
-    ): Promise<BasicMessageDto> {
-        const menu = await this.menuRepository.findOne(menuId);
-        menu.setImage = file[0].transforms[0].location;
-        await this.menuRepository.save(menu);
-        return new BasicMessageDto("Image Updated successfully!");
-    }
+  async updateFileInMenu(
+    file: Express.Multer.File,
+    menuId: number
+  ): Promise<BasicMessageDto> {
+    const menu = await this.menuRepository.findOne(menuId);
+    menu.setImage = file[0].transforms[0].location;
+    await this.menuRepository.save(menu);
+    return new BasicMessageDto("Image Updated successfully!");
+  }
 
-  async removeMenu(menuId : number): Promise<BasicMessageDto> {
->>>>>>> 3653f2b12519c91cba985b2a5626e01dd58d560f
+  async removeMenu(menuId: number): Promise<BasicMessageDto> {
     const result = await this.menuRepository.delete(menuId);
     if (result.affected !== 0) {
       return new BasicMessageDto("Deleted Successfully.");
